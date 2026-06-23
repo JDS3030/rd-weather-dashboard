@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-950 text-gray-100 antialiased;
+  }
+}
+
+@layer utilities {
+  /* Scrollbar personalizado */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #374151 #111827;
+  }
+  ::-webkit-scrollbar       { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: #111827; }
+  ::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+
+  /* Animación de barra de ticker en emergencia */
+  .ticker-wrapper { overflow: hidden; white-space: nowrap; }
+  .ticker-content { display: inline-block; animation: ticker 30s linear infinite; }
+
+  /* Borde pulsante rojo para tarjetas en alerta */
+  .card-alert-pulse {
+    animation: pulse-border 2s ease-in-out infinite;
+  }
+  @keyframes pulse-border {
+    0%, 100% { box-shadow: 0 0 0 0   rgba(239, 68, 68, 0.6); }
+    50%       { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);   }
+  }
+}

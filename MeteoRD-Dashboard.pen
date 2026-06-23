@@ -1,0 +1,3791 @@
+{
+  "version": "2.13",
+  "children": [
+    {
+      "type": "frame",
+      "id": "s4vBrO",
+      "x": 0,
+      "y": -1204,
+      "name": "Province Card",
+      "reusable": true,
+      "clip": true,
+      "width": 264,
+      "fill": "#1E293B",
+      "cornerRadius": 12,
+      "stroke": "#334155",
+      "strokeWidth": 1,
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "L9etb",
+          "name": "Card Header",
+          "width": "fill_container",
+          "fill": "#0F172A",
+          "padding": [
+            10,
+            14
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "Ut4JX",
+              "name": "Name Stack",
+              "layout": "vertical",
+              "gap": 3,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "MfCoV",
+                  "name": "Province Name",
+                  "fill": "#F1F5F9",
+                  "content": "Distrito Nacional",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "VM1pJ",
+                  "name": "Region",
+                  "fill": "#64748B",
+                  "content": "Sur",
+                  "fontFamily": "Inter",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "ZDPST",
+              "name": "Weather Emoji",
+              "fill": "#FFFFFF",
+              "content": "☀️",
+              "fontFamily": "Inter",
+              "fontSize": 22,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "J2Boyc",
+          "name": "Temp Row",
+          "gap": 8,
+          "padding": [
+            12,
+            14,
+            2,
+            14
+          ],
+          "alignItems": "end",
+          "children": [
+            {
+              "type": "text",
+              "id": "yz0Yr",
+              "name": "Temperature",
+              "fill": "#F8FAFC",
+              "content": "31.2°",
+              "fontFamily": "Inter",
+              "fontSize": 30,
+              "fontWeight": "800"
+            },
+            {
+              "type": "text",
+              "id": "Ti7az",
+              "name": "Feels Like",
+              "fill": "#64748B",
+              "content": "ST 33°C",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "JGexA",
+          "name": "Condition Row",
+          "padding": [
+            0,
+            14,
+            10,
+            14
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "SrE8v",
+              "name": "Condition",
+              "fill": "#FCD34D",
+              "content": "Despejado",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "DmU71",
+          "name": "Stats Grid",
+          "width": "fill_container",
+          "stroke": "#0F172A",
+          "strokeWidth": {
+            "top": 1
+          },
+          "layout": "vertical",
+          "children": [
+            {
+              "type": "frame",
+              "id": "RCAee",
+              "name": "Stat Row",
+              "width": "fill_container",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "in5D1",
+                  "name": "Stat Cell",
+                  "width": "fill_container",
+                  "fill": "#192234",
+                  "layout": "vertical",
+                  "gap": 3,
+                  "padding": [
+                    8,
+                    12
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "lKBsN",
+                      "name": "Stat Label",
+                      "fill": "#475569",
+                      "content": "💧 Humedad",
+                      "fontFamily": "Inter",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "nyiSC",
+                      "name": "Stat Value",
+                      "fill": "#CBD5E1",
+                      "content": "68%",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "S639n",
+                  "name": "Stat Cell",
+                  "width": "fill_container",
+                  "fill": "#1A2438",
+                  "layout": "vertical",
+                  "gap": 3,
+                  "padding": [
+                    8,
+                    12
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "WuOeE",
+                      "name": "Stat Label",
+                      "fill": "#475569",
+                      "content": "☁️ Nubosidad",
+                      "fontFamily": "Inter",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "SSJwT",
+                      "name": "Stat Value",
+                      "fill": "#CBD5E1",
+                      "content": "15%",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "c2O1y",
+              "name": "Stat Row",
+              "width": "fill_container",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "G7QnFw",
+                  "name": "Stat Cell",
+                  "width": "fill_container",
+                  "fill": "#192234",
+                  "layout": "vertical",
+                  "gap": 3,
+                  "padding": [
+                    8,
+                    12
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "lKSVN",
+                      "name": "Stat Label",
+                      "fill": "#475569",
+                      "content": "📊 Presión",
+                      "fontFamily": "Inter",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "i8HFr",
+                      "name": "Stat Value",
+                      "fill": "#CBD5E1",
+                      "content": "1012mb",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "wDOce",
+                  "name": "Stat Cell",
+                  "width": "fill_container",
+                  "fill": "#1A2438",
+                  "layout": "vertical",
+                  "gap": 3,
+                  "padding": [
+                    8,
+                    12
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "kBiK5",
+                      "name": "Stat Label",
+                      "fill": "#475569",
+                      "content": "🌞 UV",
+                      "fontFamily": "Inter",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "gACLP",
+                      "name": "Stat Value",
+                      "fill": "#CBD5E1",
+                      "content": "8",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Lw9bj",
+          "name": "Wind Footer",
+          "width": "fill_container",
+          "stroke": "#334155",
+          "strokeWidth": {
+            "top": 1
+          },
+          "padding": [
+            8,
+            14
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "P3P59",
+              "name": "Wind",
+              "fill": "#34D399",
+              "content": "💨 22 km/h Calmo",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "wggdj",
+      "x": 0,
+      "y": -1394,
+      "name": "KPI Card",
+      "reusable": true,
+      "width": 300,
+      "fill": "#1E293B",
+      "cornerRadius": 12,
+      "stroke": "#334155",
+      "strokeWidth": 1,
+      "layout": "vertical",
+      "gap": 5,
+      "padding": [
+        14,
+        18
+      ],
+      "children": [
+        {
+          "type": "frame",
+          "id": "dJHVu",
+          "name": "KPI Top Row",
+          "gap": 6,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "d7504y",
+              "name": "KPI Icon",
+              "width": 14,
+              "height": 14,
+              "icon": "thermometer",
+              "library": "lucide",
+              "fill": "#64748B"
+            },
+            {
+              "type": "text",
+              "id": "WAHTW",
+              "name": "KPI Label",
+              "fill": "#64748B",
+              "content": "Temperatura Prom.",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "O29Ez",
+          "name": "KPI Value",
+          "fill": "#FB923C",
+          "content": "28.4°C",
+          "fontFamily": "Inter",
+          "fontSize": 26,
+          "fontWeight": "800"
+        },
+        {
+          "type": "text",
+          "id": "xzJTI",
+          "name": "KPI Sub",
+          "fill": "#475569",
+          "content": "Máx 33.1° / Mín 26.8°",
+          "fontFamily": "Inter",
+          "fontSize": 10,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "si1X5",
+      "x": 380,
+      "y": -1394,
+      "name": "NubeVigía RD — Modo Normal",
+      "clip": true,
+      "width": 1440,
+      "height": 900,
+      "fill": "#0F172A",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "p3MKfN",
+          "name": "Header",
+          "width": "fill_container",
+          "height": 58,
+          "fill": "#111827",
+          "stroke": "#1F2937",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "padding": [
+            0,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "Ezwxp",
+              "name": "Hdr Left",
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "OWCrT",
+                  "name": "Logo Box",
+                  "width": 36,
+                  "height": 36,
+                  "fill": "#1D4ED8",
+                  "cornerRadius": 10,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "O7aoB",
+                      "name": "Logo Emoji",
+                      "fill": "#fff",
+                      "content": "🌤️",
+                      "fontFamily": "Inter",
+                      "fontSize": 18,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "oxaqs",
+                  "name": "Title Group",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "kOKdh",
+                      "name": "App Name",
+                      "fill": "#F1F5F9",
+                      "content": "NubeVigía RD",
+                      "fontFamily": "Inter",
+                      "fontSize": 16,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "vTXIJ",
+                      "name": "Tagline",
+                      "fill": "#475569",
+                      "content": "República Dominicana  ·  ONAMET / WeatherAPI",
+                      "fontFamily": "Inter",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Pfiz4",
+              "name": "Hdr Right",
+              "gap": 14,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "DFSeH",
+                  "name": "Normal Badge",
+                  "fill": "#064E3B",
+                  "cornerRadius": 20,
+                  "gap": 5,
+                  "padding": [
+                    5,
+                    14
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "ejmNU",
+                      "name": "Dot",
+                      "fill": "#10B981",
+                      "content": "●",
+                      "fontFamily": "Inter",
+                      "fontSize": 7,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "p9xKma",
+                      "name": "Badge Label",
+                      "fill": "#10B981",
+                      "content": "✓ Normal",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "NbVqa",
+                  "name": "Update Box",
+                  "layout": "vertical",
+                  "gap": 1,
+                  "alignItems": "end",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "QRVgY",
+                      "name": "Upd Label",
+                      "fill": "#475569",
+                      "content": "Última actualización",
+                      "fontFamily": "Inter",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "lp09s",
+                      "name": "Upd Time",
+                      "fill": "#94A3B8",
+                      "content": "14:23:05",
+                      "fontFamily": "Inter",
+                      "fontSize": 11,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "biFeZ",
+                  "name": "Refresh Btn",
+                  "width": 34,
+                  "height": 34,
+                  "fill": "#1E293B",
+                  "cornerRadius": 8,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "sL514",
+                      "name": "Rf Icon",
+                      "width": 15,
+                      "height": 15,
+                      "icon": "refresh-cw",
+                      "library": "lucide",
+                      "fill": "#94A3B8"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "dm9wn",
+                  "name": "RD Flag",
+                  "fill": "#fff",
+                  "content": "🇩🇴",
+                  "fontFamily": "Inter",
+                  "fontSize": 20,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "b7fNIT",
+          "name": "Stats Row",
+          "width": "fill_container",
+          "gap": 12,
+          "padding": [
+            16,
+            24
+          ],
+          "children": [
+            {
+              "id": "j7LTD9",
+              "type": "ref",
+              "ref": "wggdj",
+              "name": "Temperatura Prom.",
+              "width": "fill_container",
+              "descendants": {
+                "d7504y": {
+                  "icon": "thermometer"
+                },
+                "WAHTW": {
+                  "content": "Temperatura Prom."
+                },
+                "O29Ez": {
+                  "content": "28.4°C",
+                  "fill": "#FB923C"
+                },
+                "xzJTI": {
+                  "content": "Máx 33.1° / Mín 26.8°"
+                }
+              }
+            },
+            {
+              "id": "h1LnQn",
+              "type": "ref",
+              "ref": "wggdj",
+              "name": "Viento Máximo",
+              "width": "fill_container",
+              "descendants": {
+                "d7504y": {
+                  "icon": "wind"
+                },
+                "WAHTW": {
+                  "content": "Viento Máximo"
+                },
+                "O29Ez": {
+                  "content": "35 km/h",
+                  "fill": "#60A5FA"
+                },
+                "xzJTI": {
+                  "content": "Monte Cristi"
+                }
+              }
+            },
+            {
+              "id": "XWV8H",
+              "type": "ref",
+              "ref": "wggdj",
+              "name": "Con Lluvia",
+              "width": "fill_container",
+              "descendants": {
+                "d7504y": {
+                  "icon": "cloud-rain"
+                },
+                "WAHTW": {
+                  "content": "Con Lluvia"
+                },
+                "O29Ez": {
+                  "content": "3 / 12",
+                  "fill": "#67E8F9"
+                },
+                "xzJTI": {
+                  "content": "provincias con lluvia"
+                }
+              }
+            },
+            {
+              "id": "UnjQp",
+              "type": "ref",
+              "ref": "wggdj",
+              "name": "Humedad Prom.",
+              "width": "fill_container",
+              "descendants": {
+                "d7504y": {
+                  "icon": "droplets"
+                },
+                "WAHTW": {
+                  "content": "Humedad Prom."
+                },
+                "O29Ez": {
+                  "content": "74%",
+                  "fill": "#34D399"
+                },
+                "xzJTI": {
+                  "content": "promedio nacional"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "v61EQ2",
+          "name": "Content Row",
+          "width": "fill_container",
+          "height": "fill_container",
+          "gap": 20,
+          "padding": [
+            4,
+            24,
+            20,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "a5NYjD",
+              "name": "Province Grid Col",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "aIswo",
+                  "name": "Grid Header",
+                  "padding": [
+                    4,
+                    0
+                  ],
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "mHZTw",
+                      "name": "Grid Title",
+                      "fill": "#64748B",
+                      "content": "🗺️  Estado Meteorológico por Provincia",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "Pk9g0",
+                      "name": "Province Count",
+                      "fill": "#334155",
+                      "content": "12 provincias monitoreadas",
+                      "fontFamily": "Inter",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "EPN2T",
+                  "name": "Card Row 1",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "id": "sU0Ua",
+                      "type": "ref",
+                      "ref": "s4vBrO",
+                      "name": "Distrito Nacional",
+                      "width": "fill_container",
+                      "descendants": {
+                        "MfCoV": {
+                          "content": "Distrito Nacional"
+                        },
+                        "VM1pJ": {
+                          "content": "Sur"
+                        },
+                        "ZDPST": {
+                          "content": "☀️"
+                        },
+                        "yz0Yr": {
+                          "content": "31.2°"
+                        },
+                        "Ti7az": {
+                          "content": "ST 33°C"
+                        },
+                        "SrE8v": {
+                          "content": "Despejado"
+                        },
+                        "lKBsN": {
+                          "content": "💧 Humedad"
+                        },
+                        "nyiSC": {
+                          "content": "68%"
+                        },
+                        "WuOeE": {
+                          "content": "☁️ Nubosidad"
+                        },
+                        "SSJwT": {
+                          "content": "15%"
+                        },
+                        "lKSVN": {
+                          "content": "📊 Presión"
+                        },
+                        "i8HFr": {
+                          "content": "1012mb"
+                        },
+                        "kBiK5": {
+                          "content": "🌞 UV"
+                        },
+                        "gACLP": {
+                          "content": "8"
+                        },
+                        "P3P59": {
+                          "content": "💨 22 km/h · Calmo"
+                        }
+                      }
+                    },
+                    {
+                      "id": "Nz4xL",
+                      "type": "ref",
+                      "ref": "s4vBrO",
+                      "name": "Santiago",
+                      "width": "fill_container",
+                      "descendants": {
+                        "MfCoV": {
+                          "content": "Santiago"
+                        },
+                        "VM1pJ": {
+                          "content": "Cibao Norte"
+                        },
+                        "ZDPST": {
+                          "content": "⛅"
+                        },
+                        "yz0Yr": {
+                          "content": "29.8°"
+                        },
+                        "Ti7az": {
+                          "content": "ST 31°C"
+                        },
+                        "SrE8v": {
+                          "content": "Parcialmente nublado"
+                        },
+                        "lKBsN": {
+                          "content": "💧 Humedad"
+                        },
+                        "nyiSC": {
+                          "content": "72%"
+                        },
+                        "WuOeE": {
+                          "content": "☁️ Nubosidad"
+                        },
+                        "SSJwT": {
+                          "content": "45%"
+                        },
+                        "lKSVN": {
+                          "content": "📊 Presión"
+                        },
+                        "i8HFr": {
+                          "content": "1010mb"
+                        },
+                        "kBiK5": {
+                          "content": "🌞 UV"
+                        },
+                        "gACLP": {
+                          "content": "7"
+                        },
+                        "P3P59": {
+                          "content": "💨 18 km/h · Moderado"
+                        }
+                      }
+                    },
+                    {
+                      "id": "fc6Gb",
+                      "type": "ref",
+                      "ref": "s4vBrO",
+                      "name": "La Vega",
+                      "width": "fill_container",
+                      "descendants": {
+                        "MfCoV": {
+                          "content": "La Vega"
+                        },
+                        "VM1pJ": {
+                          "content": "Cibao Central"
+                        },
+                        "ZDPST": {
+                          "content": "🌧️"
+                        },
+                        "yz0Yr": {
+                          "content": "27.5°"
+                        },
+                        "Ti7az": {
+                          "content": "ST 28°C"
+                        },
+                        "SrE8v": {
+                          "content": "Lluvias moderadas"
+                        },
+                        "lKBsN": {
+                          "content": "💧 Humedad"
+                        },
+                        "nyiSC": {
+                          "content": "85%"
+                        },
+                        "WuOeE": {
+                          "content": "☁️ Nubosidad"
+                        },
+                        "SSJwT": {
+                          "content": "80%"
+                        },
+                        "lKSVN": {
+                          "content": "📊 Presión"
+                        },
+                        "i8HFr": {
+                          "content": "1008mb"
+                        },
+                        "kBiK5": {
+                          "content": "🌞 UV"
+                        },
+                        "gACLP": {
+                          "content": "4"
+                        },
+                        "P3P59": {
+                          "content": "💨 12 km/h · Calmo"
+                        }
+                      }
+                    },
+                    {
+                      "id": "oPYrb",
+                      "type": "ref",
+                      "ref": "s4vBrO",
+                      "name": "San Pedro de Macorís",
+                      "width": "fill_container",
+                      "descendants": {
+                        "MfCoV": {
+                          "content": "San Pedro de Macorís"
+                        },
+                        "VM1pJ": {
+                          "content": "Yuma"
+                        },
+                        "ZDPST": {
+                          "content": "☀️"
+                        },
+                        "yz0Yr": {
+                          "content": "30.1°"
+                        },
+                        "Ti7az": {
+                          "content": "ST 32°C"
+                        },
+                        "SrE8v": {
+                          "content": "Despejado"
+                        },
+                        "lKBsN": {
+                          "content": "💧 Humedad"
+                        },
+                        "nyiSC": {
+                          "content": "70%"
+                        },
+                        "WuOeE": {
+                          "content": "☁️ Nubosidad"
+                        },
+                        "SSJwT": {
+                          "content": "10%"
+                        },
+                        "lKSVN": {
+                          "content": "📊 Presión"
+                        },
+                        "i8HFr": {
+                          "content": "1013mb"
+                        },
+                        "kBiK5": {
+                          "content": "🌞 UV"
+                        },
+                        "gACLP": {
+                          "content": "9"
+                        },
+                        "P3P59": {
+                          "content": "💨 25 km/h · Moderado"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "KiTy4",
+                  "name": "Card Row 2",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "id": "OMUnh",
+                      "type": "ref",
+                      "ref": "s4vBrO",
+                      "name": "Puerto Plata",
+                      "width": "fill_container",
+                      "descendants": {
+                        "MfCoV": {
+                          "content": "Puerto Plata"
+                        },
+                        "VM1pJ": {
+                          "content": "Cibao Norte"
+                        },
+                        "ZDPST": {
+                          "content": "⛅"
+                        },
+                        "yz0Yr": {
+                          "content": "28.3°"
+                        },
+                        "Ti7az": {
+                          "content": "ST 29°C"
+                        },
+                        "SrE8v": {
+                          "content": "Mayormente nublado"
+                        },
+                        "lKBsN": {
+                          "content": "💧 Humedad"
+                        },
+                        "nyiSC": {
+                          "content": "78%"
+                        },
+                        "WuOeE": {
+                          "content": "☁️ Nubosidad"
+                        },
+                        "SSJwT": {
+                          "content": "55%"
+                        },
+                        "lKSVN": {
+                          "content": "📊 Presión"
+                        },
+                        "i8HFr": {
+                          "content": "1009mb"
+                        },
+                        "kBiK5": {
+                          "content": "🌞 UV"
+                        },
+                        "gACLP": {
+                          "content": "5"
+                        },
+                        "P3P59": {
+                          "content": "💨 30 km/h · Fuerte"
+                        }
+                      }
+                    },
+                    {
+                      "id": "Yi7Qd",
+                      "type": "ref",
+                      "ref": "s4vBrO",
+                      "name": "Barahona",
+                      "width": "fill_container",
+                      "descendants": {
+                        "MfCoV": {
+                          "content": "Barahona"
+                        },
+                        "VM1pJ": {
+                          "content": "Enriquillo"
+                        },
+                        "ZDPST": {
+                          "content": "☀️"
+                        },
+                        "yz0Yr": {
+                          "content": "32.4°"
+                        },
+                        "Ti7az": {
+                          "content": "ST 35°C"
+                        },
+                        "SrE8v": {
+                          "content": "Soleado"
+                        },
+                        "lKBsN": {
+                          "content": "💧 Humedad"
+                        },
+                        "nyiSC": {
+                          "content": "65%"
+                        },
+                        "WuOeE": {
+                          "content": "☁️ Nubosidad"
+                        },
+                        "SSJwT": {
+                          "content": "8%"
+                        },
+                        "lKSVN": {
+                          "content": "📊 Presión"
+                        },
+                        "i8HFr": {
+                          "content": "1014mb"
+                        },
+                        "kBiK5": {
+                          "content": "🌞 UV"
+                        },
+                        "gACLP": {
+                          "content": "10"
+                        },
+                        "P3P59": {
+                          "content": "💨 20 km/h · Calmo"
+                        }
+                      }
+                    },
+                    {
+                      "id": "X6Vm2",
+                      "type": "ref",
+                      "ref": "s4vBrO",
+                      "name": "La Altagracia",
+                      "width": "fill_container",
+                      "descendants": {
+                        "MfCoV": {
+                          "content": "La Altagracia"
+                        },
+                        "VM1pJ": {
+                          "content": "Yuma"
+                        },
+                        "ZDPST": {
+                          "content": "☀️"
+                        },
+                        "yz0Yr": {
+                          "content": "33.1°"
+                        },
+                        "Ti7az": {
+                          "content": "ST 35°C"
+                        },
+                        "SrE8v": {
+                          "content": "Despejado y soleado"
+                        },
+                        "lKBsN": {
+                          "content": "💧 Humedad"
+                        },
+                        "nyiSC": {
+                          "content": "62%"
+                        },
+                        "WuOeE": {
+                          "content": "☁️ Nubosidad"
+                        },
+                        "SSJwT": {
+                          "content": "5%"
+                        },
+                        "lKSVN": {
+                          "content": "📊 Presión"
+                        },
+                        "i8HFr": {
+                          "content": "1015mb"
+                        },
+                        "kBiK5": {
+                          "content": "🌞 UV"
+                        },
+                        "gACLP": {
+                          "content": "11"
+                        },
+                        "P3P59": {
+                          "content": "💨 28 km/h · Moderado"
+                        }
+                      }
+                    },
+                    {
+                      "id": "lLXwM",
+                      "type": "ref",
+                      "ref": "s4vBrO",
+                      "name": "Nagua",
+                      "width": "fill_container",
+                      "descendants": {
+                        "MfCoV": {
+                          "content": "Nagua"
+                        },
+                        "VM1pJ": {
+                          "content": "Nordeste"
+                        },
+                        "ZDPST": {
+                          "content": "🌧️"
+                        },
+                        "yz0Yr": {
+                          "content": "26.8°"
+                        },
+                        "Ti7az": {
+                          "content": "ST 27°C"
+                        },
+                        "SrE8v": {
+                          "content": "Lluvia intensa"
+                        },
+                        "lKBsN": {
+                          "content": "💧 Humedad"
+                        },
+                        "nyiSC": {
+                          "content": "88%"
+                        },
+                        "WuOeE": {
+                          "content": "☁️ Nubosidad"
+                        },
+                        "SSJwT": {
+                          "content": "85%"
+                        },
+                        "lKSVN": {
+                          "content": "📊 Presión"
+                        },
+                        "i8HFr": {
+                          "content": "1007mb"
+                        },
+                        "kBiK5": {
+                          "content": "🌞 UV"
+                        },
+                        "gACLP": {
+                          "content": "3"
+                        },
+                        "P3P59": {
+                          "content": "💨 15 km/h · Calmo"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "J3sFvD",
+                  "name": "Card Row 3",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "id": "cRRyu",
+                      "type": "ref",
+                      "ref": "s4vBrO",
+                      "name": "San Juan",
+                      "width": "fill_container",
+                      "descendants": {
+                        "MfCoV": {
+                          "content": "San Juan"
+                        },
+                        "VM1pJ": {
+                          "content": "El Valle"
+                        },
+                        "ZDPST": {
+                          "content": "☀️"
+                        },
+                        "yz0Yr": {
+                          "content": "30.5°"
+                        },
+                        "Ti7az": {
+                          "content": "ST 32°C"
+                        },
+                        "SrE8v": {
+                          "content": "Soleado"
+                        },
+                        "lKBsN": {
+                          "content": "💧 Humedad"
+                        },
+                        "nyiSC": {
+                          "content": "66%"
+                        },
+                        "WuOeE": {
+                          "content": "☁️ Nubosidad"
+                        },
+                        "SSJwT": {
+                          "content": "12%"
+                        },
+                        "lKSVN": {
+                          "content": "📊 Presión"
+                        },
+                        "i8HFr": {
+                          "content": "1013mb"
+                        },
+                        "kBiK5": {
+                          "content": "🌞 UV"
+                        },
+                        "gACLP": {
+                          "content": "9"
+                        },
+                        "P3P59": {
+                          "content": "💨 22 km/h · Calmo"
+                        }
+                      }
+                    },
+                    {
+                      "id": "hNZDb",
+                      "type": "ref",
+                      "ref": "s4vBrO",
+                      "name": "Monte Cristi",
+                      "width": "fill_container",
+                      "descendants": {
+                        "MfCoV": {
+                          "content": "Monte Cristi"
+                        },
+                        "VM1pJ": {
+                          "content": "Cibao Noroeste"
+                        },
+                        "ZDPST": {
+                          "content": "☀️"
+                        },
+                        "yz0Yr": {
+                          "content": "31.8°"
+                        },
+                        "Ti7az": {
+                          "content": "ST 33°C"
+                        },
+                        "SrE8v": {
+                          "content": "Despejado"
+                        },
+                        "lKBsN": {
+                          "content": "💧 Humedad"
+                        },
+                        "nyiSC": {
+                          "content": "58%"
+                        },
+                        "WuOeE": {
+                          "content": "☁️ Nubosidad"
+                        },
+                        "SSJwT": {
+                          "content": "6%"
+                        },
+                        "lKSVN": {
+                          "content": "📊 Presión"
+                        },
+                        "i8HFr": {
+                          "content": "1014mb"
+                        },
+                        "kBiK5": {
+                          "content": "🌞 UV"
+                        },
+                        "gACLP": {
+                          "content": "10"
+                        },
+                        "P3P59": {
+                          "content": "💨 35 km/h · Fuerte"
+                        }
+                      }
+                    },
+                    {
+                      "id": "lK8g2",
+                      "type": "ref",
+                      "ref": "s4vBrO",
+                      "name": "Monseñor Nouel",
+                      "width": "fill_container",
+                      "descendants": {
+                        "MfCoV": {
+                          "content": "Monseñor Nouel"
+                        },
+                        "VM1pJ": {
+                          "content": "Cibao Central"
+                        },
+                        "ZDPST": {
+                          "content": "⛅"
+                        },
+                        "yz0Yr": {
+                          "content": "28.6°"
+                        },
+                        "Ti7az": {
+                          "content": "ST 29°C"
+                        },
+                        "SrE8v": {
+                          "content": "Nublado"
+                        },
+                        "lKBsN": {
+                          "content": "💧 Humedad"
+                        },
+                        "nyiSC": {
+                          "content": "75%"
+                        },
+                        "WuOeE": {
+                          "content": "☁️ Nubosidad"
+                        },
+                        "SSJwT": {
+                          "content": "65%"
+                        },
+                        "lKSVN": {
+                          "content": "📊 Presión"
+                        },
+                        "i8HFr": {
+                          "content": "1009mb"
+                        },
+                        "kBiK5": {
+                          "content": "🌞 UV"
+                        },
+                        "gACLP": {
+                          "content": "5"
+                        },
+                        "P3P59": {
+                          "content": "💨 16 km/h · Moderado"
+                        }
+                      }
+                    },
+                    {
+                      "id": "jPwZa",
+                      "type": "ref",
+                      "ref": "s4vBrO",
+                      "name": "El Seibo",
+                      "width": "fill_container",
+                      "descendants": {
+                        "MfCoV": {
+                          "content": "El Seibo"
+                        },
+                        "VM1pJ": {
+                          "content": "Yuma"
+                        },
+                        "ZDPST": {
+                          "content": "🌦️"
+                        },
+                        "yz0Yr": {
+                          "content": "29.3°"
+                        },
+                        "Ti7az": {
+                          "content": "ST 30°C"
+                        },
+                        "SrE8v": {
+                          "content": "Chubascos dispersos"
+                        },
+                        "lKBsN": {
+                          "content": "💧 Humedad"
+                        },
+                        "nyiSC": {
+                          "content": "80%"
+                        },
+                        "WuOeE": {
+                          "content": "☁️ Nubosidad"
+                        },
+                        "SSJwT": {
+                          "content": "70%"
+                        },
+                        "lKSVN": {
+                          "content": "📊 Presión"
+                        },
+                        "i8HFr": {
+                          "content": "1010mb"
+                        },
+                        "kBiK5": {
+                          "content": "🌞 UV"
+                        },
+                        "gACLP": {
+                          "content": "6"
+                        },
+                        "P3P59": {
+                          "content": "💨 19 km/h · Moderado"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "YtyRl",
+              "name": "Sidebar",
+              "width": 296,
+              "layout": "vertical",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "y0npJ",
+                  "name": "Alert Panel",
+                  "clip": true,
+                  "width": 296,
+                  "fill": "#1E293B",
+                  "cornerRadius": 12,
+                  "stroke": "#334155",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "x3AZ4k",
+                      "name": "Alert Header",
+                      "width": 296,
+                      "fill": "#0F172A",
+                      "padding": [
+                        12,
+                        14
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "V8u1Ep",
+                          "name": "Alert Title",
+                          "fill": "#CBD5E1",
+                          "content": "🚨  Panel de Alertas",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Z1F3G",
+                      "name": "Alert Body",
+                      "gap": 10,
+                      "padding": 14,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "L6JyrQ",
+                          "name": "OK Icon",
+                          "fill": "#fff",
+                          "content": "✅",
+                          "fontFamily": "Inter",
+                          "fontSize": 20,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "X3Nkw",
+                          "name": "Alert Msg",
+                          "layout": "vertical",
+                          "gap": 3,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "JdsVp",
+                              "name": "Alert Status",
+                              "fill": "#34D399",
+                              "content": "Sin alertas activas",
+                              "fontFamily": "Inter",
+                              "fontSize": 13,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "wXbct",
+                              "name": "Alert Sub",
+                              "fill": "#475569",
+                              "textGrowth": "fixed-width",
+                              "width": 200,
+                              "content": "Condiciones normales en todo el país",
+                              "fontFamily": "Inter",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "czMuJ",
+                  "name": "Report Panel",
+                  "clip": true,
+                  "width": 296,
+                  "fill": "#1E293B",
+                  "cornerRadius": 12,
+                  "stroke": "#334155",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "KHTGl",
+                      "name": "Report Header",
+                      "width": 296,
+                      "fill": "#0F172A",
+                      "padding": [
+                        12,
+                        14
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "N65uQ",
+                          "name": "Report Title",
+                          "fill": "#CBD5E1",
+                          "content": "📄  Reporte Diario",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "l8nE90",
+                          "name": "Gen Button",
+                          "fill": "#1D4ED8",
+                          "cornerRadius": 6,
+                          "padding": [
+                            4,
+                            10
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Hcp0o",
+                              "name": "Gen Label",
+                              "fill": "#fff",
+                              "content": "↻ Generar",
+                              "fontFamily": "Inter",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "TpyYd",
+                      "name": "Report Body",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "padding": [
+                        12,
+                        14
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "lbUZa",
+                          "name": "Report Badge",
+                          "gap": 6,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "Yc9qk",
+                              "name": "Type Tag",
+                              "fill": "#1E3A5F",
+                              "cornerRadius": 4,
+                              "padding": [
+                                2,
+                                8
+                              ],
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "iSWMw",
+                                  "name": "Type",
+                                  "fill": "#60A5FA",
+                                  "content": "📊 Diario",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 10,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "veoR0",
+                              "name": "Report Date",
+                              "fill": "#475569",
+                              "content": "22/06/2026  07:00",
+                              "fontFamily": "Inter",
+                              "fontSize": 10,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "lJc7v",
+                          "name": "Report Preview",
+                          "fill": "#94A3B8",
+                          "textGrowth": "fixed-width",
+                          "width": 252,
+                          "content": "Temperatura promedio: 28.4°C\nViento máx: 35 km/h (Monte Cristi)\nLluvias en: La Vega, Nagua, El Seibo\nHumedad prom: 74%",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Q9Qfb",
+                  "name": "Attribution",
+                  "width": 296,
+                  "fill": "#111827",
+                  "cornerRadius": 12,
+                  "stroke": "#1F2937",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "padding": [
+                    14,
+                    16
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Wnerx",
+                      "name": "Attr Title",
+                      "fill": "#475569",
+                      "content": "Fuentes Oficiales",
+                      "fontFamily": "Inter",
+                      "fontSize": 11,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "I0OCv",
+                      "name": "Attr Sources",
+                      "fill": "#334155",
+                      "textGrowth": "fixed-width",
+                      "width": 240,
+                      "content": "🏛  ONAMET\n🌐  WeatherAPI.com\n🛡  Defensa Civil RD",
+                      "textAlign": "center",
+                      "fontFamily": "Inter",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "ItrrZ",
+                      "name": "Divider",
+                      "fill": "#1F2937",
+                      "width": 264,
+                      "height": 1
+                    },
+                    {
+                      "type": "text",
+                      "id": "KbymI",
+                      "name": "Emergency Num",
+                      "fill": "#475569",
+                      "content": "Emergencias: 911",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "CKrIr",
+      "x": 1900,
+      "y": -1394,
+      "name": "NubeVigía RD — Modo Alerta 🌀",
+      "clip": true,
+      "width": 1440,
+      "height": 960,
+      "fill": "#0D0000",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "FWC4B",
+          "name": "Emergency Banner",
+          "width": "fill_container",
+          "fill": {
+            "type": "gradient",
+            "gradientType": "linear",
+            "enabled": true,
+            "rotation": 90,
+            "size": {
+              "height": 1
+            },
+            "colors": [
+              {
+                "color": "#7F1D1D",
+                "position": 0
+              },
+              {
+                "color": "#991B1B",
+                "position": 0.5
+              },
+              {
+                "color": "#7F1D1D",
+                "position": 1
+              }
+            ]
+          },
+          "layout": "vertical",
+          "gap": 8,
+          "padding": [
+            14,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "sFOJk",
+              "name": "Banner Top",
+              "width": "fill_container",
+              "gap": 14,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "x11jO",
+                  "name": "Hurricane Icon Box",
+                  "width": 52,
+                  "height": 52,
+                  "fill": "#B91C1C",
+                  "cornerRadius": 14,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "f2Z1j",
+                      "name": "Hurricane Emoji",
+                      "fill": "#fff",
+                      "content": "🌀",
+                      "fontFamily": "Inter",
+                      "fontSize": 28,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "pK64B",
+                  "name": "Banner Info",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "HGODi",
+                      "name": "Banner Top Row",
+                      "gap": 10,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "lfPi6",
+                          "name": "Alert Tag",
+                          "fill": "#fff",
+                          "cornerRadius": 4,
+                          "padding": [
+                            3,
+                            10
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "WQ9Wy",
+                              "name": "Alert Tag Text",
+                              "fill": "#991B1B",
+                              "content": "⚠  EMERGENCIA",
+                              "fontFamily": "Inter",
+                              "fontSize": 11,
+                              "fontWeight": "800"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "jYgYd",
+                          "name": "Active Since",
+                          "fill": "#FCA5A5",
+                          "content": "Activo desde: 22/06/2026 · 12:45",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "tsvop",
+                      "name": "Banner Title",
+                      "fill": "#FEF2F2",
+                      "content": "AVISO ESPECIAL Nº1: TORMENTA TROPICAL — ONAMET",
+                      "fontFamily": "Inter",
+                      "fontSize": 18,
+                      "fontWeight": "800"
+                    },
+                    {
+                      "type": "text",
+                      "id": "tkEBy",
+                      "name": "Banner Desc",
+                      "fill": "#FCA5A5",
+                      "textGrowth": "fixed-width",
+                      "width": 900,
+                      "content": "Vientos sostenidos de 95 km/h. Lluvias intensas y marejadas costeras esperadas en las próximas 24 horas.",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "AWPda",
+                  "name": "Alert Count Box",
+                  "width": 72,
+                  "height": 52,
+                  "fill": "#7F1D1D",
+                  "cornerRadius": 10,
+                  "layout": "vertical",
+                  "gap": 2,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "AQxDT",
+                      "name": "Alert Count",
+                      "fill": "#FEF2F2",
+                      "content": "4",
+                      "fontFamily": "Inter",
+                      "fontSize": 28,
+                      "fontWeight": "800"
+                    },
+                    {
+                      "type": "text",
+                      "id": "r3F7XZ",
+                      "name": "Alert Count Lbl",
+                      "fill": "#FCA5A5",
+                      "content": "alertas",
+                      "fontFamily": "Inter",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "wOveY",
+              "name": "Ticker",
+              "width": "fill_container",
+              "fill": "#450A0A",
+              "cornerRadius": 6,
+              "gap": 6,
+              "padding": [
+                5,
+                10
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "T76mD",
+                  "name": "Ticker Label",
+                  "fill": "#F87171",
+                  "content": "BOLETÍN »",
+                  "fontFamily": "Inter",
+                  "fontSize": 10,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "ha0c6",
+                  "name": "Ticker Text",
+                  "fill": "#FCA5A5",
+                  "textGrowth": "fixed-width",
+                  "width": 1100,
+                  "content": "ONAMET: Tormenta Tropical Activa · 💨 Puerto Plata: 95 km/h · 💨 Nagua: 87 km/h · 💨 Monte Cristi: 102 km/h · 🌧️ Lluvias intensas zona Norte y Nordeste",
+                  "fontFamily": "Inter",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "sNQs2",
+          "name": "Emg Header",
+          "width": "fill_container",
+          "height": 54,
+          "fill": "#1C0000",
+          "stroke": "#7F1D1D",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "padding": [
+            0,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "MmLrY",
+              "name": "Emg Hdr Left",
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "W9SjX",
+                  "name": "Emg Logo",
+                  "width": 36,
+                  "height": 36,
+                  "fill": "#B91C1C",
+                  "cornerRadius": 10,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "FVCRh",
+                      "name": "Emg Logo Icon",
+                      "fill": "#fff",
+                      "content": "🌀",
+                      "fontFamily": "Inter",
+                      "fontSize": 18,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "tIYN8",
+                  "name": "Emg Title Group",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "xr2a2",
+                      "name": "Emg App Name",
+                      "fill": "#FEF2F2",
+                      "content": "NubeVigía RD",
+                      "fontFamily": "Inter",
+                      "fontSize": 16,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "Siea2",
+                      "name": "Emg Tagline",
+                      "fill": "#F87171",
+                      "content": "⚠️  MODO ALERTA ACTIVO  ·  Actualización cada 60 segundos",
+                      "fontFamily": "Inter",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "UVHR1",
+              "name": "Emg Hdr Right",
+              "gap": 14,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "TT9Wd",
+                  "name": "Emergency Badge",
+                  "fill": "#B91C1C",
+                  "cornerRadius": 20,
+                  "gap": 5,
+                  "padding": [
+                    5,
+                    14
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Pq6Pv",
+                      "name": "Emg Dot",
+                      "fill": "#FEF2F2",
+                      "content": "●",
+                      "fontFamily": "Inter",
+                      "fontSize": 7,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "MlEtM",
+                      "name": "Emg Badge Label",
+                      "fill": "#FEF2F2",
+                      "content": "🚨 EMERGENCIA",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "tRJGp",
+                  "name": "Emg Update Box",
+                  "layout": "vertical",
+                  "gap": 1,
+                  "alignItems": "end",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "yHbfv",
+                      "name": "Emg Upd Label",
+                      "fill": "#7F1D1D",
+                      "content": "Próxima actualización en",
+                      "fontFamily": "Inter",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "O7bqWN",
+                      "name": "Emg Upd Time",
+                      "fill": "#F87171",
+                      "content": "00:45",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "e0rsS",
+                  "name": "Emg Refresh",
+                  "width": 34,
+                  "height": 34,
+                  "fill": "#450A0A",
+                  "cornerRadius": 8,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "pGmYl",
+                      "name": "Emg Rf Icon",
+                      "width": 15,
+                      "height": 15,
+                      "icon": "refresh-cw",
+                      "library": "lucide",
+                      "fill": "#F87171"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "Om4tL",
+                  "name": "Emg Flag",
+                  "fill": "#fff",
+                  "content": "🇩🇴",
+                  "fontFamily": "Inter",
+                  "fontSize": 20,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "QOmIO",
+          "name": "Emg Stats Row",
+          "width": "fill_container",
+          "gap": 12,
+          "padding": [
+            12,
+            24
+          ],
+          "children": [
+            {
+              "id": "kJPGd",
+              "type": "ref",
+              "ref": "wggdj",
+              "name": "Emg Temperatura Prom.",
+              "width": "fill_container",
+              "fill": "#2D1515",
+              "stroke": "#7F1D1D",
+              "descendants": {
+                "d7504y": {
+                  "fill": "#F87171"
+                },
+                "WAHTW": {
+                  "content": "Temperatura Prom.",
+                  "fill": "#F87171"
+                },
+                "O29Ez": {
+                  "content": "31.2°C",
+                  "fill": "#FCA5A5"
+                },
+                "xzJTI": {
+                  "content": "Máx 33.1° / Mín 27.8°",
+                  "fill": "#7F1D1D"
+                }
+              }
+            },
+            {
+              "id": "O578t",
+              "type": "ref",
+              "ref": "wggdj",
+              "name": "Emg Viento Máximo",
+              "width": "fill_container",
+              "fill": "#2D1515",
+              "stroke": "#7F1D1D",
+              "descendants": {
+                "d7504y": {
+                  "fill": "#F87171"
+                },
+                "WAHTW": {
+                  "content": "Viento Máximo",
+                  "fill": "#F87171"
+                },
+                "O29Ez": {
+                  "content": "102 km/h",
+                  "fill": "#F87171"
+                },
+                "xzJTI": {
+                  "content": "Monte Cristi — CRÍTICO",
+                  "fill": "#7F1D1D"
+                }
+              }
+            },
+            {
+              "id": "z5t0c",
+              "type": "ref",
+              "ref": "wggdj",
+              "name": "Emg Con Lluvia",
+              "width": "fill_container",
+              "fill": "#2D1515",
+              "stroke": "#7F1D1D",
+              "descendants": {
+                "d7504y": {
+                  "fill": "#F87171"
+                },
+                "WAHTW": {
+                  "content": "Con Lluvia",
+                  "fill": "#F87171"
+                },
+                "O29Ez": {
+                  "content": "9 / 12",
+                  "fill": "#FDA4AF"
+                },
+                "xzJTI": {
+                  "content": "provincias bajo lluvia",
+                  "fill": "#7F1D1D"
+                }
+              }
+            },
+            {
+              "id": "sX3U2",
+              "type": "ref",
+              "ref": "wggdj",
+              "name": "Emg Humedad Prom.",
+              "width": "fill_container",
+              "fill": "#2D1515",
+              "stroke": "#7F1D1D",
+              "descendants": {
+                "d7504y": {
+                  "fill": "#F87171"
+                },
+                "WAHTW": {
+                  "content": "Humedad Prom.",
+                  "fill": "#F87171"
+                },
+                "O29Ez": {
+                  "content": "91%",
+                  "fill": "#FCA5A5"
+                },
+                "xzJTI": {
+                  "content": "condiciones muy húmedas",
+                  "fill": "#7F1D1D"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "V6COOx",
+          "name": "Emg Content Row",
+          "width": "fill_container",
+          "height": "fill_container",
+          "gap": 20,
+          "padding": [
+            4,
+            24,
+            16,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "P9ClHN",
+              "name": "Emg Grid Col",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "nQqr6",
+                  "name": "Emg Grid Header",
+                  "padding": [
+                    2,
+                    0
+                  ],
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "y8CPmj",
+                      "name": "Emg Grid Title",
+                      "fill": "#F87171",
+                      "content": "🗺️  Estado de Emergencia por Provincia",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "H15KSJ",
+                      "name": "Emg Refresh Label",
+                      "fill": "#7F1D1D",
+                      "content": "⟳ Actualizando cada 60 s",
+                      "fontFamily": "Inter",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "R651WB",
+                  "name": "Alert Card Row",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "id": "d3pP2p",
+                      "type": "ref",
+                      "ref": "l70gp",
+                      "name": "Puerto Plata",
+                      "width": "fill_container",
+                      "descendants": {
+                        "xnole": {
+                          "content": "Puerto Plata"
+                        },
+                        "jwIA4": {
+                          "content": "Cibao Norte"
+                        },
+                        "VgYB8": {
+                          "content": "🌀"
+                        },
+                        "thnzK": {
+                          "content": "28.3°"
+                        },
+                        "yrldH": {
+                          "content": "ST 29°C"
+                        },
+                        "leupt": {
+                          "content": "Vientos huracanados"
+                        },
+                        "Dza7j": {
+                          "content": "91%"
+                        },
+                        "IMR1J": {
+                          "content": "95%"
+                        },
+                        "gMNLV": {
+                          "content": "994 mb"
+                        },
+                        "QSVrW": {
+                          "content": "95 km/h"
+                        }
+                      }
+                    },
+                    {
+                      "id": "UgtrU",
+                      "type": "ref",
+                      "ref": "l70gp",
+                      "name": "Nagua",
+                      "width": "fill_container",
+                      "descendants": {
+                        "xnole": {
+                          "content": "Nagua"
+                        },
+                        "jwIA4": {
+                          "content": "Nordeste"
+                        },
+                        "VgYB8": {
+                          "content": "🌀"
+                        },
+                        "thnzK": {
+                          "content": "26.1°"
+                        },
+                        "yrldH": {
+                          "content": "ST 26°C"
+                        },
+                        "leupt": {
+                          "content": "Lluvia torrencial"
+                        },
+                        "Dza7j": {
+                          "content": "94%"
+                        },
+                        "IMR1J": {
+                          "content": "98%"
+                        },
+                        "gMNLV": {
+                          "content": "992 mb"
+                        },
+                        "QSVrW": {
+                          "content": "87 km/h"
+                        }
+                      }
+                    },
+                    {
+                      "id": "pOluA",
+                      "type": "ref",
+                      "ref": "l70gp",
+                      "name": "Monte Cristi",
+                      "width": "fill_container",
+                      "descendants": {
+                        "xnole": {
+                          "content": "Monte Cristi"
+                        },
+                        "jwIA4": {
+                          "content": "Cibao Noroeste"
+                        },
+                        "VgYB8": {
+                          "content": "🌀"
+                        },
+                        "thnzK": {
+                          "content": "29.8°"
+                        },
+                        "yrldH": {
+                          "content": "ST 30°C"
+                        },
+                        "leupt": {
+                          "content": "Vientos extremos"
+                        },
+                        "Dza7j": {
+                          "content": "88%"
+                        },
+                        "IMR1J": {
+                          "content": "90%"
+                        },
+                        "gMNLV": {
+                          "content": "991 mb"
+                        },
+                        "QSVrW": {
+                          "content": "102 km/h"
+                        }
+                      }
+                    },
+                    {
+                      "id": "q9NkLn",
+                      "type": "ref",
+                      "ref": "l70gp",
+                      "name": "Santiago",
+                      "width": "fill_container",
+                      "descendants": {
+                        "xnole": {
+                          "content": "Santiago"
+                        },
+                        "jwIA4": {
+                          "content": "Cibao Norte"
+                        },
+                        "VgYB8": {
+                          "content": "🌀"
+                        },
+                        "thnzK": {
+                          "content": "27.9°"
+                        },
+                        "yrldH": {
+                          "content": "ST 28°C"
+                        },
+                        "leupt": {
+                          "content": "Tormenta severa"
+                        },
+                        "Dza7j": {
+                          "content": "89%"
+                        },
+                        "IMR1J": {
+                          "content": "92%"
+                        },
+                        "gMNLV": {
+                          "content": "993 mb"
+                        },
+                        "QSVrW": {
+                          "content": "78 km/h"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Okacn",
+                  "name": "Normal Emg Row 1",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "id": "Bsh5S",
+                      "type": "ref",
+                      "ref": "s4vBrO",
+                      "name": "Distrito Nacional",
+                      "width": "fill_container",
+                      "fill": "#1C0A0A",
+                      "stroke": "#7F1D1D",
+                      "descendants": {
+                        "L9etb": {
+                          "fill": "#2D1010"
+                        },
+                        "MfCoV": {
+                          "content": "Distrito Nacional",
+                          "fill": "#FEF2F2"
+                        },
+                        "VM1pJ": {
+                          "content": "Sur",
+                          "fill": "#F87171"
+                        },
+                        "ZDPST": {
+                          "content": "🌧️"
+                        },
+                        "yz0Yr": {
+                          "content": "30.1°",
+                          "fill": "#FEF2F2"
+                        },
+                        "Ti7az": {
+                          "content": "ST 31°C",
+                          "fill": "#F87171"
+                        },
+                        "SrE8v": {
+                          "content": "Lluvias y vientos",
+                          "fill": "#FCA5A5"
+                        },
+                        "nyiSC": {
+                          "content": "82%",
+                          "fill": "#FCA5A5"
+                        },
+                        "SSJwT": {
+                          "content": "75%",
+                          "fill": "#FCA5A5"
+                        },
+                        "i8HFr": {
+                          "content": "1003mb",
+                          "fill": "#FCA5A5"
+                        },
+                        "kBiK5": {
+                          "content": "6"
+                        },
+                        "gACLP": {
+                          "content": "6",
+                          "fill": "#FCA5A5"
+                        },
+                        "P3P59": {
+                          "content": "💨 44 km/h · Fuerte",
+                          "fill": "#F87171"
+                        }
+                      }
+                    },
+                    {
+                      "id": "slEhD",
+                      "type": "ref",
+                      "ref": "s4vBrO",
+                      "name": "La Vega",
+                      "width": "fill_container",
+                      "fill": "#1C0A0A",
+                      "stroke": "#7F1D1D",
+                      "descendants": {
+                        "L9etb": {
+                          "fill": "#2D1010"
+                        },
+                        "MfCoV": {
+                          "content": "La Vega",
+                          "fill": "#FEF2F2"
+                        },
+                        "VM1pJ": {
+                          "content": "Cibao Central",
+                          "fill": "#F87171"
+                        },
+                        "ZDPST": {
+                          "content": "🌧️"
+                        },
+                        "yz0Yr": {
+                          "content": "27.0°",
+                          "fill": "#FEF2F2"
+                        },
+                        "Ti7az": {
+                          "content": "ST 27°C",
+                          "fill": "#F87171"
+                        },
+                        "SrE8v": {
+                          "content": "Lluvias fuertes",
+                          "fill": "#FCA5A5"
+                        },
+                        "nyiSC": {
+                          "content": "86%",
+                          "fill": "#FCA5A5"
+                        },
+                        "SSJwT": {
+                          "content": "88%",
+                          "fill": "#FCA5A5"
+                        },
+                        "i8HFr": {
+                          "content": "1005mb",
+                          "fill": "#FCA5A5"
+                        },
+                        "kBiK5": {
+                          "content": "3"
+                        },
+                        "gACLP": {
+                          "content": "3",
+                          "fill": "#FCA5A5"
+                        },
+                        "P3P59": {
+                          "content": "💨 38 km/h · Fuerte",
+                          "fill": "#F87171"
+                        }
+                      }
+                    },
+                    {
+                      "id": "oYWtS",
+                      "type": "ref",
+                      "ref": "s4vBrO",
+                      "name": "San Pedro de Macorís",
+                      "width": "fill_container",
+                      "fill": "#1C0A0A",
+                      "stroke": "#7F1D1D",
+                      "descendants": {
+                        "L9etb": {
+                          "fill": "#2D1010"
+                        },
+                        "MfCoV": {
+                          "content": "San Pedro de Macorís",
+                          "fill": "#FEF2F2"
+                        },
+                        "VM1pJ": {
+                          "content": "Yuma",
+                          "fill": "#F87171"
+                        },
+                        "ZDPST": {
+                          "content": "🌦️"
+                        },
+                        "yz0Yr": {
+                          "content": "29.5°",
+                          "fill": "#FEF2F2"
+                        },
+                        "Ti7az": {
+                          "content": "ST 30°C",
+                          "fill": "#F87171"
+                        },
+                        "SrE8v": {
+                          "content": "Chubascos dispersos",
+                          "fill": "#FCA5A5"
+                        },
+                        "nyiSC": {
+                          "content": "76%",
+                          "fill": "#FCA5A5"
+                        },
+                        "SSJwT": {
+                          "content": "60%",
+                          "fill": "#FCA5A5"
+                        },
+                        "i8HFr": {
+                          "content": "1008mb",
+                          "fill": "#FCA5A5"
+                        },
+                        "kBiK5": {
+                          "content": "5"
+                        },
+                        "gACLP": {
+                          "content": "5",
+                          "fill": "#FCA5A5"
+                        },
+                        "P3P59": {
+                          "content": "💨 32 km/h · Fuerte",
+                          "fill": "#F87171"
+                        }
+                      }
+                    },
+                    {
+                      "id": "DaYhj",
+                      "type": "ref",
+                      "ref": "s4vBrO",
+                      "name": "Barahona",
+                      "width": "fill_container",
+                      "fill": "#1C0A0A",
+                      "stroke": "#7F1D1D",
+                      "descendants": {
+                        "L9etb": {
+                          "fill": "#2D1010"
+                        },
+                        "MfCoV": {
+                          "content": "Barahona",
+                          "fill": "#FEF2F2"
+                        },
+                        "VM1pJ": {
+                          "content": "Enriquillo",
+                          "fill": "#F87171"
+                        },
+                        "ZDPST": {
+                          "content": "⛅"
+                        },
+                        "yz0Yr": {
+                          "content": "31.8°",
+                          "fill": "#FEF2F2"
+                        },
+                        "Ti7az": {
+                          "content": "ST 33°C",
+                          "fill": "#F87171"
+                        },
+                        "SrE8v": {
+                          "content": "Parcialmente nublado",
+                          "fill": "#FCA5A5"
+                        },
+                        "nyiSC": {
+                          "content": "71%",
+                          "fill": "#FCA5A5"
+                        },
+                        "SSJwT": {
+                          "content": "40%",
+                          "fill": "#FCA5A5"
+                        },
+                        "i8HFr": {
+                          "content": "1010mb",
+                          "fill": "#FCA5A5"
+                        },
+                        "kBiK5": {
+                          "content": "7"
+                        },
+                        "gACLP": {
+                          "content": "7",
+                          "fill": "#FCA5A5"
+                        },
+                        "P3P59": {
+                          "content": "💨 28 km/h · Moderado",
+                          "fill": "#F87171"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Q0xdCW",
+                  "name": "Normal Emg Row 2",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "id": "w9OHB",
+                      "type": "ref",
+                      "ref": "s4vBrO",
+                      "name": "La Altagracia",
+                      "width": "fill_container",
+                      "fill": "#1C0A0A",
+                      "stroke": "#7F1D1D",
+                      "descendants": {
+                        "L9etb": {
+                          "fill": "#2D1010"
+                        },
+                        "MfCoV": {
+                          "content": "La Altagracia",
+                          "fill": "#FEF2F2"
+                        },
+                        "VM1pJ": {
+                          "content": "Yuma",
+                          "fill": "#F87171"
+                        },
+                        "ZDPST": {
+                          "content": "⛅"
+                        },
+                        "yz0Yr": {
+                          "content": "32.1°",
+                          "fill": "#FEF2F2"
+                        },
+                        "Ti7az": {
+                          "content": "ST 33°C",
+                          "fill": "#F87171"
+                        },
+                        "SrE8v": {
+                          "content": "Nublado",
+                          "fill": "#FCA5A5"
+                        },
+                        "nyiSC": {
+                          "content": "68%",
+                          "fill": "#FCA5A5"
+                        },
+                        "SSJwT": {
+                          "content": "50%",
+                          "fill": "#FCA5A5"
+                        },
+                        "i8HFr": {
+                          "content": "1009mb",
+                          "fill": "#FCA5A5"
+                        },
+                        "kBiK5": {
+                          "content": "6"
+                        },
+                        "gACLP": {
+                          "content": "6",
+                          "fill": "#FCA5A5"
+                        },
+                        "P3P59": {
+                          "content": "💨 30 km/h · Moderado",
+                          "fill": "#F87171"
+                        }
+                      }
+                    },
+                    {
+                      "id": "ekPsr",
+                      "type": "ref",
+                      "ref": "s4vBrO",
+                      "name": "San Juan",
+                      "width": "fill_container",
+                      "fill": "#1C0A0A",
+                      "stroke": "#7F1D1D",
+                      "descendants": {
+                        "L9etb": {
+                          "fill": "#2D1010"
+                        },
+                        "MfCoV": {
+                          "content": "San Juan",
+                          "fill": "#FEF2F2"
+                        },
+                        "VM1pJ": {
+                          "content": "El Valle",
+                          "fill": "#F87171"
+                        },
+                        "ZDPST": {
+                          "content": "🌧️"
+                        },
+                        "yz0Yr": {
+                          "content": "29.3°",
+                          "fill": "#FEF2F2"
+                        },
+                        "Ti7az": {
+                          "content": "ST 30°C",
+                          "fill": "#F87171"
+                        },
+                        "SrE8v": {
+                          "content": "Vientos y lluvias",
+                          "fill": "#FCA5A5"
+                        },
+                        "nyiSC": {
+                          "content": "80%",
+                          "fill": "#FCA5A5"
+                        },
+                        "SSJwT": {
+                          "content": "72%",
+                          "fill": "#FCA5A5"
+                        },
+                        "i8HFr": {
+                          "content": "1006mb",
+                          "fill": "#FCA5A5"
+                        },
+                        "kBiK5": {
+                          "content": "4"
+                        },
+                        "gACLP": {
+                          "content": "4",
+                          "fill": "#FCA5A5"
+                        },
+                        "P3P59": {
+                          "content": "💨 42 km/h · Fuerte",
+                          "fill": "#F87171"
+                        }
+                      }
+                    },
+                    {
+                      "id": "e7apw",
+                      "type": "ref",
+                      "ref": "s4vBrO",
+                      "name": "Monseñor Nouel",
+                      "width": "fill_container",
+                      "fill": "#1C0A0A",
+                      "stroke": "#7F1D1D",
+                      "descendants": {
+                        "L9etb": {
+                          "fill": "#2D1010"
+                        },
+                        "MfCoV": {
+                          "content": "Monseñor Nouel",
+                          "fill": "#FEF2F2"
+                        },
+                        "VM1pJ": {
+                          "content": "Cibao Central",
+                          "fill": "#F87171"
+                        },
+                        "ZDPST": {
+                          "content": "🌧️"
+                        },
+                        "yz0Yr": {
+                          "content": "27.8°",
+                          "fill": "#FEF2F2"
+                        },
+                        "Ti7az": {
+                          "content": "ST 28°C",
+                          "fill": "#F87171"
+                        },
+                        "SrE8v": {
+                          "content": "Lluvias moderadas",
+                          "fill": "#FCA5A5"
+                        },
+                        "nyiSC": {
+                          "content": "84%",
+                          "fill": "#FCA5A5"
+                        },
+                        "SSJwT": {
+                          "content": "82%",
+                          "fill": "#FCA5A5"
+                        },
+                        "i8HFr": {
+                          "content": "1006mb",
+                          "fill": "#FCA5A5"
+                        },
+                        "kBiK5": {
+                          "content": "3"
+                        },
+                        "gACLP": {
+                          "content": "3",
+                          "fill": "#FCA5A5"
+                        },
+                        "P3P59": {
+                          "content": "💨 35 km/h · Fuerte",
+                          "fill": "#F87171"
+                        }
+                      }
+                    },
+                    {
+                      "id": "e1wB5",
+                      "type": "ref",
+                      "ref": "s4vBrO",
+                      "name": "El Seibo",
+                      "width": "fill_container",
+                      "fill": "#1C0A0A",
+                      "stroke": "#7F1D1D",
+                      "descendants": {
+                        "L9etb": {
+                          "fill": "#2D1010"
+                        },
+                        "MfCoV": {
+                          "content": "El Seibo",
+                          "fill": "#FEF2F2"
+                        },
+                        "VM1pJ": {
+                          "content": "Yuma",
+                          "fill": "#F87171"
+                        },
+                        "ZDPST": {
+                          "content": "⛅"
+                        },
+                        "yz0Yr": {
+                          "content": "28.5°",
+                          "fill": "#FEF2F2"
+                        },
+                        "Ti7az": {
+                          "content": "ST 29°C",
+                          "fill": "#F87171"
+                        },
+                        "SrE8v": {
+                          "content": "Nublado",
+                          "fill": "#FCA5A5"
+                        },
+                        "nyiSC": {
+                          "content": "78%",
+                          "fill": "#FCA5A5"
+                        },
+                        "SSJwT": {
+                          "content": "62%",
+                          "fill": "#FCA5A5"
+                        },
+                        "i8HFr": {
+                          "content": "1008mb",
+                          "fill": "#FCA5A5"
+                        },
+                        "kBiK5": {
+                          "content": "5"
+                        },
+                        "gACLP": {
+                          "content": "5",
+                          "fill": "#FCA5A5"
+                        },
+                        "P3P59": {
+                          "content": "💨 27 km/h · Moderado",
+                          "fill": "#F87171"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "d6Ixhv",
+              "name": "Emg Sidebar",
+              "width": 296,
+              "layout": "vertical",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "JBswB",
+                  "name": "ONAMET Alerts Panel",
+                  "clip": true,
+                  "fill": "#2D1515",
+                  "cornerRadius": 12,
+                  "stroke": "#B91C1C",
+                  "strokeWidth": 2,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "yK7zX",
+                      "name": "ONAMET Header",
+                      "width": 296,
+                      "fill": "#450A0A",
+                      "padding": [
+                        11,
+                        14
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "dxdwx",
+                          "name": "ONAMET Title",
+                          "fill": "#FEF2F2",
+                          "content": "🏛  Alertas ONAMET",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "HDMlw",
+                          "name": "Alert Count Badge",
+                          "fill": "#B91C1C",
+                          "cornerRadius": 10,
+                          "padding": [
+                            2,
+                            8
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "tok9K",
+                              "name": "Count",
+                              "fill": "#fff",
+                              "content": "2",
+                              "fontFamily": "Inter",
+                              "fontSize": 11,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "SU1kb",
+                      "name": "ONAMET Alert Item",
+                      "width": 296,
+                      "stroke": "#450A0A",
+                      "strokeWidth": {
+                        "top": 1
+                      },
+                      "layout": "vertical",
+                      "gap": 5,
+                      "padding": [
+                        10,
+                        14
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "CJ34b",
+                          "name": "Alert Item Top",
+                          "gap": 6,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "WcZLd",
+                              "name": "Severity",
+                              "fill": "#F87171",
+                              "content": "🔴 EMERGENCIA",
+                              "fontFamily": "Inter",
+                              "fontSize": 10,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "wYTaA",
+                          "name": "Alert Item Title",
+                          "fill": "#FEF2F2",
+                          "content": "AVISO ESPECIAL Nº1",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "f2uYK",
+                          "name": "Alert Item Desc",
+                          "fill": "#FCA5A5",
+                          "textGrowth": "fixed-width",
+                          "width": 260,
+                          "content": "Tormenta Tropical con vientos de 95 km/h. Marejadas costeras previstas.",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "yPTGi",
+                      "name": "ONAMET Alert Item",
+                      "width": 296,
+                      "stroke": "#450A0A",
+                      "strokeWidth": {
+                        "top": 1
+                      },
+                      "layout": "vertical",
+                      "gap": 5,
+                      "padding": [
+                        10,
+                        14
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "tSMt3",
+                          "name": "Alert Item Top",
+                          "gap": 6,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "SvpHR",
+                              "name": "Severity",
+                              "fill": "#FCA5A5",
+                              "content": "🟠 AVISO",
+                              "fontFamily": "Inter",
+                              "fontSize": 10,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "V7SXK",
+                          "name": "Alert Item Title",
+                          "fill": "#FEF2F2",
+                          "content": "VIGILANCIA COSTERA",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "MQGOZ",
+                          "name": "Alert Item Desc",
+                          "fill": "#FCA5A5",
+                          "textGrowth": "fixed-width",
+                          "width": 260,
+                          "content": "Marejadas de 3–5 metros en costas norte y noreste. Evite áreas costeras.",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "hKWb9",
+                  "name": "Emg Report Panel",
+                  "clip": true,
+                  "fill": "#2D1515",
+                  "cornerRadius": 12,
+                  "stroke": "#7F1D1D",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "aaeOx",
+                      "name": "Emg Rep Header",
+                      "width": 296,
+                      "fill": "#450A0A",
+                      "padding": [
+                        11,
+                        14
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "wxVoU",
+                          "name": "Emg Rep Title",
+                          "fill": "#FEF2F2",
+                          "content": "📄  Reporte de Emergencia",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Z08UO",
+                          "name": "Emg Gen Btn",
+                          "fill": "#B91C1C",
+                          "cornerRadius": 6,
+                          "padding": [
+                            4,
+                            10
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "o8b6f",
+                              "name": "Emg Gen Label",
+                              "fill": "#fff",
+                              "content": "↻ Generar",
+                              "fontFamily": "Inter",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "w2qvjr",
+                      "name": "Emg Rep Body",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "padding": [
+                        12,
+                        14
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "XJ2xr",
+                          "name": "Emg Badge Row",
+                          "gap": 6,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "d5zSop",
+                              "name": "Emg Type Tag",
+                              "fill": "#7F1D1D",
+                              "cornerRadius": 4,
+                              "padding": [
+                                2,
+                                8
+                              ],
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "UQ5tw",
+                                  "name": "Emg Type",
+                                  "fill": "#FCA5A5",
+                                  "content": "🚨 Emergencia",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 10,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "d8uUd",
+                              "name": "Emg Rep Date",
+                              "fill": "#7F1D1D",
+                              "content": "22/06/2026  14:23",
+                              "fontFamily": "Inter",
+                              "fontSize": 10,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "taBjB",
+                          "name": "Emg Rep Preview",
+                          "fill": "#FCA5A5",
+                          "textGrowth": "fixed-width",
+                          "width": 252,
+                          "content": "NIVEL: EMERGENCIA\nActivado: 22/06/2026 12:45\n\nAlerta: Tormenta Tropical Activa\nViento máx: 102 km/h (Monte Cristi)\n9/12 provincias con lluvia\nHumedad promedio: 91%",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Fz76E",
+                  "name": "Emg Attribution",
+                  "width": 296,
+                  "fill": "#1C0A0A",
+                  "cornerRadius": 12,
+                  "stroke": "#7F1D1D",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "padding": [
+                    14,
+                    16
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "KBA6Z",
+                      "name": "Emg Attr Title",
+                      "fill": "#7F1D1D",
+                      "content": "Fuentes Oficiales",
+                      "fontFamily": "Inter",
+                      "fontSize": 11,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "G7bjt",
+                      "name": "Emg Attr Sources",
+                      "fill": "#7F1D1D",
+                      "textGrowth": "fixed-width",
+                      "width": 240,
+                      "content": "🏛  ONAMET\n🌐  WeatherAPI.com\n🛡  Defensa Civil RD",
+                      "textAlign": "center",
+                      "fontFamily": "Inter",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "Yoxct",
+                      "name": "Emg Divider",
+                      "fill": "#450A0A",
+                      "width": 264,
+                      "height": 1
+                    },
+                    {
+                      "type": "text",
+                      "id": "zYREN",
+                      "name": "Emg Emergency Num",
+                      "fill": "#F87171",
+                      "content": "Emergencias: 911",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "800"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "l70gp",
+      "x": 0,
+      "y": -1734,
+      "name": "Province Card — Alert",
+      "reusable": true,
+      "clip": true,
+      "width": 264,
+      "fill": "#2D1515",
+      "cornerRadius": 12,
+      "stroke": "#B91C1C",
+      "strokeWidth": 2,
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "VIZYJ",
+          "name": "ACard Header",
+          "width": "fill_container",
+          "fill": "#450A0A",
+          "padding": [
+            10,
+            14
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "x5XYXS",
+              "name": "AName Stack",
+              "layout": "vertical",
+              "gap": 3,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "xnole",
+                  "name": "AProvince Name",
+                  "fill": "#FEF2F2",
+                  "content": "Puerto Plata",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "jwIA4",
+                  "name": "ARegion",
+                  "fill": "#F87171",
+                  "content": "Cibao Norte",
+                  "fontFamily": "Inter",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "VgYB8",
+              "name": "AWeather Emoji",
+              "fill": "#fff",
+              "content": "🌀",
+              "fontFamily": "Inter",
+              "fontSize": 22,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "wK1xI",
+          "name": "ATemp Row",
+          "gap": 8,
+          "padding": [
+            12,
+            14,
+            2,
+            14
+          ],
+          "alignItems": "end",
+          "children": [
+            {
+              "type": "text",
+              "id": "thnzK",
+              "name": "ATemperature",
+              "fill": "#FEF2F2",
+              "content": "28.3°",
+              "fontFamily": "Inter",
+              "fontSize": 30,
+              "fontWeight": "800"
+            },
+            {
+              "type": "text",
+              "id": "yrldH",
+              "name": "AFeels Like",
+              "fill": "#F87171",
+              "content": "ST 29°C",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "SPjxZ",
+          "name": "ACond Row",
+          "padding": [
+            0,
+            14,
+            10,
+            14
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "leupt",
+              "name": "ACondition",
+              "fill": "#FCA5A5",
+              "content": "Vientos huracanados",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "J9lKQ",
+          "name": "AStats Grid",
+          "width": "fill_container",
+          "stroke": "#450A0A",
+          "strokeWidth": {
+            "top": 1
+          },
+          "layout": "vertical",
+          "children": [
+            {
+              "type": "frame",
+              "id": "cBLDY",
+              "name": "AStat Row",
+              "width": "fill_container",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "psH0H",
+                  "name": "AStat Cell",
+                  "width": "fill_container",
+                  "fill": "#3B0808",
+                  "layout": "vertical",
+                  "gap": 3,
+                  "padding": [
+                    8,
+                    12
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "MYXiL",
+                      "name": "AStat Label",
+                      "fill": "#F87171",
+                      "content": "💧 Humedad",
+                      "fontFamily": "Inter",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "Dza7j",
+                      "name": "AStat Value",
+                      "fill": "#FCA5A5",
+                      "content": "91%",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "urxE7",
+                  "name": "AStat Cell",
+                  "width": "fill_container",
+                  "fill": "#3D0B0B",
+                  "layout": "vertical",
+                  "gap": 3,
+                  "padding": [
+                    8,
+                    12
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "wVy7I",
+                      "name": "AStat Label",
+                      "fill": "#F87171",
+                      "content": "☁️ Nubosidad",
+                      "fontFamily": "Inter",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "IMR1J",
+                      "name": "AStat Value",
+                      "fill": "#FCA5A5",
+                      "content": "95%",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "rFBkt",
+              "name": "AStat Row",
+              "width": "fill_container",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "d5yOh",
+                  "name": "AStat Cell",
+                  "width": "fill_container",
+                  "fill": "#3B0808",
+                  "layout": "vertical",
+                  "gap": 3,
+                  "padding": [
+                    8,
+                    12
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "PYTmW",
+                      "name": "AStat Label",
+                      "fill": "#F87171",
+                      "content": "📊 Presión",
+                      "fontFamily": "Inter",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "gMNLV",
+                      "name": "AStat Value",
+                      "fill": "#FCA5A5",
+                      "content": "994mb",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "cu1rB",
+                  "name": "AStat Cell",
+                  "width": "fill_container",
+                  "fill": "#3D0B0B",
+                  "layout": "vertical",
+                  "gap": 3,
+                  "padding": [
+                    8,
+                    12
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "SH7fg",
+                      "name": "AStat Label",
+                      "fill": "#F87171",
+                      "content": "💨 Viento",
+                      "fontFamily": "Inter",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "QSVrW",
+                      "name": "AStat Value",
+                      "fill": "#FCA5A5",
+                      "content": "95 km/h",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "xfwP7",
+          "name": "AAlert Badge Row",
+          "width": "fill_container",
+          "fill": "#B91C1C",
+          "padding": [
+            7,
+            14
+          ],
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "oHJoS",
+              "name": "AAlert Text",
+              "fill": "#FEF2F2",
+              "content": "🚨  ALERTA ACTIVA EN ESTA PROVINCIA",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "700"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variables": {
+    "surface-primary": {
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "surface-secondary": {
+      "type": "color",
+      "value": "#F7F8FA"
+    },
+    "surface-inverse": {
+      "type": "color",
+      "value": "#0062FF"
+    },
+    "foreground-primary": {
+      "type": "color",
+      "value": "#1A1A1A"
+    },
+    "foreground-secondary": {
+      "type": "color",
+      "value": "#4B5563"
+    },
+    "foreground-muted": {
+      "type": "color",
+      "value": "#9CA3AF"
+    },
+    "foreground-inverse": {
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "accent-primary": {
+      "type": "color",
+      "value": "#0062FF"
+    },
+    "accent-success": {
+      "type": "color",
+      "value": "#10B981"
+    },
+    "accent-warning": {
+      "type": "color",
+      "value": "#F59E0B"
+    },
+    "rounded-lg": {
+      "type": "number",
+      "value": 8
+    },
+    "rounded-xl": {
+      "type": "number",
+      "value": 12
+    },
+    "rounded-2xl": {
+      "type": "number",
+      "value": 16
+    },
+    "rounded-full": {
+      "type": "number",
+      "value": 9999
+    },
+    "bg-primary": {
+      "type": "color",
+      "value": "#0D0B1E"
+    },
+    "bg-secondary": {
+      "type": "color",
+      "value": "#1A1625"
+    },
+    "bg-card": {
+      "type": "color",
+      "value": "#252036"
+    },
+    "accent-blue": {
+      "type": "color",
+      "value": "#00D4FF"
+    },
+    "accent-purple": {
+      "type": "color",
+      "value": "#8B5CF6"
+    },
+    "accent-gold": {
+      "type": "color",
+      "value": "#FFD700"
+    },
+    "accent-red": {
+      "type": "color",
+      "value": "#FF4757"
+    },
+    "text-primary": {
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "text-secondary": {
+      "type": "color",
+      "value": "#A0A0B0"
+    },
+    "text-muted": {
+      "type": "color",
+      "value": "#6B6B80"
+    },
+    "glow-blue": {
+      "type": "color",
+      "value": "#00D4FF40"
+    },
+    "glow-purple": {
+      "type": "color",
+      "value": "#8B5CF640"
+    }
+  }
+}

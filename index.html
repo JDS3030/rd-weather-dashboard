@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Climático RD — MeteoRD</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #030712;
+      color: #f9fafb;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: rgba(17, 24, 39, 0.95);
+      border-bottom: 1px solid #1f2937;
+      padding: 0 1.5rem;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(12px);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: #1d4ed8;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .logo h1 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1;
+    }
+
+    .logo p {
+      font-size: 0.7rem;
+      color: #6b7280;
+      margin-top: 2px;
+    }
+
+    .badge {
+      background: rgba(6, 78, 59, 0.4);
+      color: #6ee7b7;
+      border: 1px solid rgba(6, 78, 59, 0.5);
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Main ── */
+    main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      text-align: center;
+      padding: 3rem 1rem 2rem;
+    }
+
+    .hero .emoji { font-size: 4rem; display: block; margin-bottom: 1rem; }
+
+    .hero h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #60a5fa, #34d399);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero p {
+      color: #9ca3af;
+      font-size: 0.95rem;
+      max-width: 480px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #1d4ed8;
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 12px 28px;
+      border-radius: 12px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn-primary:hover { background: #1e40af; transform: translateY(-1px); }
+
+    /* ── Stats grid ── */
+    .section-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6b7280;
+      margin-bottom: 1rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 16px;
+      padding: 1.25rem;
+    }
+
+    .stat-card .icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .stat-card .label { font-size: 0.7rem; color: #6b7280; font-weight: 600; text-transform: uppercase; }
+    .stat-card .value { font-size: 1.5rem; font-weight: 800; color: #f9fafb; margin: 2px 0; }
+    .stat-card .sub   { font-size: 0.75rem; color: #9ca3af; }
+
+    /* ── Info grid ── */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .info-card {
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 16px;
+      padding: 1.25rem;
+    }
+
+    .info-card h3 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #e5e7eb;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .info-card ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .info-card li {
+      font-size: 0.8rem;
+      color: #9ca3af;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .info-card li::before { content: '›'; color: #3b82f6; font-weight: 700; }
+
+    /* ── Services ── */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .service-card {
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 16px;
+      padding: 1.25rem;
+      text-align: center;
+    }
+
+    .service-card .icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
+    .service-card .name { font-size: 0.8rem; font-weight: 700; color: #e5e7eb; margin-bottom: 4px; }
+    .service-card .port { font-family: monospace; font-size: 0.75rem; color: #60a5fa; }
+    .service-card .desc { font-size: 0.7rem; color: #6b7280; margin-top: 4px; }
+
+    .status-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+      margin-right: 4px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid #1f2937;
+      margin-top: 3rem;
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    footer p { font-size: 0.75rem; color: #6b7280; }
+    footer .sources { display: flex; justify-content: center; gap: 1.5rem; margin-top: 0.5rem; flex-wrap: wrap; }
+    footer .sources span { font-size: 0.75rem; color: #4b5563; }
+
+    .emergency-num {
+      font-family: monospace;
+      font-weight: 700;
+      color: #6b7280;
+      font-size: 0.75rem;
+      margin-top: 0.75rem;
+    }
+
+    /* ── Pasos de inicio ── */
+    .steps {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+
+    .step .num {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #1d4ed8;
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .step code {
+      color: #60a5fa;
+      font-family: monospace;
+    }
+
+    .arrow { color: #374151; font-size: 1rem; }
+
+    /* ── Estado del servidor ── */
+    .server-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 10px;
+      padding: 8px 16px;
+      font-size: 0.8rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .server-status .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #6b7280;
+    }
+
+    .server-status.online .dot  { background: #10b981; animation: pulse 2s infinite; }
+    .server-status.offline .dot { background: #ef4444; }
+    .server-status.checking .dot { background: #f59e0b; animation: pulse 1s infinite; }
+
+    .btn-primary.disabled {
+      background: #374151;
+      cursor: not-allowed;
+      transform: none;
+      opacity: 0.6;
+    }
+
+    @media (max-width: 600px) {
+      .hero h2 { font-size: 1.5rem; }
+      main { padding: 1.5rem 1rem; }
+      .steps { flex-direction: column; align-items: stretch; }
+      .arrow { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <div class="logo-icon">🌤️</div>
+      <div>
+        <h1>Dashboard Climático RD</h1>
+        <p>República Dominicana · ONAMET / WeatherAPI</p>
+      </div>
+    </div>
+    <span class="badge">✓ Normal</span>
+  </header>
+
+  <!-- Contenido principal -->
+  <main>
+
+    <!-- Hero -->
+    <div class="hero">
+      <span class="emoji">🌦️</span>
+      <h2>MeteoRD — Monitor Climático</h2>
+      <p>
+        Sistema de monitoreo meteorológico en tiempo real para todas las
+        provincias de la República Dominicana con alertas de emergencia.
+      </p>
+
+      <!-- Pasos -->
+      <div class="steps">
+        <div class="step">
+          <span class="num">1</span>
+          Doble clic en <code>iniciar.bat</code>
+        </div>
+        <span class="arrow">›</span>
+        <div class="step">
+          <span class="num">2</span>
+          Espera ~8 segundos
+        </div>
+        <span class="arrow">›</span>
+        <div class="step">
+          <span class="num">3</span>
+          Abre el dashboard
+        </div>
+      </div>
+
+      <!-- Estado del servidor -->
+      <div id="statusBox" class="server-status checking">
+        <span class="dot"></span>
+        <span id="statusText">Verificando servidor...</span>
+      </div>
+      <br />
+
+      <a id="btnDashboard" class="btn-primary disabled" href="#" target="_blank">
+        🚀 Abrir Dashboard
+      </a>
+    </div>
+
+    <!-- Estadísticas del sistema -->
+    <p class="section-title">📊 Resumen del Sistema</p>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="icon">🗺️</div>
+        <div class="label">Provincias Monitoreadas</div>
+        <div class="value">32</div>
+        <div class="sub">República Dominicana</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon">⚡</div>
+        <div class="label">Actualización</div>
+        <div class="value">60 s</div>
+        <div class="sub">En modo emergencia</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon">🛰️</div>
+        <div class="label">Fuentes de Datos</div>
+        <div class="value">2</div>
+        <div class="sub">ONAMET + WeatherAPI</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon">🚨</div>
+        <div class="label">Niveles de Alerta</div>
+        <div class="value">4</div>
+        <div class="sub">Normal · Watch · Aviso · Emergencia</div>
+      </div>
+    </div>
+
+    <!-- Información del proyecto -->
+    <p class="section-title">🔧 Información del Proyecto</p>
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>🖥️ Frontend</h3>
+        <ul>
+          <li>React 18 + Vite 5</li>
+          <li>Tailwind CSS 3 (tema oscuro)</li>
+          <li>Context API (WeatherProvider)</li>
+          <li>Diseño responsivo mobile-first</li>
+          <li>Puerto: localhost:5173</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h3>⚙️ Backend</h3>
+        <ul>
+          <li>Node.js API REST</li>
+          <li>Health checks habilitados</li>
+          <li>Puerto: localhost:3001</li>
+          <li>Integración WeatherAPI.com</li>
+          <li>Reinicio automático</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h3>🐍 Servicios Python</h3>
+        <ul>
+          <li>Monitor de emergencias</li>
+          <li>Generador de reportes diarios</li>
+          <li>Volumen compartido de logs</li>
+          <li>Orquestado con Docker Compose</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h3>🧩 Componentes React</h3>
+        <ul>
+          <li>Dashboard — layout principal</li>
+          <li>Header — navegación sticky</li>
+          <li>StatsOverview — estadísticas nacionales</li>
+          <li>ProvinceCard — tarjeta por provincia</li>
+          <li>AlertPanel — panel de alertas</li>
+          <li>ReportPanel — reportes</li>
+          <li>EmergencyBanner — banner de emergencia</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Servicios Docker -->
+    <p class="section-title">🐳 Servicios Docker</p>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="icon">⚛️</div>
+        <div class="name">Frontend</div>
+        <div class="port"><span class="status-dot"></span>:5173 → :80</div>
+        <div class="desc">React + Vite</div>
+      </div>
+      <div class="service-card">
+        <div class="icon">🖧</div>
+        <div class="name">Backend</div>
+        <div class="port"><span class="status-dot"></span>:3001</div>
+        <div class="desc">Node.js API</div>
+      </div>
+      <div class="service-card">
+        <div class="icon">🔔</div>
+        <div class="name">Monitor</div>
+        <div class="port"><span class="status-dot"></span>Python</div>
+        <div class="desc">Alertas de emergencia</div>
+      </div>
+      <div class="service-card">
+        <div class="icon">📋</div>
+        <div class="name">Reportes</div>
+        <div class="port"><span class="status-dot"></span>Python</div>
+        <div class="desc">Reportes diarios</div>
+      </div>
+    </div>
+
+    <!-- Iniciar -->
+    <p class="section-title">🚀 Cómo Iniciar</p>
+    <div class="info-card" style="max-width:600px">
+      <h3>▶ Pasos de inicio</h3>
+      <ul>
+        <li>Ejecutar <code style="color:#60a5fa">iniciar.bat</code> (doble clic) para levantar todos los servicios</li>
+        <li>O usar <code style="color:#60a5fa">docker-compose up</code> desde esta carpeta</li>
+        <li>Esperar a que backend esté listo en <code style="color:#60a5fa">localhost:3001</code></li>
+        <li>Abrir el dashboard en <code style="color:#60a5fa">localhost:5173</code></li>
+        <li>Configurar <code style="color:#60a5fa">WEATHERAPI_KEY</code> si es necesario</li>
+      </ul>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>Dashboard Climático RD · Sistema de Monitoreo Meteorológico</p>
+    <div class="sources">
+      <span>🏛 ONAMET</span>
+      <span>🌐 WeatherAPI.com</span>
+      <span>🛡 Defensa Civil RD</span>
+    </div>
+    <div class="emergency-num">Emergencias: 911</div>
+  </footer>
+
+  <script>
+    const btn    = document.getElementById('btnDashboard');
+    const box    = document.getElementById('statusBox');
+    const label  = document.getElementById('statusText');
+    const URL    = 'http://localhost:5173';
+
+    function setOnline() {
+      box.className   = 'server-status online';
+      label.textContent = 'Servidor activo — listo para abrir';
+      btn.classList.remove('disabled');
+      btn.href = URL;
+      btn.onclick = null;
+    }
+
+    function setOffline() {
+      box.className   = 'server-status offline';
+      label.textContent = 'Servidor apagado — ejecuta iniciar.bat primero';
+      btn.classList.add('disabled');
+      btn.href = '#';
+      btn.onclick = e => { e.preventDefault(); alert('Primero ejecuta iniciar.bat para levantar los servidores.'); };
+    }
+
+    async function check() {
+      try {
+        const res = await fetch(URL, { mode: 'no-cors', cache: 'no-store' });
+        setOnline();
+      } catch {
+        setOffline();
+      }
+    }
+
+    check();
+    setInterval(check, 5000);
+  </script>
+</body>
+</html>
