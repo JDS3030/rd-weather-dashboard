@@ -1,6 +1,6 @@
 {
   "name": "rd-weather-backend",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Backend para Dashboard Climático de la República Dominicana",
   "main": "server.js",
   "scripts": {

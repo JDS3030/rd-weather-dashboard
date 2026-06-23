@@ -112,22 +112,22 @@ async function getProvinceWeather(province) {
   };
 }
 
-async function getAllProvincesWeather() {
-  const results = await Promise.allSettled(
-    RD_PROVINCES.map(p => getProvinceWeather(p))
-  );
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
+async function getAllProvincesWeather() {
   const data   = [];
   const errors = [];
 
-  results.forEach((r, i) => {
-    if (r.status === 'fulfilled') {
-      data.push(r.value);
-    } else {
-      errors.push({ province: RD_PROVINCES[i].name, error: r.reason.message });
-      logger.error(`Open-Meteo fallo para ${RD_PROVINCES[i].name}: ${r.reason.message}`);
+  for (let i = 0; i < RD_PROVINCES.length; i++) {
+    if (i > 0) await delay(300);
+    try {
+      const result = await getProvinceWeather(RD_PROVINCES[i]);
+      data.push(result);
+    } catch (err) {
+      errors.push({ province: RD_PROVINCES[i].name, error: err.message });
+      logger.error(`Open-Meteo fallo para ${RD_PROVINCES[i].name}: ${err.message}`);
     }
-  });
+  }
 
   return { data, errors };
 }
