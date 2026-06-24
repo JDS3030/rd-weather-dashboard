@@ -1,29 +1,32 @@
 # NubeVigía RD — Hoja de Ruta de Mejoras
 
-> Documento generado tras el cierre de **v1.2.0**.  
-> Clasifica las mejoras pendientes por versión sugerida y prioridad.
+> Última actualización: **v1.2.3**  
+> Clasifica las mejoras por versión sugerida y prioridad.
 
 ---
 
-## v1.2.1 — Patch (correcciones menores, sin features nuevas)
+## v1.2.x — Patch (completado ✅)
 
-Cambios pequeños que no agregan funcionalidad pero mejoran la estabilidad o la experiencia.
+### v1.2.1
+- [x] Documentación: `MEJORAS.md` con hoja de ruta inicial.
 
-- [ ] Agregar `vercel.json` en `frontend/` con `"github": { "enabled": true }` para que Vercel auto-depliegue desde cada push a `master` sin necesidad de `vercel --prod` manual.
-- [ ] Mover `test-report.html` a `.gitignore` (es un artefacto generado, no debe versionarse).
-- [ ] Agregar `preview-dashboard-*.html` y `ojo/` a `.gitignore`.
-- [ ] Mostrar badge "Sin cobertura API" en `CardinalQuadrant` cuando `weather === null`, en lugar de silencio visual.
-- [ ] Unificar el mensaje de tooltip en tarjetas de municipio: aclarar que el dato es provincial (ya se hizo en código pero falta en el texto visible de la UI).
+### v1.2.2
+- [x] Completar las **31 provincias** de la RD en `RD_PROVINCES` — Norte, Este y Sur sin datos en blanco.
+
+### v1.2.3
+- [x] Agregar `vercel.json` en `frontend/` con `"github": { "enabled": true }` para auto-deploy desde push.
+- [x] Mover `test-report.html` y `jest-results.json` a `.gitignore` (artefactos generados).
+- [x] Agregar `preview-dashboard-*.html` y `ojo/` a `.gitignore`.
+- [x] Badge "Sin cobertura API" en `CardinalQuadrant` cuando `weather === null`.
 
 ---
 
-## v1.3.0 — Minor (nuevas funcionalidades)
+## v1.3.0 — Minor (próxima versión sugerida)
 
 Features que añaden valor sin romper nada existente.
 
 ### Cobertura geográfica
-- [ ] Completar las **32 provincias** de la República Dominicana en `RD_PROVINCES` (actualmente 15 de 32). Prioridad alta para el cuadrante Sur que tiene muchas provincias sin monitoreo real.
-- [ ] Agregar coordenadas precisas de municipios para poder llamar la API Open-Meteo a nivel municipal en lugar de reutilizar el dato provincial.
+- [ ] Agregar coordenadas precisas de municipios para llamar la API Open-Meteo a nivel municipal en lugar de reutilizar el dato provincial.
 
 ### Dashboard
 - [ ] **Modo mapa interactivo**: mostrar las provincias sobre un SVG o mapa Leaflet.js con color según temperatura o nivel de alerta.
@@ -67,17 +70,19 @@ Reservado para cambios que rompen la API actual o requieren migración de datos.
 
 ## Registro de versiones
 
-| Versión | Fecha      | Tipo  | Descripción                                              |
-|---------|------------|-------|----------------------------------------------------------|
-| v1.0.0  | 2026-06-23 | Major | Deploy inicial en Railway + Vercel                       |
-| v1.1.0  | 2026-06-24 | Minor | Rediseño del dashboard por puntos cardinales             |
-| v1.2.0  | 2026-06-24 | Minor | Arquitectura modular + corrección de provincias/municipios |
-| v1.2.1  | pendiente  | Patch | Documentación, `.gitignore` y badge "Sin cobertura"      |
-| v1.3.0  | pendiente  | Minor | 32 provincias + mapa interactivo + pronóstico extendido  |
+| Versión | Fecha      | Tipo  | Descripción                                                       |
+|---------|------------|-------|-------------------------------------------------------------------|
+| v1.0.0  | 2026-06-23 | Major | Deploy inicial en Railway + Vercel                                |
+| v1.1.0  | 2026-06-24 | Minor | Rediseño del dashboard por puntos cardinales                      |
+| v1.2.0  | 2026-06-24 | Minor | Arquitectura modular + corrección de provincias/municipios        |
+| v1.2.1  | 2026-06-24 | Patch | Documentación: MEJORAS.md con hoja de ruta                       |
+| v1.2.2  | 2026-06-24 | Patch | Fix: 31 provincias completas (Norte, Este, Sur sin datos vacíos)  |
+| v1.2.3  | 2026-06-24 | Patch | vercel.json, .gitignore actualizado, badge "Sin cobertura API"    |
+| v1.3.0  | pendiente  | Minor | Mapa interactivo + pronóstico extendido + notificaciones push     |
 
 ---
 
 > **Criterio de versionado (SemVer):**  
-> `PATCH` → solo correcciones y documentación, sin features.  
+> `PATCH` → correcciones, documentación, ajustes de config, sin features.  
 > `MINOR` → nuevas funcionalidades retrocompatibles.  
 > `MAJOR` → cambios que rompen la API o requieren migración.

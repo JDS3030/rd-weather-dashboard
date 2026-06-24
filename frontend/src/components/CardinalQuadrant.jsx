@@ -153,15 +153,25 @@ export default function CardinalQuadrant({
 
               {/* Derecha */}
               <div className="flex items-center gap-2 flex-shrink-0">
-                <div className="text-right">
-                  <p className="text-sm font-black text-white leading-none">
-                    {temp != null ? `${temp.toFixed(1)}°` : '—'}
-                  </p>
-                  <p className="text-gray-600 mt-0.5" style={{ fontSize: 10 }}>
-                    {hum != null ? `hum ${hum}%` : ''}
-                  </p>
-                </div>
-                <span className="text-base">{emoji}</span>
+                {prov.weather === null ? (
+                  <span
+                    className="text-xs font-semibold px-2 py-0.5 rounded-full border"
+                    style={{ color: '#6b7280', borderColor: '#374151', background: '#1f2937', fontSize: 9 }}
+                    title="Provincia sin cobertura en la API meteorológica"
+                  >
+                    Sin datos
+                  </span>
+                ) : (
+                  <div className="text-right">
+                    <p className="text-sm font-black text-white leading-none">
+                      {temp != null ? `${temp.toFixed(1)}°` : '—'}
+                    </p>
+                    <p className="text-gray-600 mt-0.5" style={{ fontSize: 10 }}>
+                      {hum != null ? `hum ${hum}%` : ''}
+                    </p>
+                  </div>
+                )}
+                <span className="text-base">{prov.weather === null ? '🔇' : emoji}</span>
                 <span className="text-gray-700 text-xs">›</span>
               </div>
             </button>

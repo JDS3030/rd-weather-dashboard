@@ -33,5 +33,13 @@ Thumbs.db
 # ── Claude Code (interno) ─────────────────────────────────
 .claude/
 
+# ── Artefactos generados (no versionar) ──────────────────────
+backend/test-report.html
+backend/jest-results.json
+
+# ── Archivos de preview / debug (locales) ────────────────────
+preview-dashboard-*.html
+ojo/
+
 # ── Pencil (archivos de diseño binarios — opcional subirlos) ─
 # MeteoRD-Dashboard.pen
