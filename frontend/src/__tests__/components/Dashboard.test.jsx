@@ -57,7 +57,7 @@ describe('<Dashboard /> — Modo Normal', () => {
   test('muestra el conteo correcto de provincias en el heading', () => {
     renderWithWeather(<Dashboard />);
     // normalContextValue tiene 4 provincias (mockProvinces)
-    expect(screen.getByText(/Estado Meteorológico por Provincia \(4\)/i)).toBeInTheDocument();
+    expect(screen.getByText(/Estado por Punto Cardinal.*4 provincias/i)).toBeInTheDocument();
   });
 
   test('renderiza una tarjeta ProvinceCard por cada provincia del contexto', () => {
@@ -94,13 +94,14 @@ describe('<Dashboard /> — Modo Emergencia', () => {
 });
 
 describe('<Dashboard /> — Sin datos de provincias (sin error)', () => {
-  test('muestra mensaje de datos no disponibles cuando provinces=[]', () => {
+  test('muestra "0 provincias" en el heading cuando provinces=[]', () => {
     renderWithWeather(<Dashboard />, { ...normalContextValue, provinces: [] });
-    expect(screen.getByText(/No hay datos disponibles/i)).toBeInTheDocument();
+    expect(screen.getByText(/Estado por Punto Cardinal.*0 provincias/i)).toBeInTheDocument();
   });
 
-  test('menciona la WEATHERAPI_KEY cuando no hay datos', () => {
+  test('sigue mostrando los cuadrantes cardinales cuando provinces=[]', () => {
     renderWithWeather(<Dashboard />, { ...normalContextValue, provinces: [] });
-    expect(screen.getByText('WEATHERAPI_KEY')).toBeInTheDocument();
+    expect(screen.getAllByText(/Norte/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/Este/i).length).toBeGreaterThanOrEqual(1);
   });
 });
