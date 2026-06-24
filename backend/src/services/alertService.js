@@ -1,7 +1,7 @@
 'use strict';
 
 const { ALERT_LEVELS }                              = require('../config/constants');
-const weatherApiService                             = require('./openMeteoService');
+const weatherApiService                             = require('./weatherProviderService');
 const onaMetService                                 = require('./onaMetService');
 const { detectFromWeather, detectFromOnamet,
         computeAlertLevel }                         = require('./alertDetector');

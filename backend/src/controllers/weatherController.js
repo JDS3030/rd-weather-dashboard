@@ -1,5 +1,5 @@
 const alertService       = require('../services/alertService');
-const weatherApiService  = require('../services/openMeteoService');
+const weatherApiService  = require('../services/weatherProviderService');
 
 exports.getAllWeather = async (req, res, next) => {
   try {
