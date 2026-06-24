@@ -4,8 +4,9 @@
 ![Python](https://img.shields.io/badge/Python-3.11%2B-blue?logo=python)
 ![Tests](https://img.shields.io/badge/Tests-103%20passing-success?logo=jest)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
+![Version](https://img.shields.io/badge/version-1.3.0-blue)
 
-Dashboard de monitoreo climático en tiempo real para las 12 provincias de mayor riesgo de la República Dominicana. Integra datos meteorológicos de Open-Meteo (gratis, sin clave API), detección automática de eventos severos (huracanes, tormentas tropicales, inundaciones) y notificaciones de emergencia vía WhatsApp usando Twilio. Incluye un modo de alerta visual automático y reportes diarios generados por scripts Python.
+Dashboard de monitoreo climático en tiempo real para las **31 provincias** de la República Dominicana. Integra datos meteorológicos reales desde **WeatherAPI.com** (fuente primaria) con fallback automático a **Open-Meteo** cuando la API principal no está disponible. Incluye detección automática de eventos severos (huracanes, tormentas tropicales, inundaciones), notificaciones de emergencia vía WhatsApp usando Twilio y reportes diarios generados por scripts Python.
 
 ---
 
@@ -17,7 +18,8 @@ Dashboard de monitoreo climático en tiempo real para las 12 provincias de mayor
 
 ## Características
 
-- **12 provincias monitoreadas en tiempo real** (Open-Meteo API, gratis)
+- **31 provincias monitoreadas en tiempo real** (WeatherAPI.com como fuente primaria)
+- **Fallback automático** a Open-Meteo si WeatherAPI.com no responde — sin interrupciones para el usuario
 - **Modo Normal y Modo Alerta** 🚨 (cambio visual automático)
 - **Detección automática** de huracanes, tormentas tropicales e inundaciones
 - **Integración con boletines ONAMET** (simulación y producción)
@@ -37,7 +39,8 @@ Dashboard de monitoreo climático en tiempo real para las 12 provincias de mayor
 | Framework frontend | React | 18 |
 | Bundler | Vite | 5 |
 | Estilos | TailwindCSS | 3 |
-| Datos meteorológicos | Open-Meteo API | — |
+| Datos meteorológicos (primario) | WeatherAPI.com | — |
+| Datos meteorológicos (fallback) | Open-Meteo API | — |
 | Scripts automatización | Python | 3.11+ |
 | Notificaciones SMS/WhatsApp | Twilio | — |
 | Tests backend | Jest | 29 |
@@ -159,7 +162,7 @@ Cuando esta variable está activa, el backend inyecta automáticamente un bolet�
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
 | `GET` | `/api/health` | Estado del servidor |
-| `GET` | `/api/weather` | Datos meteorológicos de las 12 provincias |
+| `GET` | `/api/weather` | Datos meteorológicos de las 31 provincias |
 | `GET` | `/api/alerts/status` | Estado actual de alertas activas |
 | `POST` | `/api/alerts/onamet` | Publicar boletín ONAMET (activa modo alerta) |
 | `DELETE` | `/api/alerts/onamet` | Eliminar boletín ONAMET activo |
@@ -171,19 +174,24 @@ Cuando esta variable está activa, el backend inyecta automáticamente un bolet�
 ## Arquitectura
 
 ```
-                          ┌─────────────────────────────┐
-                          │        Open-Meteo API        │
-                          │  (datos meteorológicos free) │
-                          └──────────────┬──────────────┘
-                                         │ HTTP
-                          ┌──────────────▼──────────────┐
-                          │     Node.js Backend          │
-                          │     Express 4 · Puerto 3001  │
-                          │  ┌─────────────────────────┐ │
-                          │  │  Servicio de Alertas    │ │
-                          │  │  (ONAMET + detección)   │ │
-                          │  └─────────────────────────┘ │
-                          └──────┬─────────────┬─────────┘
+         ┌──────────────────────┐    ┌──────────────────────┐
+         │   WeatherAPI.com     │    │    Open-Meteo API    │
+         │  (fuente primaria)   │    │  (fallback gratuito) │
+         └──────────┬───────────┘    └──────────┬───────────┘
+                    │ HTTP (primero)             │ HTTP (si falla)
+                    └────────────┬──────────────┘
+                                 │
+                  ┌──────────────▼──────────────┐
+                  │     Node.js Backend          │
+                  │     Express 4 · Puerto 3001  │
+                  │  ┌─────────────────────────┐ │
+                  │  │  weatherProviderService  │ │
+                  │  │  (orquestador fallback)  │ │
+                  │  ├─────────────────────────┤ │
+                  │  │  Servicio de Alertas    │ │
+                  │  │  (ONAMET + detección)   │ │
+                  │  └─────────────────────────┘ │
+                  └──────┬─────────────┬─────────┘
                                  │ REST API    │ REST API
                ┌─────────────────▼──┐    ┌────▼─────────────────┐
                │   React Frontend   │    │   Python Scripts      │

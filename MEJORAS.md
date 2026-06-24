@@ -1,6 +1,6 @@
 # NubeVigía RD — Hoja de Ruta de Mejoras
 
-> Última actualización: **v1.2.3**  
+> Última actualización: **v1.3.0**  
 > Clasifica las mejoras por versión sugerida y prioridad.
 
 ---
@@ -21,12 +21,24 @@
 
 ---
 
-## v1.3.0 — Minor (próxima versión sugerida)
+## v1.3.0 — Minor (completado ✅)
+
+### Integración de API meteorológica real con fallback
+- [x] **WeatherAPI.com como fuente primaria**: nuevo `weatherApiComService.js` que obtiene clima actual + pronóstico de 3 días en una sola llamada por provincia. *(24/06/2026)*
+- [x] **Sistema de fallback automático**: nuevo `weatherProviderService.js` que intenta WeatherAPI.com primero y recurre a Open-Meteo si la API falla (total o parcialmente). *(24/06/2026)*
+- [x] **openWeatherService.js**: soporte alternativo para OpenWeather API (preparado para uso futuro). *(24/06/2026)*
+- [x] **Variables de entorno**: `WEATHERAPI_KEY` documentada en `.env.example` y configurada en Railway. *(24/06/2026)*
+- [x] **Logs de diagnóstico**: prefijo `[PROVIDER]` en consola indica qué fuente está activa en cada ciclo. *(24/06/2026)*
+- [x] **README actualizado**: refleja 31 provincias, arquitectura dual y nueva tabla de stack. *(24/06/2026)*
+
+---
+
+## v1.4.0 — Minor (próxima versión sugerida)
 
 Features que añaden valor sin romper nada existente.
 
 ### Cobertura geográfica
-- [ ] Agregar coordenadas precisas de municipios para llamar la API Open-Meteo a nivel municipal en lugar de reutilizar el dato provincial. *(24/06/2026)*
+- [ ] Agregar coordenadas precisas de municipios para llamar la API a nivel municipal en lugar de reutilizar el dato provincial. *(24/06/2026)*
 
 ### Dashboard
 - [ ] **Modo mapa interactivo**: mostrar las provincias sobre un SVG o mapa Leaflet.js con color según temperatura o nivel de alerta. *(24/06/2026)*
@@ -46,7 +58,7 @@ Features que añaden valor sin romper nada existente.
 
 ---
 
-## v1.4.0 — Minor (mejoras de infraestructura)
+## v1.5.0 — Minor (mejoras de infraestructura)
 
 Cambios más grandes que requieren más tiempo de planificación.
 
@@ -78,7 +90,7 @@ Reservado para cambios que rompen la API actual o requieren migración de datos.
 | v1.2.1  | 2026-06-24 | Patch | Documentación: MEJORAS.md con hoja de ruta                       |
 | v1.2.2  | 2026-06-24 | Patch | Fix: 31 provincias completas (Norte, Este, Sur sin datos vacíos)  |
 | v1.2.3  | 2026-06-24 | Patch | vercel.json auto-deploy, .gitignore limpio, badge "Sin datos"     |
-| v1.3.0  | pendiente  | Minor | Mapa interactivo + pronóstico extendido + notificaciones push     |
+| v1.3.0  | 2026-06-24 | Minor | WeatherAPI.com como fuente primaria + fallback automático a Open-Meteo |
 
 ---
 
