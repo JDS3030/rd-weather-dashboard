@@ -33,7 +33,9 @@ export default function CardinalQuadrant({
     const apiMatch = apiProvinces.find(ap => {
       const a = normalizeName(ap.name);
       const b = normalizeName(geoProv.name);
-      return a.includes(b) || b.includes(a);
+      // Solo permitimos que el nombre de la API contenga al del geo (nunca al revés)
+      // para evitar que "Santiago" haga match falso con "Santiago Rodríguez".
+      return a === b || a.includes(b);
     });
     const hasAlert = alertState?.triggers?.some(t =>
       (t.province || '').toLowerCase()

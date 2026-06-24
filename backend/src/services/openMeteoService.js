@@ -1,77 +1,53 @@
-const axios = require('axios');
-const { RD_PROVINCES } = require('../config/constants');
-const logger = require('../utils/logger');
+'use strict';
 
-const BASE_URL = 'https://api.open-meteo.com/v1/forecast';
+const axios                      = require('axios');
+const { RD_PROVINCES }           = require('../config/constants');
+const { getCondition, windDir }  = require('../utils/weatherParser');
+const logger                     = require('../utils/logger');
 
-// WMO Weather codes → español
-const WMO = {
-  0:  { text: 'Despejado',                    code: 1000 },
-  1:  { text: 'Principalmente despejado',      code: 1003 },
-  2:  { text: 'Parcialmente nublado',          code: 1003 },
-  3:  { text: 'Nublado',                       code: 1006 },
-  45: { text: 'Neblina',                       code: 1030 },
-  48: { text: 'Niebla con escarcha',           code: 1030 },
-  51: { text: 'Llovizna ligera',               code: 1153 },
-  53: { text: 'Llovizna moderada',             code: 1153 },
-  55: { text: 'Llovizna intensa',              code: 1180 },
-  61: { text: 'Lluvia ligera',                 code: 1180 },
-  63: { text: 'Lluvia moderada',               code: 1189 },
-  65: { text: 'Lluvia intensa',                code: 1195 },
-  71: { text: 'Nevada ligera',                 code: 1210 },
-  73: { text: 'Nevada moderada',               code: 1213 },
-  75: { text: 'Nevada intensa',                code: 1216 },
-  77: { text: 'Granizo',                       code: 1237 },
-  80: { text: 'Chubascos ligeros',             code: 1180 },
-  81: { text: 'Chubascos moderados',           code: 1189 },
-  82: { text: 'Chubascos intensos',            code: 1195 },
-  85: { text: 'Nevadas ligeras',               code: 1255 },
-  86: { text: 'Nevadas intensas',              code: 1258 },
-  95: { text: 'Tormenta eléctrica',            code: 1273 },
-  96: { text: 'Tormenta con granizo',          code: 1279 },
-  99: { text: 'Tormenta con granizo intenso',  code: 1282 },
-};
+const BASE_URL        = 'https://api.open-meteo.com/v1/forecast';
+const REQUEST_TIMEOUT = 12_000;
+const REQUEST_DELAY   = 300; // ms between province requests to stay within API rate limits
 
-function getCondition(wmoCode) {
-  return WMO[wmoCode] ?? { text: 'Variable', code: 1000 };
-}
+const CURRENT_FIELDS = [
+  'temperature_2m',
+  'relative_humidity_2m',
+  'apparent_temperature',
+  'precipitation',
+  'weather_code',
+  'cloud_cover',
+  'pressure_msl',
+  'wind_speed_10m',
+  'wind_direction_10m',
+  'uv_index',
+  'visibility',
+].join(',');
 
-function windDir(deg) {
-  const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSO','SO','OSO','O','ONO','NO','NNO'];
-  return dirs[Math.round(deg / 22.5) % 16];
-}
+const DAILY_FIELDS = [
+  'weather_code',
+  'temperature_2m_max',
+  'temperature_2m_min',
+  'precipitation_sum',
+  'precipitation_probability_max',
+  'wind_speed_10m_max',
+].join(',');
+
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+// ─── Single province ──────────────────────────────────────────────────────────
 
 async function getProvinceWeather(province) {
   const response = await axios.get(BASE_URL, {
     params: {
-      latitude:  province.lat,
-      longitude: province.lon,
-      current: [
-        'temperature_2m',
-        'relative_humidity_2m',
-        'apparent_temperature',
-        'precipitation',
-        'weather_code',
-        'cloud_cover',
-        'pressure_msl',
-        'wind_speed_10m',
-        'wind_direction_10m',
-        'uv_index',
-        'visibility',
-      ].join(','),
-      daily: [
-        'weather_code',
-        'temperature_2m_max',
-        'temperature_2m_min',
-        'precipitation_sum',
-        'precipitation_probability_max',
-        'wind_speed_10m_max',
-      ].join(','),
+      latitude:        province.lat,
+      longitude:       province.lon,
+      current:         CURRENT_FIELDS,
+      daily:           DAILY_FIELDS,
       wind_speed_unit: 'kmh',
       timezone:        'America/Santo_Domingo',
       forecast_days:   3,
     },
-    timeout: 12000,
+    timeout: REQUEST_TIMEOUT,
   });
 
   const c     = response.data.current;
@@ -112,20 +88,19 @@ async function getProvinceWeather(province) {
   };
 }
 
-const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+// ─── All provinces ────────────────────────────────────────────────────────────
 
 async function getAllProvincesWeather() {
   const data   = [];
   const errors = [];
 
   for (let i = 0; i < RD_PROVINCES.length; i++) {
-    if (i > 0) await delay(300);
+    if (i > 0) await delay(REQUEST_DELAY);
     try {
-      const result = await getProvinceWeather(RD_PROVINCES[i]);
-      data.push(result);
+      data.push(await getProvinceWeather(RD_PROVINCES[i]));
     } catch (err) {
       errors.push({ province: RD_PROVINCES[i].name, error: err.message });
-      logger.error(`Open-Meteo fallo para ${RD_PROVINCES[i].name}: ${err.message}`);
+      logger.error(`Open-Meteo falló para ${RD_PROVINCES[i].name}: ${err.message}`);
     }
   }
 

@@ -13,6 +13,9 @@ const RD_PROVINCES = [
   { id: 'monte_cristi',      name: 'Monte Cristi',               query: 'Monte Cristi,DO',               region: 'Cibao Noroeste',lat: 19.8567, lon: -71.6505 },
   { id: 'bonao',             name: 'Monseñor Nouel (Bonao)',     query: 'Bonao,DO',                      region: 'Cibao Central', lat: 18.9409, lon: -70.4054 },
   { id: 'higuey',            name: 'El Seibo / Higüey',          query: 'Higuey,DO',                     region: 'Yuma',          lat: 18.6164, lon: -68.7071 },
+  { id: 'dajabon',           name: 'Dajabón',                    query: 'Dajabon,DO',                    region: 'Cibao Noroeste',lat: 19.5474, lon: -71.7090 },
+  { id: 'valverde',          name: 'Valverde',                   query: 'Mao,DO',                        region: 'Cibao Noroeste',lat: 19.5660, lon: -71.0739 },
+  { id: 'santiago_rodriguez',name: 'Santiago Rodríguez',         query: 'Sabaneta,DO',                   region: 'Cibao Noroeste',lat: 19.4924, lon: -71.3416 },
 ];
 
 // Palabras clave para detección automática de emergencias

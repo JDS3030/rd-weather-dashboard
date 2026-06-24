@@ -1,5 +1,6 @@
 import { useEffect, useCallback } from 'react';
-import { CARDINAL_META, GEO_HIERARCHY } from '../data/geoData';
+import { CARDINAL_META, GEO_HIERARCHY, normalizeName } from '../data/geoData';
+import { useWeatherData } from '../hooks/useWeatherData';
 import DrilldownStepper from './DrilldownStepper';
 
 // ── Utilidades ────────────────────────────────────────────────────────────────
@@ -282,6 +283,17 @@ function RightPanel({ meta, geoProvinces, provinceIdx, munIdx, onSelectProvince,
   const province = provinceIdx !== null ? geoProvinces[provinceIdx] : null;
   const municipality = (munIdx !== null && province) ? province.municipalities[munIdx] : null;
 
+  const { provinces: apiProvinces } = useWeatherData();
+
+  // Busca el clima de la provincia padre para mostrarlo en cada tarjeta de municipio
+  const provinceWeather = province
+    ? (apiProvinces || []).find(ap => {
+        const a = normalizeName(ap.name);
+        const b = normalizeName(province.name);
+        return a === b || a.includes(b);
+      })?.current ?? null
+    : null;
+
   // Vista: Distritos municipales
   if (municipality) {
     return (
@@ -341,7 +353,7 @@ function RightPanel({ meta, geoProvinces, provinceIdx, munIdx, onSelectProvince,
 
         <div className="grid grid-cols-2 xl:grid-cols-3 gap-3">
           {province.municipalities.map((m, mi) => (
-            <MunCard key={m.name} mun={m} mi={mi} meta={meta} onSelect={() => onSelectMun(mi)} />
+            <MunCard key={m.name} mun={m} mi={mi} meta={meta} weather={provinceWeather} onSelect={() => onSelectMun(mi)} />
           ))}
         </div>
       </div>
@@ -365,14 +377,22 @@ function RightPanel({ meta, geoProvinces, provinceIdx, munIdx, onSelectProvince,
 }
 
 // ── Tarjeta de Municipio ──────────────────────────────────────────────────────
-function MunCard({ mun, mi, meta, onSelect }) {
+function MunCard({ mun, mi, meta, weather, onSelect }) {
   const hasDistricts = mun.districts.length > 0;
+  const w = weather;
+
+  const stats = [
+    { icon: '🌡️', label: 'Temp',   value: w?.temp_c   != null ? `${w.temp_c.toFixed(1)}°C`     : '—°C'   },
+    { icon: '💧', label: 'Hum',    value: w?.humidity  != null ? `${w.humidity}%`               : '—%'    },
+    { icon: '💨', label: 'Viento', value: w?.wind_kph  != null ? `${w.wind_kph.toFixed(0)} km/h`: '— km/h'},
+    { icon: '🔆', label: 'UV',     value: w?.uv        != null ? String(w.uv)                   : '—'     },
+  ];
 
   return (
     <button
       onClick={onSelect}
       className={`text-left rounded-2xl border border-white/8 overflow-hidden
-                   bg-gradient-to-br ${tempBg(null)} to-transparent
+                   bg-gradient-to-br ${tempBg(w?.temp_c ?? null)} to-transparent
                    hover:border-white/20 hover:translate-y-[-2px] hover:shadow-xl
                    transition-all duration-150 bg-gray-900/50`}
     >
@@ -384,16 +404,11 @@ function MunCard({ mun, mi, meta, onSelect }) {
         </p>
       </div>
 
-      {/* Datos climáticos — provenientes de la API provincial */}
+      {/* Datos climáticos — compartidos desde la provincia padre */}
       <div className="px-3.5 py-2.5">
         <p className="text-xs text-gray-600 mb-1.5">Datos provinciales</p>
         <div className="grid grid-cols-2 gap-1.5">
-          {[
-            { icon: '🌡️', label: 'Temp', value: '—°C' },
-            { icon: '💧', label: 'Hum', value: '—%' },
-            { icon: '💨', label: 'Viento', value: '— km/h' },
-            { icon: '🔆', label: 'UV', value: '—' },
-          ].map(s => (
+          {stats.map(s => (
             <div key={s.label} className="flex items-center gap-1">
               <span style={{ fontSize: 10 }}>{s.icon}</span>
               <span className="text-gray-600" style={{ fontSize: 10 }}>{s.label}:</span>

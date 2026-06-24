@@ -1,12 +1,12 @@
 /** @type {import('jest').Config} */
 module.exports = {
-  testEnvironment: 'node',
-  coverageDirectory: 'coverage',
+  testEnvironment:    'node',
+  coverageDirectory:  'coverage',
   collectCoverageFrom: [
     'src/**/*.js',
     '!src/utils/logger.js',
   ],
-  testMatch: ['**/__tests__/**/*.test.js'],
-  clearMocks: true,
-  testTimeout: 10000,
+  testMatch:   ['**/__tests__/**/*.test.js'],
+  clearMocks:  true,
+  testTimeout: 10_000,
 };

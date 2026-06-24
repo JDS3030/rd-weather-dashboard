@@ -1,0 +1,1878 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reporte de Pruebas — NubeVigía RD</title>
+  <style>
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    /* ── Header ── */
+    .page-header {
+      background: linear-gradient(135deg, #1e3a5f 0%, #0f2744 100%);
+      border-bottom: 3px solid #3b82f6;
+      padding: 2rem 2.5rem 1.5rem;
+    }
+    .header-top {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .header-icon { font-size: 2.2rem; }
+    .header-title { font-size: 1.8rem; font-weight: 700; color: #f1f5f9; }
+    .header-subtitle { color: #94a3b8; font-size: 0.9rem; margin-top: 0.15rem; }
+    .header-meta { color: #64748b; font-size: 0.8rem; margin-top: 0.75rem; }
+
+    /* ── Status banner ── */
+    .status-banner {
+      background: #1e293b;
+      border-left: 6px solid #22c55e;
+      padding: 1rem 1.5rem;
+      margin: 1.5rem 2.5rem;
+      border-radius: 0 8px 8px 0;
+      font-weight: 700;
+      font-size: 1rem;
+      color: #22c55e;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Summary cards ── */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      padding: 0 2.5rem 1.5rem;
+    }
+    .stat-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 1.2rem 1rem;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 2.2rem;
+      font-weight: 800;
+      display: block;
+      line-height: 1;
+    }
+    .stat-label { font-size: 0.75rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.4rem; }
+    .stat-total  .stat-value { color: #93c5fd; }
+    .stat-passed .stat-value { color: #4ade80; }
+    .stat-failed .stat-value { color: #f87171; }
+    .stat-skip   .stat-value { color: #fbbf24; }
+    .stat-rate   .stat-value { color: #4ade80; }
+
+    /* ── Section title ── */
+    .section-title {
+      padding: 0 2.5rem 1rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border-bottom: 1px solid #1e293b;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── Suite cards ── */
+    .suites-container { padding: 0 2.5rem 3rem; }
+    .suite-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      margin-bottom: 1.25rem;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .suite-ok   { border-left: 4px solid #22c55e; }
+    .suite-fail { border-left: 4px solid #ef4444; }
+    .suite-card.collapsed .suite-body,
+    .suite-card.collapsed .suite-description { display: none; }
+    .suite-card.collapsed .suite-toggle { transform: rotate(-90deg); }
+
+    .suite-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 1.25rem;
+      cursor: pointer;
+      user-select: none;
+    }
+    .suite-header:hover { background: #263348; }
+    .suite-toggle { font-size: 0.85rem; color: #64748b; transition: transform 0.2s; display: inline-block; }
+    .suite-title-block { flex: 1; }
+    .suite-label { font-weight: 700; font-size: 1rem; display: block; }
+    .suite-path  { font-size: 0.75rem; color: #64748b; font-family: monospace; }
+    .suite-meta  { display: flex; align-items: center; gap: 1rem; }
+    .suite-pct   { font-weight: 700; font-size: 1.1rem; }
+    .suite-counts { display: flex; gap: 0.5rem; font-size: 0.85rem; }
+    .c-pass { color: #4ade80; }
+    .c-fail { color: #f87171; }
+
+    .suite-description {
+      padding: 0.5rem 1.25rem 1rem;
+      font-size: 0.85rem;
+      color: #94a3b8;
+      border-top: 1px solid #263348;
+      background: #172033;
+    }
+
+    /* ── Test table ── */
+    .suite-body { overflow-x: auto; }
+    .test-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    .test-table thead tr {
+      background: #0f172a;
+      color: #64748b;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+    }
+    .test-table th {
+      padding: 0.6rem 1rem;
+      text-align: left;
+      font-weight: 600;
+    }
+    .test-table th:nth-child(2),
+    .test-table th:nth-child(3) { text-align: center; }
+
+    .test-row td { padding: 0.55rem 1rem; border-top: 1px solid #1e293b; }
+    .test-row.passed { background: transparent; }
+    .test-row.failed { background: rgba(239, 68, 68, 0.05); }
+    .test-row:hover { background: #263348; }
+
+    .td-name     { color: #cbd5e1; max-width: 520px; }
+    .td-status   { text-align: center; white-space: nowrap; }
+    .td-duration { text-align: center; color: #64748b; font-family: monospace; white-space: nowrap; }
+
+    /* ── Group headers ── */
+    .group-header td {
+      padding: 0.45rem 1rem;
+      background: #172033;
+      color: #7dd3fc;
+      font-size: 0.8rem;
+      border-top: 2px solid #0f172a;
+    }
+    .group-icon { margin-right: 0.4rem; font-size: 0.7rem; }
+    .group-count { color: #475569; font-size: 0.75rem; margin-left: 0.5rem; }
+
+    /* ── Badges ── */
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    .badge-pass { background: rgba(34,197,94,0.15);  color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+    .badge-fail { background: rgba(239,68,68,0.15);  color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+    .badge-skip { background: rgba(251,191,36,0.12); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
+
+    /* ── Error block ── */
+    .err-row td { padding: 0 1rem 0.75rem; }
+    .error-block {
+      background: #1a0a0a;
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 6px;
+      padding: 0.75rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      color: #fca5a5;
+      white-space: pre-wrap;
+      word-break: break-all;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    /* ── Footer ── */
+    .page-footer {
+      text-align: center;
+      padding: 1.5rem;
+      color: #334155;
+      font-size: 0.78rem;
+      border-top: 1px solid #1e293b;
+    }
+
+    @media (max-width: 640px) {
+      .page-header, .status-banner, .summary-grid,
+      .section-title, .suites-container { padding-left: 1rem; padding-right: 1rem; }
+      .status-banner { margin-left: 1rem; margin-right: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="page-header">
+  <div class="header-top">
+    <span class="header-icon">🌩️</span>
+    <div>
+      <div class="header-title">NubeVigía RD — Reporte de Pruebas Unitarias</div>
+      <div class="header-subtitle">Dashboard Climático para la República Dominicana</div>
+    </div>
+  </div>
+  <div class="header-meta">
+    Generado el miércoles, 24 de junio de 2026, 12:13:26 p. m. &nbsp;·&nbsp; Duración total: 13.00 s &nbsp;·&nbsp; 8 suites
+  </div>
+</header>
+
+<div class="status-banner">TODAS LAS PRUEBAS PASARON</div>
+
+<div class="summary-grid">
+  <div class="stat-card stat-total">
+    <span class="stat-value">152</span>
+    <div class="stat-label">Total de pruebas</div>
+  </div>
+  <div class="stat-card stat-passed">
+    <span class="stat-value">152</span>
+    <div class="stat-label">Pasaron</div>
+  </div>
+  <div class="stat-card stat-failed">
+    <span class="stat-value">0</span>
+    <div class="stat-label">Fallaron</div>
+  </div>
+  <div class="stat-card stat-skip">
+    <span class="stat-value">0</span>
+    <div class="stat-label">Omitidas</div>
+  </div>
+  <div class="stat-card stat-rate">
+    <span class="stat-value">100%</span>
+    <div class="stat-label">Tasa de éxito</div>
+  </div>
+</div>
+
+<div class="section-title">Resultados por módulo</div>
+
+<div class="suites-container">
+  
+      <div class="suite-card suite-ok">
+        <div class="suite-header" onclick="this.parentElement.classList.toggle('collapsed')">
+          <span class="suite-toggle">▼</span>
+          <div class="suite-title-block">
+            <span class="suite-label">weatherParser</span>
+            <span class="suite-path">utils/weatherParser</span>
+          </div>
+          <div class="suite-meta">
+            <span class="suite-pct" style="color:#22c55e">100%</span>
+            <span class="suite-counts">
+              <span class="c-pass">24 ✓</span>
+              
+            </span>
+          </div>
+        </div>
+
+        <div class="suite-description">Funciones puras de parseo meteorológico: mapeo WMO → texto legible, conversión de dirección de viento en grados a rosa de los vientos.</div>
+
+        <div class="suite-body">
+          <table class="test-table">
+            <thead>
+              <tr>
+                <th>Descripción de la prueba</th>
+                <th>Resultado</th>
+                <th>Duración</th>
+              </tr>
+            </thead>
+            <tbody>
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>getCondition(wmoCode)</strong>
+            <span class="group-count">12 pruebas</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">código 0 → texto &quot;Despejado&quot; y code 1000</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">24 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">código 3 → texto &quot;Nublado&quot;</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">código 61 → texto &quot;Lluvia ligera&quot;</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">código 65 → texto &quot;Lluvia intensa&quot;</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">código 95 → texto &quot;Tormenta eléctrica&quot; y code 1273</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">código 99 → texto &quot;Tormenta con granizo intenso&quot;</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">código 71 → &quot;Nevada ligera&quot; (relevante para zonas montañosas)</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">código desconocido (999) → fallback &quot;Variable&quot; con code 1000</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">2 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">código undefined → fallback &quot;Variable&quot;</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">código null → fallback &quot;Variable&quot;</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">todos los códigos documentados existen en WMO_CODES</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">5 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">retorna objeto con exactamente las propiedades &quot;text&quot; y &quot;code&quot;</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">2 ms</td>
+          </tr>
+          
+        
+      
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>windDir(degrees)</strong>
+            <span class="group-count">12 pruebas</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">0° → Norte (N)</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">360° → Norte (N) — cierre del ciclo</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">0 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">90° → Este (E)</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">180° → Sur (S)</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">270° → Oeste (O)</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">45° → Noreste (NE)</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">0 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">135° → Sureste (SE)</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">0 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">225° → Suroeste (SO)</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">0 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">315° → Noroeste (NO)</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">22° → NNE (punto compas intermedio)</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">retorna uno de los 16 valores válidos de la rosa de los vientos</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">3 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">la rosa de los vientos tiene exactamente 16 puntos</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+      </tbody>
+          </table>
+        </div>
+      </div>
+    
+      <div class="suite-card suite-ok">
+        <div class="suite-header" onclick="this.parentElement.classList.toggle('collapsed')">
+          <span class="suite-toggle">▼</span>
+          <div class="suite-title-block">
+            <span class="suite-label">alertDetector</span>
+            <span class="suite-path">services/alertDetector</span>
+          </div>
+          <div class="suite-meta">
+            <span class="suite-pct" style="color:#22c55e">100%</span>
+            <span class="suite-counts">
+              <span class="c-pass">29 ✓</span>
+              
+            </span>
+          </div>
+        </div>
+
+        <div class="suite-description">Detector puro de detonadores de emergencia: analiza provincias por alertas oficiales, texto de condición y umbrales de viento. Calcula nivel de alerta resultante.</div>
+
+        <div class="suite-body">
+          <table class="test-table">
+            <thead>
+              <tr>
+                <th>Descripción de la prueba</th>
+                <th>Resultado</th>
+                <th>Duración</th>
+              </tr>
+            </thead>
+            <tbody>
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>detectFromWeather()</strong>
+            <span class="group-count">15 pruebas</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">retorna array vacío con provincias en condiciones normales</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">20 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">retorna array vacío con array de provincias vacío</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">0 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">wind_kph ≥ 119 genera trigger &quot;Huracán Categoría 1+&quot; desde WeatherAPI-Wind</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">3 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">wind_kph ≥ 63 y &lt; 119 genera trigger &quot;Tormenta Tropical&quot;</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">wind_kph = 118 (justo antes del umbral de huracán) → Tormenta Tropical</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">wind_kph = 119 (umbral exacto de huracán) → Huracán</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">wind_kph = 62 (por debajo de tormenta tropical) → sin trigger de viento</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">keyword &quot;hurricane&quot; en condition.text genera trigger WeatherAPI-Condition</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">2 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">keyword &quot;tormenta tropical&quot; en condition.text (case-insensitive)</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">condición normal sin keywords → sin trigger de condición</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">keyword en evento de alerta oficial genera trigger WeatherAPI-Alert</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">province.alerts = [] → sin trigger de alerta oficial</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">province sin propiedad alerts → sin error y sin trigger</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">province sin current → sin error y sin trigger de viento</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">múltiples provincias con alertas distintas genera triggers para cada una</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+      
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>detectFromOnamet()</strong>
+            <span class="group-count">6 pruebas</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">retorna array vacío con lista de alertas vacía</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">0 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">incluye alertas con severity &quot;emergency&quot;</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">incluye alertas con severity &quot;warning&quot;</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">0 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">excluye alertas con severity &quot;watch&quot;</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">0 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">el trigger ONAMET contiene title, description, type y severity</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">mezcla de severidades: solo emergency y warning son incluidas</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">0 ms</td>
+          </tr>
+          
+        
+      
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>computeAlertLevel()</strong>
+            <span class="group-count">8 pruebas</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">lista vacía → &quot;normal&quot;</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">0 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">trigger de viento con level &quot;Huracán&quot; → &quot;emergency&quot;</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">trigger ONAMET con severity &quot;emergency&quot; → &quot;emergency&quot;</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">trigger ONAMET con severity &quot;warning&quot; → &quot;warning&quot;</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">trigger de condición sin severity → &quot;watch&quot;</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">trigger de tormenta tropical (sin huracán) → &quot;watch&quot;</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">emergency tiene prioridad sobre warning</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">warning tiene prioridad sobre watch</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+      </tbody>
+          </table>
+        </div>
+      </div>
+    
+      <div class="suite-card suite-ok">
+        <div class="suite-header" onclick="this.parentElement.classList.toggle('collapsed')">
+          <span class="suite-toggle">▼</span>
+          <div class="suite-title-block">
+            <span class="suite-label">onaMetService</span>
+            <span class="suite-path">services/onaMetService</span>
+          </div>
+          <div class="suite-meta">
+            <span class="suite-pct" style="color:#22c55e">100%</span>
+            <span class="suite-counts">
+              <span class="c-pass">8 ✓</span>
+              
+            </span>
+          </div>
+        </div>
+
+        <div class="suite-description">Servicio de integración con ONAMET. Simula o procesa boletines oficiales y expone alertas normalizadas al sistema de detección.</div>
+
+        <div class="suite-body">
+          <table class="test-table">
+            <thead>
+              <tr>
+                <th>Descripción de la prueba</th>
+                <th>Resultado</th>
+                <th>Duración</th>
+              </tr>
+            </thead>
+            <tbody>
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>fetchLatestBulletin()</strong>
+            <span class="group-count">5 pruebas</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">retorna [] cuando no hay simulación activa</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">23 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">retorna alerta de emergencia cuando ONAMET_SIMULATE_EMERGENCY=true</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">2 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">alerta simulada incluye los campos requeridos</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">3 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">retorna alerta de vigilancia cuando ONAMET_SIMULATE_WATCH=true</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">EMERGENCY tiene prioridad sobre WATCH si ambas están activas</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+      
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>setManualAlert() y getAlerts()</strong>
+            <span class="group-count">3 pruebas</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">setManualAlert() guarda la alerta y getAlerts() la retorna</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">clearAlerts() elimina todas las alertas</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">getAlerts() retorna el campo source correcto</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+      </tbody>
+          </table>
+        </div>
+      </div>
+    
+      <div class="suite-card suite-ok">
+        <div class="suite-header" onclick="this.parentElement.classList.toggle('collapsed')">
+          <span class="suite-toggle">▼</span>
+          <div class="suite-title-block">
+            <span class="suite-label">weatherCache</span>
+            <span class="suite-path">utils/weatherCache</span>
+          </div>
+          <div class="suite-meta">
+            <span class="suite-pct" style="color:#22c55e">100%</span>
+            <span class="suite-counts">
+              <span class="c-pass">22 ✓</span>
+              
+            </span>
+          </div>
+        </div>
+
+        <div class="suite-description">Caché en memoria con TTL configurable para datos meteorológicos. Gestiona frescura, expiración y datos obsoletos (stale fallback).</div>
+
+        <div class="suite-body">
+          <table class="test-table">
+            <thead>
+              <tr>
+                <th>Descripción de la prueba</th>
+                <th>Resultado</th>
+                <th>Duración</th>
+              </tr>
+            </thead>
+            <tbody>
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>WeatherCache — estado inicial</strong>
+            <span class="group-count">6 pruebas</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">hasData() retorna false antes de cualquier set()</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">23 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">isExpired() retorna true sin fetch timestamp</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">get() retorna data null al iniciar</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">get() retorna isStale false al iniciar</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">get() retorna staleFrom null al iniciar</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">DEFAULT_TTL_MS es de 5 minutos (300 000 ms)</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+      
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>WeatherCache — set()</strong>
+            <span class="group-count">5 pruebas</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">hasData() retorna true después de set()</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">isExpired() retorna false inmediatamente después de set()</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">get().data contiene los datos almacenados</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">get().isStale es false después de set() limpio</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">set() resetea isStale a false cuando había datos obsoletos</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">3 ms</td>
+          </tr>
+          
+        
+      
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>WeatherCache — markStale()</strong>
+            <span class="group-count">3 pruebas</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">isStale pasa a true después de markStale()</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">staleFrom es un ISO string válido cuando isStale=true</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">2 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">los datos originales siguen disponibles aunque estén obsoletos</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+      
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>WeatherCache — expiración por TTL</strong>
+            <span class="group-count">2 pruebas</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">isExpired() retorna true cuando el TTL ha transcurrido</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">101 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">isExpired() retorna false cuando el TTL no ha transcurrido</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+      
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>WeatherCache — clear()</strong>
+            <span class="group-count">4 pruebas</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">hasData() retorna false después de clear()</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">isExpired() retorna true después de clear()</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">get().data es null después de clear()</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">get().isStale es false después de clear()</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+      
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>WeatherCache — TTL personalizado</strong>
+            <span class="group-count">2 pruebas</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">acepta TTL personalizado en constructor</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">0 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">instancias con distintos TTL son independientes</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">11 ms</td>
+          </tr>
+          
+        
+      </tbody>
+          </table>
+        </div>
+      </div>
+    
+      <div class="suite-card suite-ok">
+        <div class="suite-header" onclick="this.parentElement.classList.toggle('collapsed')">
+          <span class="suite-toggle">▼</span>
+          <div class="suite-title-block">
+            <span class="suite-label">alertService</span>
+            <span class="suite-path">services/alertService</span>
+          </div>
+          <div class="suite-meta">
+            <span class="suite-pct" style="color:#22c55e">100%</span>
+            <span class="suite-counts">
+              <span class="c-pass">18 ✓</span>
+              
+            </span>
+          </div>
+        </div>
+
+        <div class="suite-description">Servicio de estado de alerta global. Orquesta la detección de detonadores, mantiene el estado entre ciclos y gestiona el caché de datos meteorológicos.</div>
+
+        <div class="suite-body">
+          <table class="test-table">
+            <thead>
+              <tr>
+                <th>Descripción de la prueba</th>
+                <th>Resultado</th>
+                <th>Duración</th>
+              </tr>
+            </thead>
+            <tbody>
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>estado inicial</strong>
+            <span class="group-count">2 pruebas</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">getAlertState() retorna level &quot;normal&quot; al iniciar</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">387 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">isEmergencyActive() retorna false al iniciar</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">8 ms</td>
+          </tr>
+          
+        
+      
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>checkAndUpdateAlertStatus()</strong>
+            <span class="group-count">13 pruebas</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">retorna level &quot;normal&quot; cuando no hay triggers</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">11 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">activa &quot;emergency&quot; cuando wind_kph &gt;= 119 (HURRICANE_CAT1)</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">9 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">activa &quot;watch&quot; cuando wind_kph &gt;= 63 (TROPICAL_STORM) pero &lt; 119</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">8 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">detecta keyword &quot;hurricane&quot; en condition.text → nivel watch</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">8 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">detecta keyword &quot;tormenta tropical&quot; en condition.text (case-insensitive) → watch</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">7 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">detecta alert de WeatherAPI con keyword en event text → watch</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">8 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">activa &quot;emergency&quot; con alerta ONAMET severity=&quot;emergency&quot;</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">8 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">activa &quot;warning&quot; con alerta ONAMET severity=&quot;warning&quot;</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">7 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">ignora alerta ONAMET con severity=&quot;watch&quot; para &quot;emergency&quot;</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">7 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">graba activatedAt la primera vez que se activa la emergencia</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">9 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">preserva activatedAt si ya estaba en emergencia (no lo pisa)</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">8 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">resetea activatedAt cuando la emergencia se normaliza</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">8 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">actualiza lastChecked en cada llamada</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">7 ms</td>
+          </tr>
+          
+        
+      
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>getCachedWeatherData()</strong>
+            <span class="group-count">3 pruebas</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">llama a getAllProvincesWeather en el primer request</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">8 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">usa el cache en el segundo request (no vuelve a llamar la API)</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">6 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">retorna los datos de las provincias correctamente</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">8 ms</td>
+          </tr>
+          
+        
+      </tbody>
+          </table>
+        </div>
+      </div>
+    
+      <div class="suite-card suite-ok">
+        <div class="suite-header" onclick="this.parentElement.classList.toggle('collapsed')">
+          <span class="suite-toggle">▼</span>
+          <div class="suite-title-block">
+            <span class="suite-label">reportService</span>
+            <span class="suite-path">services/reportService</span>
+          </div>
+          <div class="suite-meta">
+            <span class="suite-pct" style="color:#22c55e">100%</span>
+            <span class="suite-counts">
+              <span class="c-pass">25 ✓</span>
+              
+            </span>
+          </div>
+        </div>
+
+        <div class="suite-description">Generador de reportes diarios y de emergencia. Formatea resúmenes de texto para WhatsApp/SMS con estadísticas nacionales y detalles por provincia.</div>
+
+        <div class="suite-body">
+          <table class="test-table">
+            <thead>
+              <tr>
+                <th>Descripción de la prueba</th>
+                <th>Resultado</th>
+                <th>Duración</th>
+              </tr>
+            </thead>
+            <tbody>
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>buildWeatherSummary()</strong>
+            <span class="group-count">9 pruebas</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">retorna texto de fallback cuando provincesData es null</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">340 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">retorna texto de fallback cuando provincesData es array vacío</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">3 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">incluye el rótulo &quot;Temperatura promedio&quot; con datos normales</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">6 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">incluye el campo &quot;Viento máximo&quot;</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">2 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">lista la provincia con lluvia (La Vega tiene precip_mm &gt; 0)</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">2 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">muestra &quot;Ninguna&quot; cuando no hay provincias con lluvia</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">2 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">calcula correctamente el promedio de temperatura</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">2 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">incluye el conteo de provincias monitoreadas</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">3 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">no lanza error cuando current.temp_c no es número (NaN filtering)</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">2 ms</td>
+          </tr>
+          
+        
+      
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>generateDailyReport()</strong>
+            <span class="group-count">8 pruebas</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">retorna objeto con type &quot;daily&quot;</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">6 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">retorna id con prefijo &quot;daily-&quot;</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">3 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">incluye generatedAt como ISO string válido</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">2 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">summary contiene temperatura promedio</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">2 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">summary lista la provincia con lluvia (La Vega)</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">2 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">guarda el reporte y getLatestReport() lo retorna</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">2 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">getReports() retorna array con el reporte generado</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">3 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">el reporte más reciente aparece primero (LIFO)</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">2 ms</td>
+          </tr>
+          
+        
+      
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>generateEmergencyReport()</strong>
+            <span class="group-count">5 pruebas</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">retorna objeto con type &quot;emergency&quot;</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">29 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">summary contiene &quot;EMERGENCIA&quot;</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">2 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">summary contiene el trigger ONAMET</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">2 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">incluye las alertas de ONAMET en el reporte</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">3 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">id tiene prefijo &quot;emergency-&quot;</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">2 ms</td>
+          </tr>
+          
+        
+      
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>getLatestReport() — sin reportes</strong>
+            <span class="group-count">1 prueba</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">retorna null si no hay reportes generados</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">2 ms</td>
+          </tr>
+          
+        
+      
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>getReports()</strong>
+            <span class="group-count">2 pruebas</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">respeta el límite máximo del parámetro</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">2 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">sin parámetro, devuelve hasta 10 reportes por defecto</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">3 ms</td>
+          </tr>
+          
+        
+      </tbody>
+          </table>
+        </div>
+      </div>
+    
+      <div class="suite-card suite-ok">
+        <div class="suite-header" onclick="this.parentElement.classList.toggle('collapsed')">
+          <span class="suite-toggle">▼</span>
+          <div class="suite-title-block">
+            <span class="suite-label">api</span>
+            <span class="suite-path">routes/api</span>
+          </div>
+          <div class="suite-meta">
+            <span class="suite-pct" style="color:#22c55e">100%</span>
+            <span class="suite-counts">
+              <span class="c-pass">15 ✓</span>
+              
+            </span>
+          </div>
+        </div>
+
+        <div class="suite-description">Tests de integración de los endpoints REST. Valida rutas, códigos HTTP, estructura de respuesta y manejo de errores.</div>
+
+        <div class="suite-body">
+          <table class="test-table">
+            <thead>
+              <tr>
+                <th>Descripción de la prueba</th>
+                <th>Resultado</th>
+                <th>Duración</th>
+              </tr>
+            </thead>
+            <tbody>
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>GET /api/health</strong>
+            <span class="group-count">1 prueba</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">retorna 200 con status OK</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">40 ms</td>
+          </tr>
+          
+        
+      
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>GET /api/weather</strong>
+            <span class="group-count">2 pruebas</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">retorna 200 con lista de provincias</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">7 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">retorna 500 cuando el servicio lanza excepción</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">5 ms</td>
+          </tr>
+          
+        
+      
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>GET /api/weather/:provinceId</strong>
+            <span class="group-count">2 pruebas</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">retorna 200 con datos de la provincia</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">6 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">retorna 404 para provincia inexistente</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">6 ms</td>
+          </tr>
+          
+        
+      
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>GET /api/alerts/status</strong>
+            <span class="group-count">1 prueba</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">retorna 200 con el estado de alertas</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">5 ms</td>
+          </tr>
+          
+        
+      
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>POST /api/alerts/onamet</strong>
+            <span class="group-count">3 pruebas</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">retorna 400 cuando falta el campo title</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">28 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">retorna 400 cuando falta el campo description</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">6 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">retorna 200 y llama a setManualAlert con datos válidos</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">6 ms</td>
+          </tr>
+          
+        
+      
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>DELETE /api/alerts/onamet</strong>
+            <span class="group-count">1 prueba</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">retorna 200 y limpia las alertas ONAMET</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">4 ms</td>
+          </tr>
+          
+        
+      
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>GET /api/reports/latest</strong>
+            <span class="group-count">2 pruebas</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">retorna 200 cuando hay un reporte</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">4 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">retorna 404 cuando no hay reportes</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">4 ms</td>
+          </tr>
+          
+        
+      
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>POST /api/reports/generate</strong>
+            <span class="group-count">2 pruebas</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">genera reporte diario por defecto</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">4 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">genera reporte de emergencia con ?type=emergency</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">6 ms</td>
+          </tr>
+          
+        
+      
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>Rutas no encontradas</strong>
+            <span class="group-count">1 prueba</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">retorna 404 para ruta desconocida</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">5 ms</td>
+          </tr>
+          
+        
+      </tbody>
+          </table>
+        </div>
+      </div>
+    
+      <div class="suite-card suite-ok">
+        <div class="suite-header" onclick="this.parentElement.classList.toggle('collapsed')">
+          <span class="suite-toggle">▼</span>
+          <div class="suite-title-block">
+            <span class="suite-label">weatherApiService</span>
+            <span class="suite-path">services/weatherApiService</span>
+          </div>
+          <div class="suite-meta">
+            <span class="suite-pct" style="color:#22c55e">100%</span>
+            <span class="suite-counts">
+              <span class="c-pass">11 ✓</span>
+              
+            </span>
+          </div>
+        </div>
+
+        <div class="suite-description">Cliente de la API Open-Meteo. Obtiene condiciones actuales y pronóstico de 3 días para cada provincia de la RD.</div>
+
+        <div class="suite-body">
+          <table class="test-table">
+            <thead>
+              <tr>
+                <th>Descripción de la prueba</th>
+                <th>Resultado</th>
+                <th>Duración</th>
+              </tr>
+            </thead>
+            <tbody>
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>getSingleProvinceWeather()</strong>
+            <span class="group-count">8 pruebas</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">lanza error 404 si el provinceId no existe</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">13 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">mapea correctamente temp_c desde Open-Meteo (temperature_2m)</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">5 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">mapea wind_kph desde wind_speed_10m</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">mapea condition.text desde WMO code 0 → &quot;Despejado&quot;</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">condition tiene text y code (Open-Meteo no provee icon directo)</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">5 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">alerts siempre es array vacío (Open-Meteo no provee alertas)</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">forecast contiene 3 días</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">2 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">incluye id, name y region de la provincia</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">1 ms</td>
+          </tr>
+          
+        
+      
+        <tr class="group-header">
+          <td colspan="3">
+            <span class="group-icon">▸</span>
+            <strong>getAllProvincesWeather()</strong>
+            <span class="group-count">3 pruebas</span>
+          </td>
+        </tr>
+        
+          <tr class="test-row passed">
+            <td class="td-name">retorna data para todas las provincias en éxito total</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">3315 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">NO lanza excepción cuando alguna provincia falla (Promise.allSettled)</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">3352 ms</td>
+          </tr>
+          
+        
+          <tr class="test-row passed">
+            <td class="td-name">retorna errors para provincias que fallaron</td>
+            <td class="td-status"><span class="badge badge-pass">✓ PASÓ</span></td>
+            <td class="td-duration">3308 ms</td>
+          </tr>
+          
+        
+      </tbody>
+          </table>
+        </div>
+      </div>
+    
+</div>
+
+<footer class="page-footer">
+  Generado con <strong>scripts/generate-report.js</strong> &nbsp;·&nbsp;
+  Jest — &nbsp;·&nbsp;
+  NubeVigía RD v1.1.0
+</footer>
+
+</body>
+</html>
