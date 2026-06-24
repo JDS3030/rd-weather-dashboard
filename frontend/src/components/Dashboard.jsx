@@ -1,7 +1,7 @@
 import { useWeatherData }  from '../hooks/useWeatherData';
 import Header              from './Header';
 import StatsOverview       from './StatsOverview';
-import ProvinceCard        from './ProvinceCard';
+import CardinalDashboard   from './CardinalDashboard';
 import AlertPanel          from './AlertPanel';
 import ReportPanel         from './ReportPanel';
 
@@ -52,34 +52,9 @@ export default function Dashboard() {
         {/* Layout principal: cards (3/4) + sidebar (1/4) */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
 
-          {/* Tarjetas de provincias */}
+          {/* Dashboard cardinal por puntos cardinales */}
           <section className="lg:col-span-3">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className={`text-sm font-bold uppercase tracking-wider ${
-                isEmergency ? 'text-red-500' : 'text-gray-500'
-              }`}>
-                🗺️ Estado Meteorológico por Provincia ({provinces.length})
-              </h2>
-              {isEmergency && (
-                <span className="text-xs text-red-400 font-semibold animate-pulse">
-                  ⟳ Actualización cada 60 s
-                </span>
-              )}
-            </div>
-
-            {provinces.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-                {provinces.map(p => (
-                  <ProvinceCard key={p.id} province={p} />
-                ))}
-              </div>
-            ) : (
-              <div className="rounded-xl border border-gray-800 bg-gray-900/40 p-12 text-center">
-                <p className="text-gray-600 text-sm">
-                  No hay datos disponibles. Verifique su <code className="text-gray-400">WEATHERAPI_KEY</code>.
-                </p>
-              </div>
-            )}
+            <CardinalDashboard />
           </section>
 
           {/* Sidebar */}
