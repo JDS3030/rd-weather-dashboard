@@ -16,6 +16,25 @@ const RD_PROVINCES = [
   { id: 'dajabon',           name: 'Dajabón',                    query: 'Dajabon,DO',                    region: 'Cibao Noroeste',lat: 19.5474, lon: -71.7090 },
   { id: 'valverde',          name: 'Valverde',                   query: 'Mao,DO',                        region: 'Cibao Noroeste',lat: 19.5660, lon: -71.0739 },
   { id: 'santiago_rodriguez',name: 'Santiago Rodríguez',         query: 'Sabaneta,DO',                   region: 'Cibao Noroeste',lat: 19.4924, lon: -71.3416 },
+  // Norte — provincias completadas
+  { id: 'espaillat',         name: 'Espaillat',                  query: 'Moca,DO',                       region: 'Cibao Norte',   lat: 19.3953, lon: -70.5192 },
+  { id: 'sanchez_ramirez',   name: 'Sánchez Ramírez',            query: 'Cotui,DO',                      region: 'Cibao Central', lat: 18.9966, lon: -70.0975 },
+  { id: 'duarte',            name: 'Duarte',                     query: 'San Francisco de Macoris,DO',   region: 'Nordeste',      lat: 19.3007, lon: -69.8514 },
+  { id: 'samana',            name: 'Samaná',                     query: 'Samana,DO',                     region: 'Nordeste',      lat: 19.2064, lon: -69.3360 },
+  // Este — provincias completadas
+  { id: 'la_romana',         name: 'La Romana',                  query: 'La Romana,DO',                  region: 'Yuma',          lat: 18.4273, lon: -68.9726 },
+  { id: 'hato_mayor',        name: 'Hato Mayor',                 query: 'Hato Mayor del Rey,DO',         region: 'Yuma',          lat: 18.7640, lon: -69.2562 },
+  { id: 'monte_plata',       name: 'Monte Plata',                query: 'Monte Plata,DO',                region: 'Valdesia',      lat: 18.8066, lon: -69.7863 },
+  // Sur — provincias completadas
+  { id: 'santo_domingo',     name: 'Santo Domingo',              query: 'Santo Domingo Este,DO',         region: 'Valdesia',      lat: 18.5001, lon: -69.9886 },
+  { id: 'san_cristobal',     name: 'San Cristóbal',              query: 'San Cristobal,DO',              region: 'Valdesia',      lat: 18.4173, lon: -70.1064 },
+  { id: 'peravia',           name: 'Peravia',                    query: 'Bani,DO',                       region: 'Valdesia',      lat: 18.2800, lon: -70.3317 },
+  { id: 'azua',              name: 'Azua',                       query: 'Azua de Compostela,DO',         region: 'El Valle',      lat: 18.4554, lon: -70.7352 },
+  { id: 'elias_pina',        name: 'Elías Piña',                 query: 'Comendador,DO',                 region: 'El Valle',      lat: 18.8782, lon: -71.6966 },
+  { id: 'baoruco',           name: 'Baoruco',                    query: 'Neiba,DO',                      region: 'Enriquillo',    lat: 18.4839, lon: -71.4178 },
+  { id: 'independencia',     name: 'Independencia',              query: 'Jimani,DO',                     region: 'Enriquillo',    lat: 18.4924, lon: -71.8517 },
+  { id: 'san_jose_ocoa',     name: 'San José de Ocoa',           query: 'San Jose de Ocoa,DO',           region: 'Valdesia',      lat: 18.5541, lon: -70.5096 },
+  { id: 'pedernales',        name: 'Pedernales',                 query: 'Pedernales,DO',                 region: 'Enriquillo',    lat: 18.0380, lon: -71.7433 },
 ];
 
 // Palabras clave para detección automática de emergencias
