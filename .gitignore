@@ -18,6 +18,8 @@ logs/
 *.log
 backend/coverage/
 frontend/coverage/
+backend/html/
+frontend/html/
 .nyc_output/
 
 # ── Build outputs ─────────────────────────────────────────

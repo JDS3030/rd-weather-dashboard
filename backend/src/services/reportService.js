@@ -119,8 +119,9 @@ ${buildWeatherSummary(provincesData)}
 
 // ─── Accessors ────────────────────────────────────────────────────────────────
 
-const getLatestReport = ()           => reports[0] || null;
-const getReports      = (limit = 10) => reports.slice(0, limit);
+const getLatestReport  = ()           => reports[0] || null;
+const getReports       = (limit = 10) => reports.slice(0, limit);
+const clearReports     = ()           => { reports = []; };
 
 module.exports = {
   buildWeatherSummary,
@@ -128,4 +129,5 @@ module.exports = {
   generateEmergencyReport,
   getLatestReport,
   getReports,
+  clearReports,
 };

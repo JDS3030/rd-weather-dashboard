@@ -14,9 +14,14 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './src/test/setup.js',
     css: false,
+    reporters: ['verbose', 'html'],
+    outputFile: {
+      html: './html/index.html',
+    },
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html'],
+      reportsDirectory: './coverage',
       exclude: ['src/main.jsx', 'src/test/**', '**/*.config.*'],
     },
   },

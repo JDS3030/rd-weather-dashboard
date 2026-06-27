@@ -2,79 +2,71 @@
 
 const { PROVINCES_NORMAL, ONAMET_EMERGENCY_ALERT, makeProvince } = require('../fixtures/weatherData');
 
-let reportService, alertService, onaMetService;
+// vi.spyOn() es el approach correcto para módulos CJS: opera en runtime sin hoisting.
+const reportService = require('../../src/services/reportService');
+const alertService  = require('../../src/services/alertService');
+const onaMetService = require('../../src/services/onaMetService');
+const logger        = require('../../src/utils/logger');
 
 beforeEach(() => {
-  jest.resetModules();
-  jest.mock('../../src/services/alertService');
-  jest.mock('../../src/services/onaMetService');
-  jest.mock('../../src/utils/logger', () => ({
-    info: jest.fn(), warn: jest.fn(), error: jest.fn(),
-  }));
-  reportService = require('../../src/services/reportService');
-  alertService  = require('../../src/services/alertService');
-  onaMetService = require('../../src/services/onaMetService');
+  reportService.clearReports();
+  vi.spyOn(alertService, 'getCachedWeatherData');
+  vi.spyOn(alertService, 'getAlertState');
+  vi.spyOn(onaMetService, 'getAlerts');
+  vi.spyOn(logger, 'info').mockImplementation(() => {});
+  vi.spyOn(logger, 'warn').mockImplementation(() => {});
+  vi.spyOn(logger, 'error').mockImplementation(() => {});
 });
+
+afterEach(() => vi.restoreAllMocks());
 
 // ─── buildWeatherSummary ──────────────────────────────────────────────────────
 
 describe('buildWeatherSummary()', () => {
   test('retorna texto de fallback cuando provincesData es null', () => {
-    const { buildWeatherSummary } = require('../../src/services/reportService');
-    expect(buildWeatherSummary(null)).toBe('Sin datos disponibles.');
+    expect(reportService.buildWeatherSummary(null)).toBe('Sin datos disponibles.');
   });
 
   test('retorna texto de fallback cuando provincesData es array vacío', () => {
-    const { buildWeatherSummary } = require('../../src/services/reportService');
-    expect(buildWeatherSummary([])).toBe('Sin datos disponibles.');
+    expect(reportService.buildWeatherSummary([])).toBe('Sin datos disponibles.');
   });
 
   test('incluye el rótulo "Temperatura promedio" con datos normales', () => {
-    const { buildWeatherSummary } = require('../../src/services/reportService');
-    const result = buildWeatherSummary(PROVINCES_NORMAL);
-    expect(result).toContain('Temperatura promedio');
+    expect(reportService.buildWeatherSummary(PROVINCES_NORMAL)).toContain('Temperatura promedio');
   });
 
   test('incluye el campo "Viento máximo"', () => {
-    const { buildWeatherSummary } = require('../../src/services/reportService');
-    const result = buildWeatherSummary(PROVINCES_NORMAL);
-    expect(result).toContain('Viento máximo');
+    expect(reportService.buildWeatherSummary(PROVINCES_NORMAL)).toContain('Viento máximo');
   });
 
   test('lista la provincia con lluvia (La Vega tiene precip_mm > 0)', () => {
-    const { buildWeatherSummary } = require('../../src/services/reportService');
-    const result = buildWeatherSummary(PROVINCES_NORMAL);
-    expect(result).toContain('La Vega');
+    expect(reportService.buildWeatherSummary(PROVINCES_NORMAL)).toContain('La Vega');
   });
 
   test('muestra "Ninguna" cuando no hay provincias con lluvia', () => {
-    const { buildWeatherSummary } = require('../../src/services/reportService');
     const dryProvinces = [
       makeProvince({ id: 'a', name: 'Provincia A', current: { ...makeProvince().current, precip_mm: 0 } }),
     ];
-    expect(buildWeatherSummary(dryProvinces)).toContain('Ninguna');
+    expect(reportService.buildWeatherSummary(dryProvinces)).toContain('Ninguna');
   });
 
   test('calcula correctamente el promedio de temperatura', () => {
-    const { buildWeatherSummary } = require('../../src/services/reportService');
     const provinces = [
       makeProvince({ current: { ...makeProvince().current, temp_c: 30 } }),
       makeProvince({ current: { ...makeProvince().current, temp_c: 20 } }),
     ];
-    const result = buildWeatherSummary(provinces);
-    expect(result).toContain('25.0°C');
+    expect(reportService.buildWeatherSummary(provinces)).toContain('25.0°C');
   });
 
   test('incluye el conteo de provincias monitoreadas', () => {
-    const { buildWeatherSummary } = require('../../src/services/reportService');
-    const result = buildWeatherSummary(PROVINCES_NORMAL);
-    expect(result).toContain(`Provincias monitoreadas: ${PROVINCES_NORMAL.length}`);
+    expect(reportService.buildWeatherSummary(PROVINCES_NORMAL)).toContain(
+      `Provincias monitoreadas: ${PROVINCES_NORMAL.length}`
+    );
   });
 
   test('no lanza error cuando current.temp_c no es número (NaN filtering)', () => {
-    const { buildWeatherSummary } = require('../../src/services/reportService');
     const province = makeProvince({ current: { ...makeProvince().current, temp_c: null } });
-    expect(() => buildWeatherSummary([province])).not.toThrow();
+    expect(() => reportService.buildWeatherSummary([province])).not.toThrow();
   });
 });
 
@@ -88,13 +80,11 @@ describe('generateDailyReport()', () => {
   });
 
   test('retorna objeto con type "daily"', async () => {
-    const report = await reportService.generateDailyReport();
-    expect(report.type).toBe('daily');
+    expect((await reportService.generateDailyReport()).type).toBe('daily');
   });
 
   test('retorna id con prefijo "daily-"', async () => {
-    const report = await reportService.generateDailyReport();
-    expect(report.id).toMatch(/^daily-\d+$/);
+    expect((await reportService.generateDailyReport()).id).toMatch(/^daily-\d+$/);
   });
 
   test('incluye generatedAt como ISO string válido', async () => {
@@ -103,13 +93,11 @@ describe('generateDailyReport()', () => {
   });
 
   test('summary contiene temperatura promedio', async () => {
-    const report = await reportService.generateDailyReport();
-    expect(report.summary).toContain('Temperatura promedio');
+    expect((await reportService.generateDailyReport()).summary).toContain('Temperatura promedio');
   });
 
   test('summary lista la provincia con lluvia (La Vega)', async () => {
-    const report = await reportService.generateDailyReport();
-    expect(report.summary).toContain('La Vega');
+    expect((await reportService.generateDailyReport()).summary).toContain('La Vega');
   });
 
   test('guarda el reporte y getLatestReport() lo retorna', async () => {
@@ -148,18 +136,15 @@ describe('generateEmergencyReport()', () => {
   });
 
   test('retorna objeto con type "emergency"', async () => {
-    const report = await reportService.generateEmergencyReport();
-    expect(report.type).toBe('emergency');
+    expect((await reportService.generateEmergencyReport()).type).toBe('emergency');
   });
 
   test('summary contiene "EMERGENCIA"', async () => {
-    const report = await reportService.generateEmergencyReport();
-    expect(report.summary.toUpperCase()).toContain('EMERGENCIA');
+    expect((await reportService.generateEmergencyReport()).summary.toUpperCase()).toContain('EMERGENCIA');
   });
 
   test('summary contiene el trigger ONAMET', async () => {
-    const report = await reportService.generateEmergencyReport();
-    expect(report.summary).toContain('ONAMET');
+    expect((await reportService.generateEmergencyReport()).summary).toContain('ONAMET');
   });
 
   test('incluye las alertas de ONAMET en el reporte', async () => {
@@ -169,8 +154,7 @@ describe('generateEmergencyReport()', () => {
   });
 
   test('id tiene prefijo "emergency-"', async () => {
-    const report = await reportService.generateEmergencyReport();
-    expect(report.id).toMatch(/^emergency-\d+$/);
+    expect((await reportService.generateEmergencyReport()).id).toMatch(/^emergency-\d+$/);
   });
 });
 
@@ -185,23 +169,19 @@ describe('getLatestReport() — sin reportes', () => {
 // ─── getReports ───────────────────────────────────────────────────────────────
 
 describe('getReports()', () => {
-  test('respeta el límite máximo del parámetro', async () => {
+  beforeEach(() => {
     alertService.getCachedWeatherData.mockResolvedValue({ data: PROVINCES_NORMAL, isStale: false, staleFrom: null });
     alertService.getAlertState.mockReturnValue({ level: 'normal', triggers: [] });
     onaMetService.getAlerts.mockReturnValue({ alerts: [] });
+  });
 
+  test('respeta el límite máximo del parámetro', async () => {
     for (let i = 0; i < 5; i++) await reportService.generateDailyReport();
-
     expect(reportService.getReports(3)).toHaveLength(3);
   });
 
   test('sin parámetro, devuelve hasta 10 reportes por defecto', async () => {
-    alertService.getCachedWeatherData.mockResolvedValue({ data: PROVINCES_NORMAL, isStale: false, staleFrom: null });
-    alertService.getAlertState.mockReturnValue({ level: 'normal', triggers: [] });
-    onaMetService.getAlerts.mockReturnValue({ alerts: [] });
-
     for (let i = 0; i < 12; i++) await reportService.generateDailyReport();
-
     expect(reportService.getReports()).toHaveLength(10);
   });
 });

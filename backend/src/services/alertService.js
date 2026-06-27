@@ -84,9 +84,23 @@ async function getCachedWeatherData() {
 const getAlertState     = () => currentAlertState;
 const isEmergencyActive = () => currentAlertState.isEmergency;
 
+function resetState() {
+  currentAlertState = {
+    level:       ALERT_LEVELS.NORMAL,
+    isEmergency: false,
+    triggers:    [],
+    activatedAt: null,
+    lastChecked: null,
+  };
+  weatherCache._data      = null;
+  weatherCache._fetchedAt = null;
+  weatherCache._isStale   = false;
+}
+
 module.exports = {
   checkAndUpdateAlertStatus,
   getAlertState,
   isEmergencyActive,
   getCachedWeatherData,
+  resetState,
 };

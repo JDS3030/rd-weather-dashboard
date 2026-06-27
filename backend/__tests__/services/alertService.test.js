@@ -12,20 +12,23 @@ const {
   ONAMET_WATCH_ALERT,
 } = require('../fixtures/weatherData');
 
-// Re-require módulos frescos en cada test para aislar el estado interno del servicio
-let alertService, weatherApiService, onaMetService;
+// vi.spyOn() es el approach correcto para módulos CJS: opera en runtime sin hoisting.
+// alertService importa weatherProviderService (no openMeteoService directamente).
+const alertService           = require('../../src/services/alertService');
+const weatherProviderService = require('../../src/services/weatherProviderService');
+const onaMetService          = require('../../src/services/onaMetService');
+const logger                 = require('../../src/utils/logger');
 
 beforeEach(() => {
-  jest.resetModules();
-  jest.mock('../../src/services/openMeteoService');
-  jest.mock('../../src/services/onaMetService');
-  jest.mock('../../src/utils/logger', () => ({
-    info: jest.fn(), warn: jest.fn(), error: jest.fn(),
-  }));
-  alertService       = require('../../src/services/alertService');
-  weatherApiService  = require('../../src/services/openMeteoService');
-  onaMetService      = require('../../src/services/onaMetService');
+  alertService.resetState();
+  vi.spyOn(weatherProviderService, 'getAllProvincesWeather');
+  vi.spyOn(onaMetService, 'fetchLatestBulletin');
+  vi.spyOn(logger, 'info').mockImplementation(() => {});
+  vi.spyOn(logger, 'warn').mockImplementation(() => {});
+  vi.spyOn(logger, 'error').mockImplementation(() => {});
 });
+
+afterEach(() => vi.restoreAllMocks());
 
 // ─── Estado inicial ────────────────────────────────────────────────────────────
 
@@ -46,7 +49,7 @@ describe('estado inicial', () => {
 
 describe('checkAndUpdateAlertStatus()', () => {
   test('retorna level "normal" cuando no hay triggers', async () => {
-    weatherApiService.getAllProvincesWeather.mockResolvedValue({ data: PROVINCES_NORMAL, errors: [] });
+    weatherProviderService.getAllProvincesWeather.mockResolvedValue({ data: PROVINCES_NORMAL, errors: [] });
     onaMetService.fetchLatestBulletin.mockResolvedValue([]);
 
     const state = await alertService.checkAndUpdateAlertStatus();
@@ -57,7 +60,7 @@ describe('checkAndUpdateAlertStatus()', () => {
   });
 
   test('activa "emergency" cuando wind_kph >= 119 (HURRICANE_CAT1)', async () => {
-    weatherApiService.getAllProvincesWeather.mockResolvedValue({
+    weatherProviderService.getAllProvincesWeather.mockResolvedValue({
       data: [PROVINCE_HURRICANE_WIND], errors: [],
     });
     onaMetService.fetchLatestBulletin.mockResolvedValue([]);
@@ -72,7 +75,7 @@ describe('checkAndUpdateAlertStatus()', () => {
   });
 
   test('activa "watch" cuando wind_kph >= 63 (TROPICAL_STORM) pero < 119', async () => {
-    weatherApiService.getAllProvincesWeather.mockResolvedValue({
+    weatherProviderService.getAllProvincesWeather.mockResolvedValue({
       data: [PROVINCE_TROPICAL_STORM_WIND], errors: [],
     });
     onaMetService.fetchLatestBulletin.mockResolvedValue([]);
@@ -85,15 +88,13 @@ describe('checkAndUpdateAlertStatus()', () => {
   });
 
   test('detecta keyword "hurricane" en condition.text → nivel watch', async () => {
-    weatherApiService.getAllProvincesWeather.mockResolvedValue({
+    weatherProviderService.getAllProvincesWeather.mockResolvedValue({
       data: [PROVINCE_HURRICANE_CONDITION], errors: [],
     });
     onaMetService.fetchLatestBulletin.mockResolvedValue([]);
 
     const state = await alertService.checkAndUpdateAlertStatus();
 
-    // Keyword en condition.text crea trigger de vigilancia (watch), no emergencia.
-    // Solo viento ≥119 km/h u ONAMET severity=emergency activan isEmergency.
     expect(state.level).toBe('watch');
     const condTrigger = state.triggers.find(t => t.source === 'WeatherAPI-Condition');
     expect(condTrigger).toBeDefined();
@@ -101,7 +102,7 @@ describe('checkAndUpdateAlertStatus()', () => {
   });
 
   test('detecta keyword "tormenta tropical" en condition.text (case-insensitive) → watch', async () => {
-    weatherApiService.getAllProvincesWeather.mockResolvedValue({
+    weatherProviderService.getAllProvincesWeather.mockResolvedValue({
       data: [PROVINCE_TROPICAL_STORM_TEXT], errors: [],
     });
     onaMetService.fetchLatestBulletin.mockResolvedValue([]);
@@ -113,20 +114,19 @@ describe('checkAndUpdateAlertStatus()', () => {
   });
 
   test('detecta alert de WeatherAPI con keyword en event text → watch', async () => {
-    weatherApiService.getAllProvincesWeather.mockResolvedValue({
+    weatherProviderService.getAllProvincesWeather.mockResolvedValue({
       data: [PROVINCE_WEATHERAPI_ALERT], errors: [],
     });
     onaMetService.fetchLatestBulletin.mockResolvedValue([]);
 
     const state = await alertService.checkAndUpdateAlertStatus();
 
-    // Un WeatherAPI alert crea trigger watch, no emergencia (sin severity/level de huracán)
     expect(state.level).toBe('watch');
     expect(state.triggers.some(t => t.source === 'WeatherAPI-Alert')).toBe(true);
   });
 
   test('activa "emergency" con alerta ONAMET severity="emergency"', async () => {
-    weatherApiService.getAllProvincesWeather.mockResolvedValue({ data: PROVINCES_NORMAL, errors: [] });
+    weatherProviderService.getAllProvincesWeather.mockResolvedValue({ data: PROVINCES_NORMAL, errors: [] });
     onaMetService.fetchLatestBulletin.mockResolvedValue([ONAMET_EMERGENCY_ALERT]);
 
     const state = await alertService.checkAndUpdateAlertStatus();
@@ -136,7 +136,7 @@ describe('checkAndUpdateAlertStatus()', () => {
   });
 
   test('activa "warning" con alerta ONAMET severity="warning"', async () => {
-    weatherApiService.getAllProvincesWeather.mockResolvedValue({ data: PROVINCES_NORMAL, errors: [] });
+    weatherProviderService.getAllProvincesWeather.mockResolvedValue({ data: PROVINCES_NORMAL, errors: [] });
     onaMetService.fetchLatestBulletin.mockResolvedValue([ONAMET_WARNING_ALERT]);
 
     const state = await alertService.checkAndUpdateAlertStatus();
@@ -146,7 +146,7 @@ describe('checkAndUpdateAlertStatus()', () => {
   });
 
   test('ignora alerta ONAMET con severity="watch" para "emergency"', async () => {
-    weatherApiService.getAllProvincesWeather.mockResolvedValue({ data: PROVINCES_NORMAL, errors: [] });
+    weatherProviderService.getAllProvincesWeather.mockResolvedValue({ data: PROVINCES_NORMAL, errors: [] });
     onaMetService.fetchLatestBulletin.mockResolvedValue([ONAMET_WATCH_ALERT]);
 
     const state = await alertService.checkAndUpdateAlertStatus();
@@ -155,7 +155,7 @@ describe('checkAndUpdateAlertStatus()', () => {
   });
 
   test('graba activatedAt la primera vez que se activa la emergencia', async () => {
-    weatherApiService.getAllProvincesWeather.mockResolvedValue({
+    weatherProviderService.getAllProvincesWeather.mockResolvedValue({
       data: [PROVINCE_HURRICANE_WIND], errors: [],
     });
     onaMetService.fetchLatestBulletin.mockResolvedValue([]);
@@ -167,7 +167,7 @@ describe('checkAndUpdateAlertStatus()', () => {
   });
 
   test('preserva activatedAt si ya estaba en emergencia (no lo pisa)', async () => {
-    weatherApiService.getAllProvincesWeather.mockResolvedValue({
+    weatherProviderService.getAllProvincesWeather.mockResolvedValue({
       data: [PROVINCE_HURRICANE_WIND], errors: [],
     });
     onaMetService.fetchLatestBulletin.mockResolvedValue([]);
@@ -179,13 +179,13 @@ describe('checkAndUpdateAlertStatus()', () => {
   });
 
   test('resetea activatedAt cuando la emergencia se normaliza', async () => {
-    weatherApiService.getAllProvincesWeather.mockResolvedValue({
+    weatherProviderService.getAllProvincesWeather.mockResolvedValue({
       data: [PROVINCE_HURRICANE_WIND], errors: [],
     });
     onaMetService.fetchLatestBulletin.mockResolvedValue([]);
-    await alertService.checkAndUpdateAlertStatus(); // activa emergencia
+    await alertService.checkAndUpdateAlertStatus();
 
-    weatherApiService.getAllProvincesWeather.mockResolvedValue({ data: PROVINCES_NORMAL, errors: [] });
+    weatherProviderService.getAllProvincesWeather.mockResolvedValue({ data: PROVINCES_NORMAL, errors: [] });
     onaMetService.fetchLatestBulletin.mockResolvedValue([]);
     const normal = await alertService.checkAndUpdateAlertStatus();
 
@@ -193,7 +193,7 @@ describe('checkAndUpdateAlertStatus()', () => {
   });
 
   test('actualiza lastChecked en cada llamada', async () => {
-    weatherApiService.getAllProvincesWeather.mockResolvedValue({ data: PROVINCES_NORMAL, errors: [] });
+    weatherProviderService.getAllProvincesWeather.mockResolvedValue({ data: PROVINCES_NORMAL, errors: [] });
     onaMetService.fetchLatestBulletin.mockResolvedValue([]);
 
     const before = Date.now();
@@ -210,24 +210,24 @@ describe('checkAndUpdateAlertStatus()', () => {
 
 describe('getCachedWeatherData()', () => {
   test('llama a getAllProvincesWeather en el primer request', async () => {
-    weatherApiService.getAllProvincesWeather.mockResolvedValue({ data: PROVINCES_NORMAL, errors: [] });
+    weatherProviderService.getAllProvincesWeather.mockResolvedValue({ data: PROVINCES_NORMAL, errors: [] });
 
     await alertService.getCachedWeatherData();
 
-    expect(weatherApiService.getAllProvincesWeather).toHaveBeenCalledTimes(1);
+    expect(weatherProviderService.getAllProvincesWeather).toHaveBeenCalledTimes(1);
   });
 
   test('usa el cache en el segundo request (no vuelve a llamar la API)', async () => {
-    weatherApiService.getAllProvincesWeather.mockResolvedValue({ data: PROVINCES_NORMAL, errors: [] });
+    weatherProviderService.getAllProvincesWeather.mockResolvedValue({ data: PROVINCES_NORMAL, errors: [] });
 
     await alertService.getCachedWeatherData();
     await alertService.getCachedWeatherData();
 
-    expect(weatherApiService.getAllProvincesWeather).toHaveBeenCalledTimes(1);
+    expect(weatherProviderService.getAllProvincesWeather).toHaveBeenCalledTimes(1);
   });
 
   test('retorna los datos de las provincias correctamente', async () => {
-    weatherApiService.getAllProvincesWeather.mockResolvedValue({ data: PROVINCES_NORMAL, errors: [] });
+    weatherProviderService.getAllProvincesWeather.mockResolvedValue({ data: PROVINCES_NORMAL, errors: [] });
 
     const { data } = await alertService.getCachedWeatherData();
 
