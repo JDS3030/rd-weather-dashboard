@@ -33,6 +33,18 @@
 
 ---
 
+## v1.3.1 — Patch (completado ✅)
+
+### Migración de tests a Vitest con reporte HTML automático
+- [x] **Backend migrado a Vitest 4**: reemplaza Jest 29 como runner activo; instala `vitest`, `@vitest/coverage-v8` y `@vitest/ui`. *(27/06/2026)*
+- [x] **Reporte HTML de resultados**: `vitest.config.mjs` configura reporters `verbose + html` → genera `backend/html/index.html` con cada ejecución. *(27/06/2026)*
+- [x] **Reporte HTML de cobertura**: genera `backend/coverage/index.html` con métricas de líneas, funciones y ramas cubiertas. *(27/06/2026)*
+- [x] **Hook PostToolUse automático**: `.claude/settings.local.json` ejecuta `vitest run --coverage` en backend y frontend cada vez que se edita un archivo `.js/.ts/.jsx/.tsx`, garantizando que los tests siempre estén al día. *(27/06/2026)*
+- [x] **Tests nuevos**: `weatherApiComService.test.js` y `weatherProviderService.test.js` — 73 tests adicionales cubren mapeo de datos, verificación de campos, manejo de errores y lógica de fallback. *(27/06/2026)*
+- [x] **176/176 tests pasando** (139 backend + 37 frontend). *(27/06/2026)*
+
+---
+
 ## v1.4.0 — Minor (próxima versión sugerida)
 
 Features que añaden valor sin romper nada existente.

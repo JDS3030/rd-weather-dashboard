@@ -2,7 +2,7 @@
 
 ![Node.js](https://img.shields.io/badge/Node.js-20%2B-brightgreen?logo=node.js)
 ![Python](https://img.shields.io/badge/Python-3.11%2B-blue?logo=python)
-![Tests](https://img.shields.io/badge/Tests-103%20passing-success?logo=jest)
+![Tests](https://img.shields.io/badge/Tests-176%20passing-success?logo=vitest)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 ![Version](https://img.shields.io/badge/version-1.3.0-blue)
 
@@ -25,7 +25,7 @@ Dashboard de monitoreo climático en tiempo real para las **31 provincias** de l
 - **Integración con boletines ONAMET** (simulación y producción)
 - **Reportes diarios automáticos** a las 7:00 AM
 - **Notificaciones WhatsApp via Twilio** (emergencias cada 1 hora)
-- **103 tests automatizados** (66 backend + 37 frontend), 100% verde
+- **176 tests automatizados** (139 backend + 37 frontend), 100% verde — Vitest + reporte HTML
 - **Diseño UI en Pencil** (`MeteoRD-Dashboard.pen`)
 
 ---
@@ -43,7 +43,7 @@ Dashboard de monitoreo climático en tiempo real para las **31 provincias** de l
 | Datos meteorológicos (fallback) | Open-Meteo API | — |
 | Scripts automatización | Python | 3.11+ |
 | Notificaciones SMS/WhatsApp | Twilio | — |
-| Tests backend | Jest | 29 |
+| Tests backend | Vitest | 4 |
 | Tests frontend | Vitest | 4 |
 | Mocking HTTP | MSW | 2 |
 
@@ -59,7 +59,8 @@ rd-weather-dashboard/
 │   │   └── services/
 │   ├── __tests__/
 │   ├── server.js
-│   ├── jest.config.js
+│   ├── jest.config.js       ← legacy (conservado)
+│   ├── vitest.config.mjs    ← runner activo
 │   └── package.json
 ├── frontend/
 │   ├── src/
