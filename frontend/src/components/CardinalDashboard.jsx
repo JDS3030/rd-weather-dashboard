@@ -75,7 +75,7 @@ export default function CardinalDashboard() {
               onClick={() => openModal(qid)}
               className="text-left rounded-xl px-4 py-3 border transition-all duration-300
                          hover:scale-[1.01] bg-white dark:bg-gray-900/40 relative
-                         hover:bg-slate-50 dark:hover:bg-white/5"
+                         hover:bg-slate-50 dark:hover:bg-gray-700/40"
               style={{
                 borderColor:     isUserZone ? '#22d3ee' : meta.accentHex + '44',
                 borderLeftWidth: 2,

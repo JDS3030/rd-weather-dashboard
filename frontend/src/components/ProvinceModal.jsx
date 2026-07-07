@@ -82,7 +82,7 @@ export default function ProvinceModal({ qid, provinceIdx, munIdx, userProvinceNa
         }}
       >
         {/* ── CABECERA ──────────────────────────────────────────────────── */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-white/8 flex-shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-gray-700 flex-shrink-0">
           <div className="flex items-center gap-3">
             <span className="text-3xl font-black leading-none" style={{ color: meta.accent }}>
               {meta.arrow}
@@ -100,15 +100,15 @@ export default function ProvinceModal({ qid, provinceIdx, munIdx, userProvinceNa
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5 rounded-full px-3 py-1.5 border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-white/3">
+            <div className="flex items-center gap-1.5 rounded-full px-3 py-1.5 border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800/50">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" style={{ animation: 'pulse 2s ease infinite' }} />
               <span className="text-xs text-slate-500 dark:text-gray-400">Datos en vivo</span>
             </div>
             <button
               onClick={onClose}
-              className="w-7 h-7 rounded-full border border-slate-200 dark:border-white/10 flex items-center justify-center
+              className="w-7 h-7 rounded-full border border-slate-200 dark:border-gray-600 flex items-center justify-center
                          text-slate-400 dark:text-gray-500 hover:text-slate-700 dark:hover:text-white
-                         hover:bg-slate-100 dark:hover:bg-white/10 transition-colors text-sm"
+                         hover:bg-slate-100 dark:hover:bg-gray-700 transition-colors text-sm"
             >
               ×
             </button>
@@ -116,7 +116,7 @@ export default function ProvinceModal({ qid, provinceIdx, munIdx, userProvinceNa
         </div>
 
         {/* ── STEPPER ──────────────────────────────────────────────────── */}
-        <div className="px-6 py-2.5 border-b border-slate-100 dark:border-white/5 flex-shrink-0 flex items-center justify-between">
+        <div className="px-6 py-2.5 border-b border-slate-100 dark:border-gray-700/60 flex-shrink-0 flex items-center justify-between">
           <DrilldownStepper level={level} accent={meta.accentHex} onStepClick={stepBack} />
           <span className="text-xs text-slate-400 dark:text-gray-600 font-mono">
             {municipality
@@ -144,7 +144,7 @@ export default function ProvinceModal({ qid, provinceIdx, munIdx, userProvinceNa
         <div className="flex flex-1 overflow-hidden">
 
           {/* Panel izquierdo */}
-          <div className="w-64 flex-shrink-0 border-r border-slate-100 dark:border-white/5 overflow-y-auto">
+          <div className="w-64 flex-shrink-0 border-r border-slate-100 dark:border-gray-700/60 overflow-y-auto">
             <LeftPanel
               qid={qid} meta={meta}
               geoProvinces={geoProvinces}
@@ -170,7 +170,7 @@ export default function ProvinceModal({ qid, provinceIdx, munIdx, userProvinceNa
         </div>
 
         {/* ── PIE ──────────────────────────────────────────────────────── */}
-        <div className="px-6 py-2.5 border-t border-slate-100 dark:border-white/5 flex-shrink-0
+        <div className="px-6 py-2.5 border-t border-slate-100 dark:border-gray-700/60 flex-shrink-0
                         flex items-center justify-between bg-slate-50/80 dark:bg-black/20">
           {provinceIdx !== null ? (
             <button
@@ -210,7 +210,7 @@ function LeftPanel({ qid, meta, geoProvinces, provinceIdx, munIdx, userProvinceN
   if (province) {
     return (
       <>
-        <div className="px-4 py-2.5 border-b border-slate-100 dark:border-white/5 sticky top-0 backdrop-blur-sm z-10"
+        <div className="px-4 py-2.5 border-b border-slate-100 dark:border-gray-700/60 sticky top-0 backdrop-blur-sm z-10"
              style={{ background: stickyBg + 'f5' }}>
           <p className="text-xs font-bold uppercase tracking-wider" style={{ color: meta.accent }}>
             {province.name}
@@ -221,10 +221,10 @@ function LeftPanel({ qid, meta, geoProvinces, provinceIdx, munIdx, userProvinceN
           <button
             key={m.name}
             onClick={() => onSelectMun(mi)}
-            className={`w-full text-left px-4 py-2.5 border-b border-slate-100 dark:border-white/5 last:border-0
+            className={`w-full text-left px-4 py-2.5 border-b border-slate-100 dark:border-gray-700/60 last:border-0
                          flex items-center justify-between transition-colors
-                         hover:bg-slate-50 dark:hover:bg-white/4
-                         ${munIdx === mi ? 'bg-slate-100 dark:bg-white/6' : ''}`}
+                         hover:bg-slate-50 dark:hover:bg-gray-700/40
+                         ${munIdx === mi ? 'bg-slate-100 dark:bg-gray-700/50' : ''}`}
             style={munIdx === mi ? { borderLeft: `2px solid ${meta.accentHex}` } : {}}
           >
             <div>
@@ -244,7 +244,7 @@ function LeftPanel({ qid, meta, geoProvinces, provinceIdx, munIdx, userProvinceN
 
   return (
     <>
-      <div className="px-4 py-2.5 border-b border-slate-100 dark:border-white/5 sticky top-0 backdrop-blur-sm z-10"
+      <div className="px-4 py-2.5 border-b border-slate-100 dark:border-gray-700/60 sticky top-0 backdrop-blur-sm z-10"
            style={{ background: stickyBg + 'f5' }}>
         <p className="text-xs font-bold uppercase tracking-wider" style={{ color: meta.accent }}>
           Provincias
@@ -257,10 +257,10 @@ function LeftPanel({ qid, meta, geoProvinces, provinceIdx, munIdx, userProvinceN
           <button
             key={p.name}
             onClick={() => onSelectProvince(pi)}
-            className={`w-full text-left px-4 py-2.5 border-b border-slate-100 dark:border-white/5 last:border-0
+            className={`w-full text-left px-4 py-2.5 border-b border-slate-100 dark:border-gray-700/60 last:border-0
                          flex items-center justify-between transition-colors
-                         hover:bg-slate-50 dark:hover:bg-white/4
-                         ${provinceIdx === pi ? 'bg-slate-100 dark:bg-white/6' : userHere ? 'bg-cyan-50 dark:bg-cyan-950/20' : ''}`}
+                         hover:bg-slate-50 dark:hover:bg-gray-700/40
+                         ${provinceIdx === pi ? 'bg-slate-100 dark:bg-gray-700/50' : userHere ? 'bg-cyan-50 dark:bg-cyan-950/20' : ''}`}
             style={{
               borderLeft: provinceIdx === pi
                 ? `2px solid ${meta.accentHex}`
@@ -314,7 +314,7 @@ function RightPanel({ meta, geoProvinces, provinceIdx, munIdx, onSelectProvince,
         </div>
 
         <div className="flex items-center gap-2 text-xs text-slate-400 dark:text-gray-600 mb-4 px-3 py-2 rounded-lg
-                        border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-white/2">
+                        border border-slate-200 dark:border-gray-700/60 bg-slate-50 dark:bg-gray-800/30">
           <span>ℹ️</span>
           <span>Datos climáticos del municipio: nivel provincial (API ONAMET/WeatherAPI no desglosa por municipio).</span>
         </div>
@@ -324,9 +324,9 @@ function RightPanel({ meta, geoProvinces, provinceIdx, munIdx, onSelectProvince,
             {municipality.districts.map((d, i) => (
               <div
                 key={d}
-                className="flex items-center gap-2 px-3 py-2 rounded-xl border border-slate-200 dark:border-white/8
-                           bg-slate-50 dark:bg-white/4 text-sm text-slate-700 dark:text-gray-300
-                           hover:bg-slate-100 dark:hover:bg-white/8 hover:text-slate-900 dark:hover:text-white
+                className="flex items-center gap-2 px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700
+                           bg-slate-50 dark:bg-gray-800/50 text-sm text-slate-700 dark:text-gray-300
+                           hover:bg-slate-100 dark:hover:bg-gray-600/50 hover:text-slate-900 dark:hover:text-white
                            transition-colors cursor-default"
               >
                 <span
@@ -413,12 +413,12 @@ function MunCard({ mun, mi, meta, weather, onSelect }) {
   return (
     <button
       onClick={onSelect}
-      className={`text-left rounded-2xl border border-slate-200 dark:border-white/8 overflow-hidden
+      className={`text-left rounded-2xl border border-slate-200 dark:border-gray-700 overflow-hidden
                    bg-gradient-to-br ${tempBg(w?.temp_c ?? null)} to-transparent
-                   hover:border-slate-300 dark:hover:border-white/20 hover:translate-y-[-2px] hover:shadow-xl
+                   hover:border-slate-300 dark:hover:border-gray-500 hover:translate-y-[-2px] hover:shadow-xl
                    transition-all duration-150 bg-white dark:bg-gray-900/50`}
     >
-      <div className="px-3.5 pt-3 pb-2 border-b border-slate-100 dark:border-white/5">
+      <div className="px-3.5 pt-3 pb-2 border-b border-slate-100 dark:border-gray-700/60">
         <p className="text-sm font-bold text-slate-900 dark:text-white leading-tight">{mun.name}</p>
         <p className="text-xs text-slate-400 dark:text-gray-600 mt-0.5">
           {hasDistricts ? `${mun.districts.length} distritos` : 'Sin distritos'}
@@ -438,7 +438,7 @@ function MunCard({ mun, mi, meta, weather, onSelect }) {
         </div>
       </div>
 
-      <div className="px-3.5 py-2 border-t border-slate-100 dark:border-white/5 flex items-center justify-between">
+      <div className="px-3.5 py-2 border-t border-slate-100 dark:border-gray-700/60 flex items-center justify-between">
         <span className="text-xs text-slate-400 dark:text-gray-600">Municipio #{mi + 1}</span>
         {hasDistricts
           ? <span className="text-xs font-semibold" style={{ color: meta.accent }}>Ver distritos →</span>
@@ -500,8 +500,8 @@ function ForecastCard({ day, index, meta }) {
   return (
     <div className={`rounded-xl border overflow-hidden transition-all duration-200
                      ${index === 0
-                       ? 'border-slate-300 dark:border-white/15 bg-slate-50 dark:bg-white/5'
-                       : 'border-slate-200 dark:border-white/8 bg-white dark:bg-gray-900/40'
+                       ? 'border-slate-300 dark:border-gray-600 bg-slate-50 dark:bg-gray-700/40'
+                       : 'border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-900/40'
                      }`}
          style={index === 0 ? { boxShadow: `0 0 12px ${meta.accentHex}18` } : {}}
     >
@@ -552,7 +552,7 @@ function ForecastCard({ day, index, meta }) {
       </div>
 
       {/* Stats inferiores */}
-      <div className="px-3 py-2 border-t border-slate-100 dark:border-white/5 grid grid-cols-2 gap-x-2 gap-y-0.5">
+      <div className="px-3 py-2 border-t border-slate-100 dark:border-gray-700/60 grid grid-cols-2 gap-x-2 gap-y-0.5">
         <div className="flex items-center gap-1">
           <span style={{ fontSize: 10 }}>🌧️</span>
           <span className="text-slate-500 dark:text-gray-500 font-medium" style={{ fontSize: 10 }}>
@@ -575,11 +575,11 @@ function ProvCard({ prov, meta, onSelect }) {
   return (
     <button
       onClick={onSelect}
-      className="text-left rounded-2xl border border-slate-200 dark:border-white/8 overflow-hidden
-                 bg-white dark:bg-gray-900/50 hover:border-slate-300 dark:hover:border-white/20
+      className="text-left rounded-2xl border border-slate-200 dark:border-gray-700 overflow-hidden
+                 bg-white dark:bg-gray-900/50 hover:border-slate-300 dark:hover:border-gray-500
                  hover:translate-y-[-2px] hover:shadow-xl transition-all duration-150"
     >
-      <div className="px-3.5 py-3 border-b border-slate-100 dark:border-white/5">
+      <div className="px-3.5 py-3 border-b border-slate-100 dark:border-gray-700/60">
         <div className="flex items-center gap-1.5 mb-0.5">
           <p className={`text-sm font-bold truncate ${prov.isDN ? 'text-amber-600 dark:text-amber-300' : 'text-slate-900 dark:text-white'}`}>
             {prov.name}

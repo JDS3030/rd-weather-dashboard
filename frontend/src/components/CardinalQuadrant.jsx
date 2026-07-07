@@ -96,7 +96,7 @@ export default function CardinalQuadrant({
           <button
             onClick={() => onOpenModal(qid)}
             className="text-xs font-semibold px-3 py-1.5 rounded-full border transition-colors
-                       hover:bg-black/5 dark:hover:bg-white/8"
+                       hover:bg-black/5 dark:hover:bg-gray-700/50"
             style={{ color: isUserZone ? '#22d3ee' : meta.accent, borderColor: (isUserZone ? '#22d3ee' : meta.accentHex) + '55' }}
           >
             Ver detalle →
@@ -126,9 +126,9 @@ export default function CardinalQuadrant({
             <button
               key={prov.name}
               onClick={() => onOpenModal(qid, pi)}
-              className={`w-full text-left border-b border-slate-100 dark:border-white/5 last:border-0 px-4 py-2.5
+              className={`w-full text-left border-b border-slate-100 dark:border-gray-700/60 last:border-0 px-4 py-2.5
                            flex items-center justify-between transition-all duration-100
-                           hover:bg-slate-50 dark:hover:bg-white/5 hover:translate-x-0.5
+                           hover:bg-slate-50 dark:hover:bg-gray-700/40 hover:translate-x-0.5
                            ${isUserProv    ? 'bg-cyan-50 dark:bg-cyan-950/25 border-l-2 border-l-cyan-400'
                            : prov.hasAlert ? 'border-l-2 border-l-red-500'
                            :                 'border-l-2 border-l-transparent'}`}
