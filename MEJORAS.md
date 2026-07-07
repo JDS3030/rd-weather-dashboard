@@ -1,6 +1,6 @@
 # NubeVigía RD — Hoja de Ruta de Mejoras
 
-> Última actualización: **v1.4.3** (07/07/2026)
+> Última actualización: **v1.4.4** (07/07/2026)
 > Clasifica las mejoras por versión sugerida y prioridad.
 
 ---
@@ -75,6 +75,13 @@ https://frontend-two-gilt-77.vercel.app
 
 ---
 
+## v1.4.4 — Patch (fix deuda técnica) — completado ✅
+
+- [x] **Fix coerción de tipo en `wind_kph`**: `alertDetector.js` usaba `province.current?.wind_kph || 0`, lo que dejaba pasar un string corrupto (`"125"`) que JS coaccionaba a `true` en `"125" >= 119`, disparando una alerta de huracán falsa. Reemplazado por validación estricta `typeof rawWind === 'number' && Number.isFinite(rawWind)`; cualquier dato no numérico (string, `NaN`, `null`) se trata como 0. *(07/07/2026)*
+- [x] **Cobertura del fix**: aserción reforzada en el escenario BDD `@negativo` (ahora verifica ausencia de trigger, no solo que no crashee) + 2 tests Vitest nuevos (string `"125"` y `NaN`). Backend: 189 tests, BDD: 54 escenarios / 175 pasos. *(07/07/2026)*
+
+---
+
 ## v1.4.3 — Patch (testing BDD) — completado ✅
 
 Pruebas de comportamiento (Behavior-Driven Development) para el detector de alertas.
@@ -135,6 +142,7 @@ Features pequeñas que quedaron pendientes de v1.4.0.
 | v1.4.1  | 2026-07-07 | Patch | Scraper ONAMET real (cheerio), pulso visual en mapa con alertas, coordenadas precisas, fix z-index ProvinceModal vs Leaflet, email emergencia SendGrid |
 | v1.4.2  | 2026-07-07 | Patch | Responsive mobile Galaxy A52s/S21 Ultra — useIsMobile, acordeón cuadrantes, modal full-screen, toggle ancho completo |
 | v1.4.3  | 2026-07-07 | Patch | Suite BDD Cucumber.js para alertDetector (54 escenarios), reporteros HTML/Markdown, scripts npm test:bdd:report |
+| v1.4.4  | 2026-07-07 | Patch | Fix coerción de tipo en wind_kph (string corrupto disparaba alerta falsa) + cobertura BDD/Vitest |
 
 ---
 

@@ -94,14 +94,15 @@ Característica: Detección de Alertas Climáticas — alertDetector.js
       Y no obtengo triggers de fuente "WeatherAPI-Wind"
 
     @negativo
-    Escenario: wind_kph como string numérico alto no debería generar trigger
+    Escenario: wind_kph como string numérico alto no genera trigger
       Input: wind_kph = "125" (string en lugar de número — dato corrupto de la API).
-      Resultado esperado: el sistema no lanza error. Nota: este escenario expone un bug conocido
-      donde JS coerciona "125" >= 119 a true. La solución está documentada en las sugerencias
-      de refactorización (validación de tipo estricta).
+      Resultado esperado: ningún trigger de viento. La validación de tipo estricta trata
+      el string como 0, evitando que JS coaccione "125" >= 119 a true silenciosamente.
+      Importancia: un dato corrupto de la API no debe generar una alerta de huracán falsa.
       Dado una provincia "Test" con wind_kph en string "125"
       Cuando ejecuto detectFromWeather
       Entonces no se lanza ningún error
+      Y no obtengo triggers de fuente "WeatherAPI-Wind"
 
     @limite
     Esquema del escenario: Valores frontera del umbral de Tormenta Tropical (63 km/h)

@@ -71,6 +71,18 @@ describe('detectFromWeather()', () => {
     expect(triggers.filter(t => t.source === 'WeatherAPI-Wind')).toHaveLength(0);
   });
 
+  test('wind_kph como string "125" (dato corrupto) → sin trigger de viento', () => {
+    const province = makeProvince({ current: { ...makeProvince().current, wind_kph: '125' } });
+    const triggers = detectFromWeather([province]);
+    expect(triggers.filter(t => t.source === 'WeatherAPI-Wind')).toHaveLength(0);
+  });
+
+  test('wind_kph = NaN → sin trigger de viento', () => {
+    const province = makeProvince({ current: { ...makeProvince().current, wind_kph: NaN } });
+    const triggers = detectFromWeather([province]);
+    expect(triggers.filter(t => t.source === 'WeatherAPI-Wind')).toHaveLength(0);
+  });
+
   // Estrategia 2 — texto de condición
   test('keyword "hurricane" en condition.text genera trigger WeatherAPI-Condition', () => {
     const triggers = detectFromWeather([PROVINCE_HURRICANE_CONDITION]);

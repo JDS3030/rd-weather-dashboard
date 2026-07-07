@@ -47,7 +47,11 @@ function detectFromWeather(provincesData) {
     }
 
     // Strategy 3 — wind speed
-    const wind = province.current?.wind_kph || 0;
+    // Validación de tipo estricta: solo un número finito cuenta como viento.
+    // Un dato corrupto (string "125", NaN, null) se trata como 0 y no dispara
+    // alerta — evita que "125" >= 119 se coaccione a true silenciosamente.
+    const rawWind = province.current?.wind_kph;
+    const wind = typeof rawWind === 'number' && Number.isFinite(rawWind) ? rawWind : 0;
     if (wind >= WIND_THRESHOLDS.HURRICANE_CAT1) {
       triggers.push({
         source:   'WeatherAPI-Wind',
