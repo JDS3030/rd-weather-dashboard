@@ -39,6 +39,9 @@ Thumbs.db
 backend/test-report.html
 backend/jest-results.json
 
+# ── Reportes BDD generados (fuente: features/ + scripts/) ────
+backend/reports/
+
 # ── Archivos de preview / debug (locales) ────────────────────
 preview-dashboard-*.html
 
