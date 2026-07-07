@@ -13,10 +13,10 @@ export default function Header() {
     : lastUpdate?.toLocaleTimeString('es-DO', { hour: '2-digit', minute: '2-digit' }) ?? '--:--';
 
   const LEVEL_LABEL = {
-    normal:    { text: '✓ Normal',      cls: 'bg-emerald-700/40 text-emerald-300 border border-emerald-700/50' },
-    watch:     { text: '👁 Vigilancia', cls: 'bg-yellow-700/40 text-yellow-300 border border-yellow-700/50' },
-    warning:   { text: '⚠ Aviso',      cls: 'bg-orange-600/50 text-orange-200 border border-orange-600' },
-    emergency: { text: '🚨 EMERGENCIA', cls: 'bg-red-600 text-white animate-pulse border border-red-400' },
+    normal:    { text: '✓ Normal',      short: '✓',   cls: 'bg-emerald-700/40 text-emerald-300 border border-emerald-700/50' },
+    watch:     { text: '👁 Vigilancia', short: '👁',  cls: 'bg-yellow-700/40 text-yellow-300 border border-yellow-700/50' },
+    warning:   { text: '⚠ Aviso',      short: '⚠',   cls: 'bg-orange-600/50 text-orange-200 border border-orange-600' },
+    emergency: { text: '🚨 EMERGENCIA', short: '🚨',  cls: 'bg-red-600 text-white animate-pulse border border-red-400' },
   };
 
   const badge = LEVEL_LABEL[level] || LEVEL_LABEL.normal;
@@ -71,7 +71,8 @@ export default function Header() {
 
           {/* Badge de nivel */}
           <span className={`px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${badge.cls}`}>
-            {badge.text}
+            <span className="hidden sm:inline">{badge.text}</span>
+            <span className="sm:hidden">{badge.short}</span>
           </span>
 
           {/* Última actualización */}

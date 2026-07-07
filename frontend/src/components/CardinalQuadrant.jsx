@@ -1,6 +1,7 @@
 import { CARDINAL_META, normalizeName } from '../data/geoData';
 import { useWeatherData } from '../hooks/useWeatherData';
 import { useTheme }       from '../context/ThemeContext';
+import { useIsMobile }    from '../hooks/useIsMobile';
 
 function heatBarWidth(temp) {
   if (temp == null) return 0;
@@ -26,10 +27,12 @@ function conditionEmoji(condText) {
 
 export default function CardinalQuadrant({
   qid, geoProvinces, apiProvinces, onOpenModal, isUserZone, userProvinceName,
+  isOpen = true, onToggle,
 }) {
   const meta           = CARDINAL_META[qid];
   const { alertState } = useWeatherData();
   const { isDark }     = useTheme();
+  const isMobile       = useIsMobile();
 
   const merged = geoProvinces.map(geoProv => {
     const apiMatch = apiProvinces.find(ap => {
@@ -58,20 +61,25 @@ export default function CardinalQuadrant({
       className="rounded-2xl border-2 bg-white dark:bg-gray-900/40 overflow-hidden flex flex-col transition-all duration-500"
       style={{ borderColor, boxShadow: glowShadow }}
     >
-      {/* Cabecera */}
+      {/* Cabecera — en mobile actúa como botón de acordeón */}
       <div
-        className="border-b px-5 py-3 flex items-center justify-between flex-shrink-0"
+        className={`border-b px-4 sm:px-5 py-3 flex items-center justify-between flex-shrink-0 min-h-[52px]
+                    ${isMobile && onToggle ? 'cursor-pointer active:opacity-80' : ''}`}
         style={{
-          background:   `linear-gradient(135deg, ${meta.dimBg} 0%, ${meta.dimBg}55 100%)`,
-          borderColor:  meta.accentHex + '44',
+          background:  `linear-gradient(135deg, ${meta.dimBg} 0%, ${meta.dimBg}55 100%)`,
+          borderColor: meta.accentHex + '44',
         }}
+        onClick={isMobile && onToggle ? onToggle : undefined}
+        role={isMobile && onToggle ? 'button' : undefined}
+        aria-expanded={isMobile && onToggle ? isOpen : undefined}
+        aria-label={isMobile && onToggle ? `${isOpen ? 'Contraer' : 'Expandir'} zona ${meta.label}` : undefined}
       >
-        <div className="flex items-center gap-3">
-          <span className="text-2xl font-black leading-none" style={{ color: isUserZone ? '#22d3ee' : meta.accent }}>
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          <span className="text-xl sm:text-2xl font-black leading-none flex-shrink-0" style={{ color: isUserZone ? '#22d3ee' : meta.accent }}>
             {meta.arrow}
           </span>
-          <div>
-            <div className="flex items-center gap-2">
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
               <h2 className="text-sm font-black text-slate-900 dark:text-white tracking-tight">{meta.label}</h2>
               {meta.hasDN && <span className="dn-badge">★ D.N.</span>}
               {isUserZone && (
@@ -81,32 +89,63 @@ export default function CardinalQuadrant({
               )}
             </div>
             <p className="text-xs font-medium" style={{ color: meta.accent + '99', fontSize: 10 }}>
-              {geoProvinces.length} provincias · {meta.description}
+              {geoProvinces.length} prov. · {avgTemp !== null ? `${avgTemp.toFixed(1)}° prom.` : meta.description}
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          {avgTemp !== null && (
+        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+          {/* Temp promedio — solo desktop */}
+          {avgTemp !== null && !isMobile && (
             <div className="text-right">
               <p className="text-xs" style={{ color: meta.accent + '80' }}>prom.</p>
               <p className="text-sm font-black text-slate-900 dark:text-white">{avgTemp.toFixed(1)}°</p>
             </div>
           )}
-          <button
-            onClick={() => onOpenModal(qid)}
-            aria-label={`Ver detalle de la zona ${meta.label}`}
-            className="text-xs font-semibold px-3 py-1.5 rounded-full border transition-colors
-                       hover:bg-black/5 dark:hover:bg-gray-700/50"
-            style={{ color: isUserZone ? '#22d3ee' : meta.accent, borderColor: (isUserZone ? '#22d3ee' : meta.accentHex) + '55' }}
-          >
-            Ver detalle →
-          </button>
+
+          {/* Botón Ver detalle — solo desktop */}
+          {!isMobile && (
+            <button
+              onClick={e => { e.stopPropagation(); onOpenModal(qid); }}
+              aria-label={`Ver detalle de la zona ${meta.label}`}
+              className="text-xs font-semibold px-3 py-1.5 rounded-full border transition-colors
+                         hover:bg-black/5 dark:hover:bg-gray-700/50"
+              style={{ color: isUserZone ? '#22d3ee' : meta.accent, borderColor: (isUserZone ? '#22d3ee' : meta.accentHex) + '55' }}
+            >
+              Ver detalle →
+            </button>
+          )}
+
+          {/* Chevron acordeón — solo mobile */}
+          {isMobile && onToggle && (
+            <svg
+              className={`w-4 h-4 transition-transform duration-200 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`}
+              fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              style={{ color: meta.accent }}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          )}
         </div>
       </div>
 
-      {/* Lista de provincias */}
-      <div className="overflow-y-auto" style={{ maxHeight: 420 }}>
+      {/* Lista de provincias — colapsable en mobile */}
+      <div className={`overflow-y-auto transition-all duration-200 ${!isOpen ? 'hidden' : ''}`}
+           style={{ maxHeight: isMobile ? 320 : 420 }}>
+
+        {/* Botón Ver detalle zona — solo mobile, dentro del panel */}
+        {isMobile && (
+          <button
+            onClick={() => onOpenModal(qid)}
+            aria-label={`Ver detalle completo de la zona ${meta.label}`}
+            className="w-full text-xs font-semibold py-2.5 border-b flex items-center justify-center gap-1.5 transition-colors
+                       hover:bg-slate-50 dark:hover:bg-gray-700/40"
+            style={{ color: meta.accent, borderColor: meta.accentHex + '33' }}
+          >
+            Ver detalle de zona →
+          </button>
+        )}
+
         {merged.map((prov, pi) => {
           const temp  = prov.weather?.temp_c;
           const hum   = prov.weather?.humidity;
@@ -129,14 +168,14 @@ export default function CardinalQuadrant({
               onClick={() => onOpenModal(qid, pi)}
               aria-label={`${prov.name}${temp != null ? ` — ${temp.toFixed(1)}°C` : ''}${cond ? `, ${cond}` : ''}${prov.hasAlert ? ', alerta activa' : ''}`}
               className={`w-full text-left border-b border-slate-100 dark:border-gray-700/60 last:border-0 px-4 py-2.5
-                           flex items-center justify-between transition-all duration-100
+                           flex items-center justify-between transition-all duration-100 min-h-[44px]
                            hover:bg-slate-50 dark:hover:bg-gray-700/40 hover:translate-x-0.5
                            ${isUserProv    ? 'bg-cyan-50 dark:bg-cyan-950/25 border-l-2 border-l-cyan-400'
                            : prov.hasAlert ? 'border-l-2 border-l-red-500'
                            :                 'border-l-2 border-l-transparent'}`}
             >
               {/* Izquierda */}
-              <div className="min-w-0 flex items-center gap-2.5">
+              <div className="min-w-0 flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full flex-shrink-0"
                       style={{ background: isUserProv ? '#22d3ee' : meta.accentHex }} />
                 <div className="min-w-0">
@@ -150,14 +189,17 @@ export default function CardinalQuadrant({
                     {prov.hasAlert && <span className="text-red-400 text-xs flex-shrink-0">⚠️</span>}
                   </div>
                   <div className="flex items-center gap-2 mt-0.5">
-                    <div className="w-12 h-1 bg-slate-200 dark:bg-gray-800 rounded-full overflow-hidden">
-                      <div className="h-full rounded-full transition-all duration-700"
-                           style={{ width: `${hw}%`, background: hc }} />
-                    </div>
+                    {/* Barra de calor — oculta en mobile */}
+                    {!isMobile && (
+                      <div className="w-12 h-1 bg-slate-200 dark:bg-gray-800 rounded-full overflow-hidden">
+                        <div className="h-full rounded-full transition-all duration-700"
+                             style={{ width: `${hw}%`, background: hc }} />
+                      </div>
+                    )}
                     <span className="text-slate-400 dark:text-gray-600" style={{ fontSize: 10 }}>
-                      {cond ?? '—'}
+                      {emoji} {isMobile ? '' : (cond ?? '—')}
                     </span>
-                    {/* Mini pronóstico 3 días: puntos de probabilidad de lluvia */}
+                    {/* Mini pronóstico 3 días */}
                     {prov.forecast.length > 0 && (
                       <div className="flex items-center gap-0.5 ml-1" title="Probabilidad de lluvia: hoy · mañana · pasado">
                         {prov.forecast.map((d, fi) => {
@@ -180,7 +222,7 @@ export default function CardinalQuadrant({
               </div>
 
               {/* Derecha */}
-              <div className="flex items-center gap-2 flex-shrink-0">
+              <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
                 {prov.weather === null ? (
                   <span
                     className="text-xs font-semibold px-2 py-0.5 rounded-full border"
@@ -194,12 +236,17 @@ export default function CardinalQuadrant({
                     <p className="text-sm font-black text-slate-900 dark:text-white leading-none">
                       {temp != null ? `${temp.toFixed(1)}°` : '—'}
                     </p>
-                    <p className="text-slate-400 dark:text-gray-600 mt-0.5" style={{ fontSize: 10 }}>
-                      {hum != null ? `hum ${hum}%` : ''}
-                    </p>
+                    {/* Humedad — oculta en mobile */}
+                    {!isMobile && (
+                      <p className="text-slate-400 dark:text-gray-600 mt-0.5" style={{ fontSize: 10 }}>
+                        {hum != null ? `hum ${hum}%` : ''}
+                      </p>
+                    )}
                   </div>
                 )}
-                <span className="text-base">{prov.weather === null ? '🔇' : emoji}</span>
+                {prov.weather !== null && isMobile && (
+                  <span className="text-base">{emoji}</span>
+                )}
                 <span className="text-slate-300 dark:text-gray-700 text-xs">›</span>
               </div>
             </button>

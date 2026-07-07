@@ -1,4 +1,5 @@
 import { useEffect, useCallback } from 'react';
+import { useIsMobile } from '../hooks/useIsMobile';
 import { CARDINAL_META, GEO_HIERARCHY, normalizeName } from '../data/geoData';
 import { useWeatherData } from '../hooks/useWeatherData';
 import { useTheme }       from '../context/ThemeContext';
@@ -44,7 +45,8 @@ export default function ProvinceModal({ qid, provinceIdx, munIdx, userProvinceNa
   const province     = provinceIdx !== null ? geoProvinces[provinceIdx] : null;
   const municipality = (munIdx !== null && province) ? province.municipalities[munIdx] : null;
 
-  const level = municipality ? 2 : province ? 1 : 0;
+  const level    = municipality ? 2 : province ? 1 : 0;
+  const isMobile = useIsMobile();
 
   const handleKey = useCallback((e) => { if (e.key === 'Escape') onClose(); }, [onClose]);
   useEffect(() => {
@@ -66,15 +68,16 @@ export default function ProvinceModal({ qid, provinceIdx, munIdx, userProvinceNa
 
   return (
     <div
-      className="fixed inset-0 z-[1000] flex items-center justify-center p-4"
+      className={`fixed inset-0 z-[1000] flex items-center justify-center ${isMobile ? 'p-0' : 'p-4'}`}
       style={{ background: backdropBg, backdropFilter: 'blur(8px)' }}
       onClick={e => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div
-        className="w-full flex flex-col rounded-2xl overflow-hidden"
+        className={`w-full flex flex-col overflow-hidden ${isMobile ? 'rounded-none' : 'rounded-2xl'}`}
         style={{
-          maxWidth: 1000,
-          maxHeight: '90vh',
+          maxWidth:  isMobile ? '100vw' : 1000,
+          maxHeight: isMobile ? '100dvh' : '90vh',
+          height:    isMobile ? '100dvh' : undefined,
           background: modalBg,
           border: `1px solid ${isDark ? meta.accentHex + '33' : meta.accentHex + '55'}`,
           boxShadow: `0 0 60px ${meta.accentHex}16`,
@@ -82,16 +85,16 @@ export default function ProvinceModal({ qid, provinceIdx, munIdx, userProvinceNa
         }}
       >
         {/* ── CABECERA ──────────────────────────────────────────────────── */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-gray-700 flex-shrink-0">
-          <div className="flex items-center gap-3">
-            <span className="text-3xl font-black leading-none" style={{ color: meta.accent }}>
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-200 dark:border-gray-700 flex-shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <span className="text-2xl sm:text-3xl font-black leading-none flex-shrink-0" style={{ color: meta.accent }}>
               {meta.arrow}
             </span>
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-base font-black text-slate-900 dark:text-white">{titleParts.join(' › ')}</h2>
+            <div className="min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h2 className="text-sm sm:text-base font-black text-slate-900 dark:text-white truncate">{titleParts.join(' › ')}</h2>
                 {meta.hasDN && !province && <span className="dn-badge">★ D.N.</span>}
-                {province?.isDN && <span className="dn-badge">★ Distrito Nacional</span>}
+                {province?.isDN && <span className="dn-badge hidden sm:inline">★ Distrito Nacional</span>}
               </div>
               <p className="text-xs font-medium mt-0.5" style={{ color: meta.accent + 'aa' }}>
                 {meta.description}
@@ -99,25 +102,28 @@ export default function ProvinceModal({ qid, provinceIdx, munIdx, userProvinceNa
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5 rounded-full px-3 py-1.5 border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800/50">
+          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+            <div className="hidden sm:flex items-center gap-1.5 rounded-full px-3 py-1.5 border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800/50">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" style={{ animation: 'pulse 2s ease infinite' }} />
               <span className="text-xs text-slate-500 dark:text-gray-400">Datos en vivo</span>
             </div>
-            <button
-              onClick={onClose}
-              aria-label="Cerrar panel de detalle"
-              className="w-7 h-7 rounded-full border border-slate-200 dark:border-gray-600 flex items-center justify-center
-                         text-slate-400 dark:text-gray-500 hover:text-slate-700 dark:hover:text-white
-                         hover:bg-slate-100 dark:hover:bg-gray-700 transition-colors text-sm"
-            >
-              ×
-            </button>
+            {/* Botón cerrar — solo desktop (en mobile va en el pie) */}
+            {!isMobile && (
+              <button
+                onClick={onClose}
+                aria-label="Cerrar panel de detalle"
+                className="w-7 h-7 rounded-full border border-slate-200 dark:border-gray-600 flex items-center justify-center
+                           text-slate-400 dark:text-gray-500 hover:text-slate-700 dark:hover:text-white
+                           hover:bg-slate-100 dark:hover:bg-gray-700 transition-colors text-sm"
+              >
+                ×
+              </button>
+            )}
           </div>
         </div>
 
         {/* ── STEPPER ──────────────────────────────────────────────────── */}
-        <div className="px-6 py-2.5 border-b border-slate-100 dark:border-gray-700/60 flex-shrink-0 flex items-center justify-between">
+        <div className="px-4 sm:px-6 py-2.5 border-b border-slate-100 dark:border-gray-700/60 flex-shrink-0 flex items-center justify-between">
           <DrilldownStepper level={level} accent={meta.accentHex} onStepClick={stepBack} />
           <span className="text-xs text-slate-400 dark:text-gray-600 font-mono">
             {municipality
@@ -130,22 +136,23 @@ export default function ProvinceModal({ qid, provinceIdx, munIdx, userProvinceNa
 
         {/* ── BANNER GPS ────────────────────────────────────────────────── */}
         {userProvinceName && (
-          <div className="px-6 py-2 border-b border-cyan-200 dark:border-cyan-900/40 bg-cyan-50 dark:bg-cyan-950/20
+          <div className="px-4 sm:px-6 py-2 border-b border-cyan-200 dark:border-cyan-900/40 bg-cyan-50 dark:bg-cyan-950/20
                            flex items-center gap-2 flex-shrink-0"
                style={{ animation: 'fadeDown .2s ease' }}>
-            <span className="text-base">📍</span>
+            <span className="text-base flex-shrink-0">📍</span>
             <p className="text-xs text-cyan-700 dark:text-cyan-300 font-medium">
-              Tu ubicación aproximada: <span className="text-slate-900 dark:text-white font-bold">{userProvinceName}</span>
-              <span className="text-cyan-500 dark:text-cyan-400/60"> · Haz clic en la provincia resaltada para ver el clima detallado</span>
+              Tu ubicación: <span className="text-slate-900 dark:text-white font-bold">{userProvinceName}</span>
+              <span className="hidden sm:inline text-cyan-500 dark:text-cyan-400/60"> · Haz clic en la provincia resaltada</span>
             </p>
           </div>
         )}
 
         {/* ── CONTENIDO ─────────────────────────────────────────────────── */}
-        <div className="flex flex-1 overflow-hidden">
+        <div className={`flex flex-1 overflow-hidden ${isMobile ? 'flex-col' : 'flex-row'}`}>
 
-          {/* Panel izquierdo */}
-          <div className="w-64 flex-shrink-0 border-r border-slate-100 dark:border-gray-700/60 overflow-y-auto">
+          {/* Panel izquierdo — oculto en mobile (navegación via panel derecho) */}
+          <div className={`flex-shrink-0 border-slate-100 dark:border-gray-700/60 overflow-y-auto
+                           ${isMobile ? 'hidden' : 'w-64 border-r'}`}>
             <LeftPanel
               qid={qid} meta={meta}
               geoProvinces={geoProvinces}
@@ -158,12 +165,13 @@ export default function ProvinceModal({ qid, provinceIdx, munIdx, userProvinceNa
           </div>
 
           {/* Panel derecho */}
-          <div className="flex-1 overflow-y-auto p-5">
+          <div className="flex-1 overflow-y-auto p-4 sm:p-5">
             <RightPanel
               meta={meta}
               geoProvinces={geoProvinces}
               provinceIdx={provinceIdx}
               munIdx={munIdx}
+              isMobile={isMobile}
               onSelectProvince={pi => onNavigate({ qid, provinceIdx: pi, munIdx: null })}
               onSelectMun={mi => onNavigate({ qid, provinceIdx, munIdx: mi })}
             />
@@ -171,7 +179,7 @@ export default function ProvinceModal({ qid, provinceIdx, munIdx, userProvinceNa
         </div>
 
         {/* ── PIE ──────────────────────────────────────────────────────── */}
-        <div className="px-6 py-2.5 border-t border-slate-100 dark:border-gray-700/60 flex-shrink-0
+        <div className="px-4 sm:px-6 py-2.5 border-t border-slate-100 dark:border-gray-700/60 flex-shrink-0
                         flex items-center justify-between bg-slate-50/80 dark:bg-black/20">
           {provinceIdx !== null ? (
             <button
@@ -179,18 +187,31 @@ export default function ProvinceModal({ qid, provinceIdx, munIdx, userProvinceNa
                 ? onNavigate({ qid, provinceIdx, munIdx: null })
                 : onNavigate({ qid, provinceIdx: null, munIdx: null })}
               aria-label={munIdx !== null ? 'Volver a la lista de municipios' : 'Volver a la lista de provincias'}
-              className="flex items-center gap-1.5 text-xs text-slate-400 dark:text-gray-500 hover:text-slate-700 dark:hover:text-white transition-colors"
+              className="flex items-center gap-1.5 text-xs text-slate-400 dark:text-gray-500 hover:text-slate-700 dark:hover:text-white transition-colors min-h-[36px]"
             >
               ← Volver
             </button>
           ) : <span />}
-          <p className="text-xs text-slate-400 dark:text-gray-700">
-            {municipality
-              ? `Distritos de ${municipality.name}`
-              : province
-              ? 'Clic en un municipio para ver sus distritos municipales'
-              : 'Clic en una provincia para ver sus municipios'}
-          </p>
+          {/* Botón cerrar — solo mobile, en el pie */}
+          {isMobile ? (
+            <button
+              onClick={onClose}
+              aria-label="Cerrar panel de detalle"
+              className="flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-full border
+                         border-slate-200 dark:border-gray-600 text-slate-500 dark:text-gray-400
+                         hover:bg-slate-100 dark:hover:bg-gray-700 transition-colors min-h-[36px]"
+            >
+              × Cerrar
+            </button>
+          ) : (
+            <p className="text-xs text-slate-400 dark:text-gray-700">
+              {municipality
+                ? `Distritos de ${municipality.name}`
+                : province
+                ? 'Clic en un municipio para ver sus distritos'
+                : 'Clic en una provincia para ver sus municipios'}
+            </p>
+          )}
         </div>
       </div>
     </div>
@@ -289,7 +310,7 @@ function LeftPanel({ qid, meta, geoProvinces, provinceIdx, munIdx, userProvinceN
 }
 
 // ── Panel Derecho ─────────────────────────────────────────────────────────────
-function RightPanel({ meta, geoProvinces, provinceIdx, munIdx, onSelectProvince, onSelectMun }) {
+function RightPanel({ meta, geoProvinces, provinceIdx, munIdx, isMobile, onSelectProvince, onSelectMun }) {
   const province     = provinceIdx !== null ? geoProvinces[provinceIdx] : null;
   const municipality = (munIdx !== null && province) ? province.municipalities[munIdx] : null;
 
@@ -368,14 +389,14 @@ function RightPanel({ meta, geoProvinces, provinceIdx, munIdx, onSelectProvince,
 
         {/* Pronóstico extendido 3 días */}
         {provinceForecast.length > 0 && (
-          <ForecastSection forecast={provinceForecast} meta={meta} />
+          <ForecastSection forecast={provinceForecast} meta={meta} isMobile={isMobile} />
         )}
 
         {/* Municipios */}
         <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-gray-500 mb-3">
           Municipios
         </h4>
-        <div className="grid grid-cols-2 xl:grid-cols-3 gap-3">
+        <div className={`grid gap-3 ${isMobile ? 'grid-cols-1' : 'grid-cols-2 xl:grid-cols-3'}`}>
           {province.municipalities.map((m, mi) => (
             <MunCard key={m.name} mun={m} mi={mi} meta={meta} weather={provinceWeather} onSelect={() => onSelectMun(mi)} />
           ))}
@@ -391,7 +412,7 @@ function RightPanel({ meta, geoProvinces, provinceIdx, munIdx, onSelectProvince,
         <h3 className="text-sm font-black text-slate-900 dark:text-white">Vista general — {meta.label}</h3>
         <p className="text-xs text-slate-400 dark:text-gray-500">Selecciona una provincia para ver sus municipios</p>
       </div>
-      <div className="grid grid-cols-2 xl:grid-cols-3 gap-3">
+      <div className={`grid gap-3 ${isMobile ? 'grid-cols-1' : 'grid-cols-2 xl:grid-cols-3'}`}>
         {geoProvinces.map((p, pi) => (
           <ProvCard key={p.name} prov={p} meta={meta} onSelect={() => onSelectProvince(pi)} />
         ))}
@@ -462,22 +483,22 @@ function forecastEmoji(condText) {
   return '☀️';
 }
 
-function ForecastSection({ forecast, meta }) {
+function ForecastSection({ forecast, meta, isMobile }) {
   return (
     <div className="mb-5">
       <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-gray-500 mb-3 flex items-center gap-1.5">
         <span>📅</span> Pronóstico 3 días
       </h4>
-      <div className="grid grid-cols-3 gap-3">
+      <div className={`grid gap-3 ${isMobile ? 'grid-cols-1' : 'grid-cols-3'}`}>
         {forecast.map((day, i) => (
-          <ForecastCard key={day.date} day={day} index={i} meta={meta} />
+          <ForecastCard key={day.date} day={day} index={i} meta={meta} isMobile={isMobile} />
         ))}
       </div>
     </div>
   );
 }
 
-function ForecastCard({ day, index, meta }) {
+function ForecastCard({ day, index, meta, isMobile }) {
   const DAY_LABELS = ['Hoy', 'Mañana'];
   const fecha = new Date(day.date + 'T12:00:00');
   const dayLabel = index < 2
@@ -498,6 +519,46 @@ function ForecastCard({ day, index, meta }) {
   const maxTempColor = (day.maxtemp_c ?? 0) >= 33 ? 'text-red-500'
                      : (day.maxtemp_c ?? 0) >= 28 ? 'text-orange-500'
                      : 'text-slate-700 dark:text-gray-200';
+
+  if (isMobile) {
+    // En mobile: tarjeta horizontal compacta
+    return (
+      <div className={`rounded-xl border px-4 py-3 flex items-center justify-between gap-3
+                       ${index === 0
+                         ? 'border-slate-300 dark:border-gray-600 bg-slate-50 dark:bg-gray-700/40'
+                         : 'border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-900/40'}`}
+           style={index === 0 ? { boxShadow: `0 0 12px ${meta.accentHex}18` } : {}}>
+        <div className="flex items-center gap-3 min-w-0">
+          <span className="text-2xl leading-none">{emoji}</span>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <span className={`text-xs font-bold uppercase tracking-wider ${index === 0 ? 'text-slate-700 dark:text-gray-200' : 'text-slate-400 dark:text-gray-500'}`}>
+                {dayLabel}
+              </span>
+              {index === 0 && (
+                <span className="text-xs px-1.5 py-0.5 rounded-full font-semibold"
+                      style={{ background: meta.accentHex + '22', color: meta.accentHex, fontSize: 9 }}>LIVE</span>
+              )}
+            </div>
+            <p className="text-xs text-slate-400 dark:text-gray-500 truncate">{day.condition?.text ?? '—'}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-4 flex-shrink-0">
+          <div className="text-right">
+            <div className="flex items-baseline gap-1">
+              <span className={`text-base font-black ${maxTempColor}`}>{day.maxtemp_c != null ? `${day.maxtemp_c.toFixed(0)}°` : '—'}</span>
+              <span className="text-xs text-blue-400">{day.mintemp_c != null ? `${day.mintemp_c.toFixed(0)}°` : '—'}</span>
+            </div>
+            <div className="flex items-center gap-1 mt-0.5">
+              <span style={{ fontSize: 9 }}>💧</span>
+              <span style={{ fontSize: 10, color: rainBarColor }} className="font-bold">{rain}%</span>
+              <span className="text-slate-400 dark:text-gray-600" style={{ fontSize: 10 }}>· 💨 {maxWind.toFixed(0)}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`rounded-xl border overflow-hidden transition-all duration-200

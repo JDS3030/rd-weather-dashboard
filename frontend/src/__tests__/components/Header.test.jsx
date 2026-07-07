@@ -56,7 +56,8 @@ describe('<Header /> — Modo Emergencia', () => {
 
   test('badge de emergencia tiene clase animate-pulse', () => {
     renderWithWeather(<Header />, emergencyContextValue);
-    const badge = screen.getByText('🚨 EMERGENCIA').closest('span');
+    // El texto está en un span interno (responsive); parentElement es el badge externo
+    const badge = screen.getByText('🚨 EMERGENCIA').parentElement;
     expect(badge).toHaveClass('animate-pulse');
   });
 });

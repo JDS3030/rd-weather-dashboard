@@ -1,4 +1,5 @@
-import { useState, useMemo, useRef, lazy, Suspense } from 'react';
+import { useState, useMemo, useRef, lazy, Suspense, useCallback } from 'react';
+import { useIsMobile } from '../hooks/useIsMobile';
 import { useWeatherData } from '../hooks/useWeatherData';
 import { useGeolocation } from '../hooks/useGeolocation';
 import { GEO_HIERARCHY, CARDINAL_META, getCardinalForProvince, normalizeName } from '../data/geoData';
@@ -15,9 +16,20 @@ export default function CardinalDashboard() {
   const isEmergency = alertState.isEmergency;
   const geo = useGeolocation();
 
-  const [modal,    setModal]    = useState(null);
-  const [view,     setView]     = useState('grid');    // 'grid' | 'mapa'
-  const [colorBy,  setColorBy]  = useState('temp');    // 'temp' | 'alert'
+  const isMobile = useIsMobile();
+
+  const [modal,         setModal]         = useState(null);
+  const [view,          setView]          = useState('grid');    // 'grid' | 'mapa'
+  const [colorBy,       setColorBy]       = useState('temp');    // 'temp' | 'alert'
+  const [openQuadrants, setOpenQuadrants] = useState(new Set(['norte']));
+
+  const toggleQuadrant = useCallback(qid => {
+    setOpenQuadrants(prev => {
+      const next = new Set(prev);
+      next.has(qid) ? next.delete(qid) : next.add(qid);
+      return next;
+    });
+  }, []);
 
   // Refs para hacer scroll automático al cuadrante del usuario
   const quadrantRefs = useRef({});
@@ -123,7 +135,7 @@ export default function CardinalDashboard() {
       </div>
 
       {/* ── Fila de controles: título + vista + GPS ───────────────────── */}
-      <div className="mb-3 flex items-center justify-between gap-3 flex-wrap">
+      <div className="mb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3">
         <h2 className={`text-xs font-bold uppercase tracking-wider ${
           isEmergency ? 'text-red-500' : 'text-slate-400 dark:text-gray-500'
         }`}>
@@ -169,8 +181,8 @@ export default function CardinalDashboard() {
             onClick={geo.status === 'found' ? geo.reset : handleLocate}
             disabled={geo.status === 'loading'}
             aria-label={geo.status === 'found' ? `Ubicación activa: ${geo.result?.name ?? ''} — clic para limpiar` : 'Detectar mi ubicación en el mapa'}
-            className={`flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full
-                         border transition-all duration-200 flex-shrink-0
+            className={`flex items-center justify-center gap-2 text-xs font-semibold px-3 py-2 rounded-full
+                         border transition-all duration-200 w-full sm:w-auto
                          ${geo.status === 'loading'
                            ? 'border-cyan-600 text-cyan-600 cursor-wait bg-cyan-50 dark:bg-cyan-950/20'
                            : geo.status === 'found'
@@ -253,6 +265,8 @@ export default function CardinalDashboard() {
                 onOpenModal={openModal}
                 isUserZone={geo.status === 'found' && geo.result?.qid === qid}
                 userProvinceName={geo.status === 'found' && geo.result?.qid === qid ? geo.result.name : null}
+                isOpen={!isMobile || openQuadrants.has(qid)}
+                onToggle={isMobile ? () => toggleQuadrant(qid) : undefined}
               />
             </div>
           ))}
