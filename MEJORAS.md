@@ -1,6 +1,6 @@
 # NubeVigía RD — Hoja de Ruta de Mejoras
 
-> Última actualización: **v1.4.2** (07/07/2026)
+> Última actualización: **v1.4.3** (07/07/2026)
 > Clasifica las mejoras por versión sugerida y prioridad.
 
 ---
@@ -75,6 +75,18 @@ https://frontend-two-gilt-77.vercel.app
 
 ---
 
+## v1.4.3 — Patch (testing BDD) — completado ✅
+
+Pruebas de comportamiento (Behavior-Driven Development) para el detector de alertas.
+
+- [x] **Suite BDD con Cucumber.js**: `backend/features/alertDetector.feature` en Gherkin español (`# language: es`) — 54 escenarios / 174 pasos, 100% pasan. Cubre `detectFromWeather` (umbral de viento, texto de condición, alertas oficiales), `detectFromOnamet` y `computeAlertLevel`. *(07/07/2026)*
+- [x] **Step definitions CommonJS**: `features/step_definitions/alertDetector.steps.js` con helper `makeProvince`, estado por escenario y aserciones `assert`. *(07/07/2026)*
+- [x] **Escenarios clasificados por tag**: `@positivo` (21), `@negativo` (13), `@limite` (20) — incluye Esquemas del escenario para valores frontera (62/63/64 km/h, 118/119/120 km/h). *(07/07/2026)*
+- [x] **Reporteros personalizados**: `scripts/generate-bdd-report.js` (HTML oscuro navegable con filtros por categoría) y `scripts/generate-bdd-markdown.js` (reporte Markdown). *(07/07/2026)*
+- [x] **Scripts npm**: `test:bdd`, `test:bdd:html` y `test:bdd:report` (corre suite + genera HTML y Markdown). `backend/reports/` gitignored como artefacto generado. *(07/07/2026)*
+
+---
+
 ## v1.5.0 — Minor (infraestructura) — PENDIENTE 🔲
 
 Cambios más grandes que requieren planificación adicional.
@@ -122,6 +134,7 @@ Features pequeñas que quedaron pendientes de v1.4.0.
 | v1.4.0  | 2026-07-07 | Minor | Toggle oscuro/claro, pronóstico 3 días, skeleton, historial alertas, notificaciones push, mapa Leaflet, WCAG aria-label, geolocalización mejorada |
 | v1.4.1  | 2026-07-07 | Patch | Scraper ONAMET real (cheerio), pulso visual en mapa con alertas, coordenadas precisas, fix z-index ProvinceModal vs Leaflet, email emergencia SendGrid |
 | v1.4.2  | 2026-07-07 | Patch | Responsive mobile Galaxy A52s/S21 Ultra — useIsMobile, acordeón cuadrantes, modal full-screen, toggle ancho completo |
+| v1.4.3  | 2026-07-07 | Patch | Suite BDD Cucumber.js para alertDetector (54 escenarios), reporteros HTML/Markdown, scripts npm test:bdd:report |
 
 ---
 

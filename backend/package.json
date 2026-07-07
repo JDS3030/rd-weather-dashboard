@@ -12,7 +12,8 @@
     "test:html": "vitest run --coverage",
     "test:report": "node scripts/generate-report.js",
     "test:bdd": "cucumber-js --config cucumber.config.js",
-    "test:bdd:html": "cucumber-js --config cucumber.config.js --format html:reports/cucumber-report.html"
+    "test:bdd:html": "cucumber-js --config cucumber.config.js --format html:reports/cucumber-report.html",
+    "test:bdd:report": "npm run test:bdd && node scripts/generate-bdd-report.js && node scripts/generate-bdd-markdown.js"
   },
   "dependencies": {
     "@sendgrid/mail": "^8.1.6",
