@@ -10,7 +10,7 @@ on:
 
 jobs:
   backend-tests:
-    name: Backend Tests (Jest)
+    name: Backend Tests (Vitest)
     runs-on: ubuntu-latest
 
     steps:
@@ -28,7 +28,7 @@ jobs:
         run: cd backend && npm ci
 
       - name: Run backend tests
-        run: cd backend && npm test -- --forceExit
+        run: cd backend && npm test
 
   frontend-tests:
     name: Frontend Tests (Vitest)
