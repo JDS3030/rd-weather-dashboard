@@ -12,7 +12,7 @@ const RD_PROVINCES = [
   { id: 'san_juan',          name: 'San Juan de la Maguana',     query: 'San Juan de la Maguana,DO',     region: 'El Valle',      lat: 18.8065, lon: -71.2282 },
   { id: 'monte_cristi',      name: 'Monte Cristi',               query: 'Monte Cristi,DO',               region: 'Cibao Noroeste',lat: 19.8567, lon: -71.6505 },
   { id: 'bonao',             name: 'Monseñor Nouel (Bonao)',     query: 'Bonao,DO',                      region: 'Cibao Central', lat: 18.9409, lon: -70.4054 },
-  { id: 'higuey',            name: 'El Seibo / Higüey',          query: 'Higuey,DO',                     region: 'Yuma',          lat: 18.6164, lon: -68.7071 },
+  { id: 'higuey',            name: 'El Seibo',                    query: 'El Seibo,DO',                   region: 'Yuma',          lat: 18.7654, lon: -69.0318 },
   { id: 'dajabon',           name: 'Dajabón',                    query: 'Dajabon,DO',                    region: 'Cibao Noroeste',lat: 19.5474, lon: -71.7090 },
   { id: 'valverde',          name: 'Valverde',                   query: 'Mao,DO',                        region: 'Cibao Noroeste',lat: 19.5660, lon: -71.0739 },
   { id: 'santiago_rodriguez',name: 'Santiago Rodríguez',         query: 'Sabaneta,DO',                   region: 'Cibao Noroeste',lat: 19.4924, lon: -71.3416 },
@@ -26,7 +26,7 @@ const RD_PROVINCES = [
   { id: 'hato_mayor',        name: 'Hato Mayor',                 query: 'Hato Mayor del Rey,DO',         region: 'Yuma',          lat: 18.7640, lon: -69.2562 },
   { id: 'monte_plata',       name: 'Monte Plata',                query: 'Monte Plata,DO',                region: 'Valdesia',      lat: 18.8066, lon: -69.7863 },
   // Sur — provincias completadas
-  { id: 'santo_domingo',     name: 'Santo Domingo',              query: 'Santo Domingo Este,DO',         region: 'Valdesia',      lat: 18.5001, lon: -69.9886 },
+  { id: 'santo_domingo',     name: 'Santo Domingo',              query: 'Santo Domingo Este,DO',         region: 'Valdesia',      lat: 18.5058, lon: -69.8690 },
   { id: 'san_cristobal',     name: 'San Cristóbal',              query: 'San Cristobal,DO',              region: 'Valdesia',      lat: 18.4173, lon: -70.1064 },
   { id: 'peravia',           name: 'Peravia',                    query: 'Bani,DO',                       region: 'Valdesia',      lat: 18.2800, lon: -70.3317 },
   { id: 'azua',              name: 'Azua',                       query: 'Azua de Compostela,DO',         region: 'El Valle',      lat: 18.4554, lon: -70.7352 },

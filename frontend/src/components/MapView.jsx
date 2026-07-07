@@ -20,13 +20,27 @@ function alertColor(hasAlert, level) {
   return '#10b981';
 }
 
+// ── Animación de pulso (inyectada una sola vez en document.head) ──────────────
+let pulseStyleInjected = false;
+function injectPulseStyle() {
+  if (pulseStyleInjected || typeof document === 'undefined') return;
+  const style = document.createElement('style');
+  style.id = 'nuvigia-map-animations';
+  style.textContent =
+    '@keyframes nuvigia-pulse{0%{transform:scale(0.7);opacity:0.9}80%{transform:scale(2.4);opacity:0}100%{transform:scale(2.4);opacity:0}}' +
+    '.nuvigia-pulse-ring{position:absolute;inset:0;border-radius:50%;border:3px solid transparent;animation:nuvigia-pulse 2s ease-out infinite;transform-origin:center;pointer-events:none;box-sizing:border-box;}';
+  document.head.appendChild(style);
+  pulseStyleInjected = true;
+}
+
 // ── Icono SVG inline (evita dependencias de imágenes externas) ────────────────
 function makeIcon(L, color, temp, hasAlert) {
+  if (hasAlert) injectPulseStyle();
   const size = hasAlert ? 34 : 28;
-  const svg = `
+  const r    = hasAlert ? size / 2 - 6 : size / 2 - 2;
+  const svg  = `
     <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
-      ${hasAlert ? `<circle cx="${size/2}" cy="${size/2}" r="${size/2}" fill="${color}" opacity="0.25"/>` : ''}
-      <circle cx="${size/2}" cy="${size/2}" r="${hasAlert ? size/2 - 4 : size/2 - 2}"
+      <circle cx="${size/2}" cy="${size/2}" r="${r}"
               fill="${color}" stroke="white" stroke-width="1.5" opacity="0.92"/>
       <text x="${size/2}" y="${size/2 + 4}" text-anchor="middle"
             font-family="system-ui,sans-serif" font-size="${hasAlert ? 9 : 8}"
@@ -34,8 +48,11 @@ function makeIcon(L, color, temp, hasAlert) {
         ${temp != null ? temp.toFixed(0) + '°' : '?'}
       </text>
     </svg>`;
+  const pulseRing = hasAlert
+    ? `<div class="nuvigia-pulse-ring" style="border-color:${color};"></div>`
+    : '';
   return L.divIcon({
-    html:       `<div style="width:${size}px;height:${size}px">${svg}</div>`,
+    html:       `<div style="position:relative;width:${size}px;height:${size}px">${pulseRing}${svg}</div>`,
     className:  '',
     iconSize:   [size, size],
     iconAnchor: [size / 2, size / 2],
