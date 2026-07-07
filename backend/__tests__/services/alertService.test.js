@@ -17,12 +17,14 @@ const {
 const alertService           = require('../../src/services/alertService');
 const weatherProviderService = require('../../src/services/weatherProviderService');
 const onaMetService          = require('../../src/services/onaMetService');
+const alertHistoryRepository = require('../../src/repositories/alertHistoryRepository');
 const logger                 = require('../../src/utils/logger');
 
 beforeEach(() => {
   alertService.resetState();
   vi.spyOn(weatherProviderService, 'getAllProvincesWeather');
   vi.spyOn(onaMetService, 'fetchLatestBulletin');
+  vi.spyOn(alertHistoryRepository, 'insert').mockResolvedValue(undefined);
   vi.spyOn(logger, 'info').mockImplementation(() => {});
   vi.spyOn(logger, 'warn').mockImplementation(() => {});
   vi.spyOn(logger, 'error').mockImplementation(() => {});
@@ -203,6 +205,65 @@ describe('checkAndUpdateAlertStatus()', () => {
 
     expect(ts).toBeGreaterThanOrEqual(before);
     expect(ts).toBeLessThanOrEqual(after);
+  });
+});
+
+// ─── Persistencia del historial ─────────────────────────────────────────────
+
+describe('persistencia del historial de alertas', () => {
+  test('registra el cambio de nivel al escalar normal → emergency', async () => {
+    weatherProviderService.getAllProvincesWeather.mockResolvedValue({
+      data: [PROVINCE_HURRICANE_WIND], errors: [],
+    });
+    onaMetService.fetchLatestBulletin.mockResolvedValue([]);
+
+    await alertService.checkAndUpdateAlertStatus();
+
+    expect(alertHistoryRepository.insert).toHaveBeenCalledTimes(1);
+    const entry = alertHistoryRepository.insert.mock.calls[0][0];
+    expect(entry.fromLevel).toBe('normal');
+    expect(entry.toLevel).toBe('emergency');
+    expect(entry.province).toBe('Monte Cristi');
+    expect(entry.triggerCount).toBeGreaterThan(0);
+    expect(Array.isArray(entry.triggers)).toBe(true);
+  });
+
+  test('NO registra cuando el nivel no cambia (normal → normal)', async () => {
+    weatherProviderService.getAllProvincesWeather.mockResolvedValue({ data: PROVINCES_NORMAL, errors: [] });
+    onaMetService.fetchLatestBulletin.mockResolvedValue([]);
+
+    await alertService.checkAndUpdateAlertStatus();
+
+    expect(alertHistoryRepository.insert).not.toHaveBeenCalled();
+  });
+
+  test('registra también cuando el nivel baja (emergency → normal)', async () => {
+    weatherProviderService.getAllProvincesWeather.mockResolvedValue({
+      data: [PROVINCE_HURRICANE_WIND], errors: [],
+    });
+    onaMetService.fetchLatestBulletin.mockResolvedValue([]);
+    await alertService.checkAndUpdateAlertStatus(); // normal → emergency
+
+    weatherProviderService.getAllProvincesWeather.mockResolvedValue({ data: PROVINCES_NORMAL, errors: [] });
+    onaMetService.fetchLatestBulletin.mockResolvedValue([]);
+    await alertService.checkAndUpdateAlertStatus(); // emergency → normal
+
+    expect(alertHistoryRepository.insert).toHaveBeenCalledTimes(2);
+    const second = alertHistoryRepository.insert.mock.calls[1][0];
+    expect(second.fromLevel).toBe('emergency');
+    expect(second.toLevel).toBe('normal');
+  });
+
+  test('un fallo del repositorio no interrumpe el ciclo de alertas', async () => {
+    alertHistoryRepository.insert.mockRejectedValueOnce(new Error('DB caída'));
+    weatherProviderService.getAllProvincesWeather.mockResolvedValue({
+      data: [PROVINCE_HURRICANE_WIND], errors: [],
+    });
+    onaMetService.fetchLatestBulletin.mockResolvedValue([]);
+
+    const state = await alertService.checkAndUpdateAlertStatus();
+
+    expect(state.level).toBe('emergency');
   });
 });
 

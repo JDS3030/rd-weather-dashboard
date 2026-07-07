@@ -9,6 +9,7 @@ const cron = require('node-cron');
 const routes = require('./src/routes');
 const alertService = require('./src/services/alertService');
 const reportService = require('./src/services/reportService');
+const { ensureSchema } = require('./src/db/init');
 const { errorHandler, notFound } = require('./src/middleware/errorHandler');
 const logger = require('./src/utils/logger');
 
@@ -65,6 +66,7 @@ cron.schedule('0 * * * *', async () => {
 // ─── Start ───────────────────────────────────────────────────────────────────
 app.listen(PORT, async () => {
   logger.info(`✅ Server running on http://localhost:${PORT}`);
+  await ensureSchema(); // crea la tabla del historial si hay DB (no-op sin DATABASE_URL)
   logger.info('Running initial weather check...');
   try {
     await alertService.checkAndUpdateAlertStatus();

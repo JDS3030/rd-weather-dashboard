@@ -1,6 +1,6 @@
 # NubeVigía RD — Hoja de Ruta de Mejoras
 
-> Última actualización: **v1.4.4** (07/07/2026)
+> Última actualización: **v1.5.0** (07/07/2026)
 > Clasifica las mejoras por versión sugerida y prioridad.
 
 ---
@@ -94,12 +94,13 @@ Pruebas de comportamiento (Behavior-Driven Development) para el detector de aler
 
 ---
 
-## v1.5.0 — Minor (infraestructura) — PENDIENTE 🔲
+## v1.5.0 — Minor (infraestructura) — EN PROGRESO 🔶
 
 Cambios más grandes que requieren planificación adicional.
 
+- [x] **PostgreSQL — historial de alertas**: persistencia server-side de cada cambio de nivel de alerta (tabla `alert_history`) con `pg` puro (`db/pool.js`, `db/init.js`, `repositories/alertHistoryRepository.js`). Endpoint `GET /api/alerts/history`. Degradación elegante: sin `DATABASE_URL` el backend arranca igual y opera sin persistencia; el frontend cae a `localStorage`. Un fallo de DB nunca interrumpe el ciclo de alertas. Spec en `docs/superpowers/specs/2026-07-07-historial-alertas-postgresql-design.md`. *(07/07/2026)*
+- [ ] **PostgreSQL — reportes**: persistir los reportes diarios/emergencia (hoy en array en memoria, `reportService.js`). *(pendiente)*
 - [ ] **WebSockets** (`socket.io`): reemplazar polling HTTP cada 5 min por canal en tiempo real. Requiere cambios en backend y frontend. *(24/06/2026)*
-- [ ] **PostgreSQL**: persistir historial de alertas y reportes (Railway ya lo ofrece como add-on). Actualmente se pierden al reiniciar el servidor. *(24/06/2026)*
 - [ ] **Redis**: caché compartido entre instancias del backend (`WeatherCache` en memoria → Redis). *(24/06/2026)*
 - [ ] **Tests E2E**: Playwright/Cypress para flujos críticos (carga dashboard, modal, modo emergencia). *(24/06/2026)*
 - [ ] **Rate limiting por usuario**: mejorar el rate limit actual (por IP) para NAT compartido. *(24/06/2026)*
@@ -143,6 +144,7 @@ Features pequeñas que quedaron pendientes de v1.4.0.
 | v1.4.2  | 2026-07-07 | Patch | Responsive mobile Galaxy A52s/S21 Ultra — useIsMobile, acordeón cuadrantes, modal full-screen, toggle ancho completo |
 | v1.4.3  | 2026-07-07 | Patch | Suite BDD Cucumber.js para alertDetector (54 escenarios), reporteros HTML/Markdown, scripts npm test:bdd:report |
 | v1.4.4  | 2026-07-07 | Patch | Fix coerción de tipo en wind_kph (string corrupto disparaba alerta falsa) + cobertura BDD/Vitest |
+| v1.5.0  | 2026-07-07 | Minor | Historial de alertas persistido en PostgreSQL (pg puro, degradación elegante) + endpoint /api/alerts/history |
 
 ---
 

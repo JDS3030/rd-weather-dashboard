@@ -8,6 +8,7 @@ const { detectFromWeather, detectFromOnamet,
 const { WeatherCache }                              = require('../utils/weatherCache');
 const logger                                        = require('../utils/logger');
 const emailService                                  = require('./emailService');
+const alertHistoryRepository                        = require('../repositories/alertHistoryRepository');
 
 // Module-level singletons — one cache and one alert state per process
 const weatherCache = new WeatherCache();
@@ -46,12 +47,26 @@ async function checkAndUpdateAlertStatus() {
   const wasEmergency = currentAlertState.isEmergency;
   const isEmergency  = level === ALERT_LEVELS.EMERGENCY;
 
+  const levelChanged = level !== prevLevel;
+
   const levelEscalated =
     (level === ALERT_LEVELS.WARNING || level === ALERT_LEVELS.EMERGENCY) &&
-    level !== prevLevel;
+    levelChanged;
 
   if (levelEscalated) {
     await emailService.sendAlertEmail(level, allTriggers, prevLevel);
+  }
+
+  // Persistir cualquier cambio de nivel (escala o baja) en el historial.
+  // Fire-and-forget: no bloquea ni interrumpe el ciclo si la DB falla.
+  if (levelChanged && prevLevel != null) {
+    alertHistoryRepository.insert({
+      fromLevel:    prevLevel,
+      toLevel:      level,
+      triggerCount: allTriggers.length,
+      province:     allTriggers[0]?.province ?? null,
+      triggers:     allTriggers,
+    });
   }
 
   currentAlertState = {
