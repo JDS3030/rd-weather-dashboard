@@ -1,9 +1,12 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, lazy, Suspense } from 'react';
 import { useWeatherData } from '../hooks/useWeatherData';
 import { useGeolocation } from '../hooks/useGeolocation';
 import { GEO_HIERARCHY, CARDINAL_META, getCardinalForProvince } from '../data/geoData';
 import CardinalQuadrant from './CardinalQuadrant';
 import ProvinceModal from './ProvinceModal';
+
+// Carga diferida del mapa para no penalizar el bundle principal
+const MapView = lazy(() => import('./MapView'));
 
 const QUADRANTS = ['norte', 'este', 'oeste', 'sur'];
 
@@ -12,7 +15,9 @@ export default function CardinalDashboard() {
   const isEmergency = alertState.isEmergency;
   const geo = useGeolocation();
 
-  const [modal, setModal] = useState(null);
+  const [modal,    setModal]    = useState(null);
+  const [view,     setView]     = useState('grid');    // 'grid' | 'mapa'
+  const [colorBy,  setColorBy]  = useState('temp');    // 'temp' | 'alert'
 
   const apiByQuadrant = useMemo(() => {
     const map = { norte: [], este: [], oeste: [], sur: [] };
@@ -106,13 +111,40 @@ export default function CardinalDashboard() {
         })}
       </div>
 
-      {/* ── Fila de controles: título + botón GPS ──────────────────────── */}
-      <div className="mb-3 flex items-center justify-between gap-3">
+      {/* ── Fila de controles: título + vista + GPS ───────────────────── */}
+      <div className="mb-3 flex items-center justify-between gap-3 flex-wrap">
         <h2 className={`text-xs font-bold uppercase tracking-wider ${
           isEmergency ? 'text-red-500' : 'text-slate-400 dark:text-gray-500'
         }`}>
           🗺️ Estado por Punto Cardinal · {apiProvinces.length} provincias
         </h2>
+
+        {/* Selector de vista: grid / mapa */}
+        <div className="flex items-center gap-1 rounded-lg border border-slate-200 dark:border-gray-700 p-0.5 bg-slate-100 dark:bg-gray-800/50">
+          <button
+            onClick={() => setView('grid')}
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold transition-colors ${
+              view === 'grid'
+                ? 'bg-white dark:bg-gray-700 text-slate-700 dark:text-gray-200 shadow-sm'
+                : 'text-slate-400 dark:text-gray-500 hover:text-slate-600 dark:hover:text-gray-300'
+            }`}
+          >
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+            </svg>
+            Grid
+          </button>
+          <button
+            onClick={() => setView('mapa')}
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold transition-colors ${
+              view === 'mapa'
+                ? 'bg-white dark:bg-gray-700 text-slate-700 dark:text-gray-200 shadow-sm'
+                : 'text-slate-400 dark:text-gray-500 hover:text-slate-600 dark:hover:text-gray-300'
+            }`}
+          >
+            🗺️ Mapa
+          </button>
+        </div>
 
         <div className="flex items-center gap-3">
           {isEmergency && (
@@ -197,20 +229,90 @@ export default function CardinalDashboard() {
         </div>
       )}
 
-      {/* ── Cuadrícula 2×2 ─────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {QUADRANTS.map(qid => (
-          <CardinalQuadrant
-            key={qid}
-            qid={qid}
-            geoProvinces={GEO_HIERARCHY[qid]}
-            apiProvinces={apiProvinces}
-            onOpenModal={openModal}
-            isUserZone={geo.status === 'found' && geo.result?.qid === qid}
-            userProvinceName={geo.status === 'found' && geo.result?.qid === qid ? geo.result.name : null}
-          />
-        ))}
-      </div>
+      {/* ── Vista: Grid 2×2 ────────────────────────────────────────────── */}
+      {view === 'grid' && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {QUADRANTS.map(qid => (
+            <CardinalQuadrant
+              key={qid}
+              qid={qid}
+              geoProvinces={GEO_HIERARCHY[qid]}
+              apiProvinces={apiProvinces}
+              onOpenModal={openModal}
+              isUserZone={geo.status === 'found' && geo.result?.qid === qid}
+              userProvinceName={geo.status === 'found' && geo.result?.qid === qid ? geo.result.name : null}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* ── Vista: Mapa interactivo ─────────────────────────────────────── */}
+      {view === 'mapa' && (
+        <div>
+          {/* Controles del mapa */}
+          <div className="flex items-center justify-between mb-3">
+            <p className={`text-xs ${isEmergency ? 'text-red-400' : 'text-slate-400 dark:text-gray-500'}`}>
+              Clic en una provincia para ver el detalle · Arrastra para mover · Scroll para zoom
+            </p>
+            <div className="flex items-center gap-1 rounded-lg border border-slate-200 dark:border-gray-700 p-0.5 bg-slate-100 dark:bg-gray-800/50">
+              {[
+                { key: 'temp',  label: '🌡️ Temp' },
+                { key: 'alert', label: '🚨 Alerta' },
+              ].map(opt => (
+                <button
+                  key={opt.key}
+                  onClick={() => setColorBy(opt.key)}
+                  className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors ${
+                    colorBy === opt.key
+                      ? 'bg-white dark:bg-gray-700 text-slate-700 dark:text-gray-200 shadow-sm'
+                      : 'text-slate-400 dark:text-gray-500 hover:text-slate-600 dark:hover:text-gray-300'
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Leyenda de temperatura */}
+          {colorBy === 'temp' && (
+            <div className="flex items-center gap-3 mb-3 flex-wrap">
+              <span className="text-xs text-slate-400 dark:text-gray-500 font-semibold">Temp:</span>
+              {[
+                { color: '#60a5fa', label: '< 22°' },
+                { color: '#34d399', label: '22–26°' },
+                { color: '#fbbf24', label: '26–29°' },
+                { color: '#f97316', label: '29–32°' },
+                { color: '#ef4444', label: '> 32°' },
+              ].map(({ color, label }) => (
+                <div key={label} className="flex items-center gap-1">
+                  <span className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: color }} />
+                  <span className="text-xs text-slate-500 dark:text-gray-400">{label}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Mapa Leaflet con lazy load */}
+          <Suspense fallback={
+            <div className="w-full rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-100 dark:bg-gray-800/50
+                            flex items-center justify-center" style={{ height: 440 }}>
+              <p className="text-slate-400 dark:text-gray-500 text-sm">Cargando mapa…</p>
+            </div>
+          }>
+            <MapView
+              colorBy={colorBy}
+              onSelectProvince={p => {
+                const qid = apiProvinces.find(ap => ap.name === p.name)
+                  ? Object.keys(GEO_HIERARCHY).find(q =>
+                      GEO_HIERARCHY[q].some(g => g.name === p.name))
+                  : null;
+                if (qid) openModal(qid, null);
+              }}
+            />
+          </Suspense>
+        </div>
+      )}
 
       {/* ── Modal de detalle drill-down ────────────────────────────────── */}
       {modal && (

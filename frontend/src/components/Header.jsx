@@ -1,9 +1,11 @@
-import { useWeatherData } from '../hooks/useWeatherData';
-import { useTheme }       from '../context/ThemeContext';
+import { useWeatherData }     from '../hooks/useWeatherData';
+import { useTheme }           from '../context/ThemeContext';
+import { useNotifications }   from '../hooks/useNotifications';
 
 export default function Header() {
   const { alertState, lastUpdate, isLoading, refresh, isStale, staleFrom } = useWeatherData();
-  const { isDark, toggleTheme } = useTheme();
+  const { isDark, toggleTheme }       = useTheme();
+  const { permission, requestPermission } = useNotifications(alertState);
   const { isEmergency, level } = alertState;
 
   const staleLabel = staleFrom
@@ -107,6 +109,43 @@ export default function Header() {
                     d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
           </button>
+
+          {/* Botón de notificaciones push */}
+          {!isEmergency && permission !== 'unsupported' && (
+            <button
+              onClick={requestPermission}
+              title={
+                permission === 'granted'  ? 'Notificaciones activas'  :
+                permission === 'denied'   ? 'Notificaciones bloqueadas (permitir en el navegador)' :
+                'Activar notificaciones de alerta'
+              }
+              disabled={permission === 'denied'}
+              className={`p-2 rounded-lg transition-colors relative
+                ${permission === 'granted'
+                  ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400'
+                  : permission === 'denied'
+                  ? 'bg-slate-100 dark:bg-gray-800 text-slate-300 dark:text-gray-600 cursor-not-allowed opacity-50'
+                  : 'bg-slate-100 dark:bg-gray-800 hover:bg-slate-200 dark:hover:bg-gray-700 text-slate-500 dark:text-gray-300'
+                }`}
+            >
+              {permission === 'granted' ? (
+                /* Campana activa */
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+              ) : (
+                /* Campana inactiva con tachado */
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                        d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+              )}
+              {/* Punto verde cuando está activo */}
+              {permission === 'granted' && (
+                <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-emerald-500" />
+              )}
+            </button>
+          )}
 
           {/* Toggle modo oscuro / claro */}
           {!isEmergency && (
