@@ -34,6 +34,11 @@ Open-Meteo (fallback gratuito, sin clave)
 ```
 backend/src/
 ├── config/constants.js        ← RD_PROVINCES (31 provincias con lat/lon/query)
+├── db/
+│   ├── pool.js                ← Pool pg singleton; isEnabled()/query(); null sin DATABASE_URL
+│   └── init.js                ← ensureSchema() — CREATE TABLE IF NOT EXISTS al arrancar
+├── repositories/
+│   └── alertHistoryRepository.js  ← insert()/getRecent() del historial (no-op sin DB)
 ├── services/
 │   ├── weatherProviderService.js  ← PUNTO DE ENTRADA para datos del clima
 │   ├── weatherApiComService.js    ← WeatherAPI.com (primario)
@@ -58,6 +63,7 @@ backend/src/
 | GET | `/api/weather` | 31 provincias (con cache) |
 | GET | `/api/weather/:provinceId` | Provincia individual |
 | GET | `/api/alerts/status` | Estado de alertas |
+| GET | `/api/alerts/history` | Historial de cambios de nivel (PostgreSQL; `?limit=50`, tope 200) |
 | POST | `/api/alerts/refresh` | Forzar actualización |
 | GET | `/api/reports/latest` | Último reporte diario |
 
@@ -71,6 +77,7 @@ WEATHERAPI_KEY=<clave de weatherapi.com>         ← fuente primaria
 OPENWEATHER_API_KEY=<clave de openweathermap>    ← no activa aún
 ONAMET_SIMULATE_EMERGENCY=false
 ONAMET_SIMULATE_WATCH=false
+DATABASE_URL=<postgres de Railway>               ← opcional; sin ella no persiste historial
 NODE_ENV=development
 ```
 

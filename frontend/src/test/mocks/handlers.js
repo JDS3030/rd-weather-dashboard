@@ -63,6 +63,9 @@ export const handlers = [
   http.get(`${API}/alerts/status`, () =>
     HttpResponse.json({ success: true, data: mockAlertNormal })
   ),
+  http.get(`${API}/alerts/history`, () =>
+    HttpResponse.json({ success: true, count: 0, data: [] })
+  ),
   http.get(`${API}/reports/latest`, () =>
     HttpResponse.json({ success: true, data: mockReport })
   ),

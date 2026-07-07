@@ -1,5 +1,6 @@
-const alertService  = require('../services/alertService');
-const onaMetService = require('../services/onaMetService');
+const alertService           = require('../services/alertService');
+const onaMetService          = require('../services/onaMetService');
+const alertHistoryRepository = require('../repositories/alertHistoryRepository');
 
 exports.getAlertStatus = async (req, res, next) => {
   try {
@@ -14,6 +15,16 @@ exports.getAlertStatus = async (req, res, next) => {
         onaMetSource:       onaMetData.source,
       },
     });
+  } catch (err) { next(err); }
+};
+
+// Historial de cambios de nivel (persistido en PostgreSQL).
+// Sin DB devuelve una lista vacía (no es un error).
+exports.getAlertHistory = async (req, res, next) => {
+  try {
+    const limit   = parseInt(req.query.limit, 10) || alertHistoryRepository.DEFAULT_LIMIT;
+    const history = await alertHistoryRepository.getRecent(limit);
+    res.json({ success: true, count: history.length, data: history });
   } catch (err) { next(err); }
 };
 

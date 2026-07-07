@@ -5,11 +5,12 @@ const express  = require('express');
 
 // vi.spyOn() es el approach correcto para módulos CJS: opera en runtime sin hoisting.
 // Cargamos los módulos reales y espiaremos sus métodos en cada test.
-const alertService   = require('../../src/services/alertService');
-const onaMetService  = require('../../src/services/onaMetService');
-const reportService  = require('../../src/services/reportService');
-const openMeteo      = require('../../src/services/openMeteoService');
-const logger         = require('../../src/utils/logger');
+const alertService           = require('../../src/services/alertService');
+const onaMetService          = require('../../src/services/onaMetService');
+const reportService          = require('../../src/services/reportService');
+const openMeteo              = require('../../src/services/openMeteoService');
+const alertHistoryRepository = require('../../src/repositories/alertHistoryRepository');
+const logger                 = require('../../src/utils/logger');
 
 const routes             = require('../../src/routes');
 const { errorHandler, notFound } = require('../../src/middleware/errorHandler');
@@ -103,6 +104,43 @@ describe('GET /api/alerts/status', () => {
     expect(res.status).toBe(200);
     expect(res.body.data.level).toBe('normal');
     expect(res.body.data.isEmergency).toBe(false);
+  });
+});
+
+// ─── GET /api/alerts/history ──────────────────────────────────────────────────
+
+describe('GET /api/alerts/history', () => {
+  test('retorna 200 con el historial persistido', async () => {
+    const sample = [
+      { id: 2, from: 'warning', to: 'emergency', triggerCount: 3, province: 'Monte Cristi', triggers: [], createdAt: '2026-07-07T18:30:00.000Z' },
+      { id: 1, from: 'normal',  to: 'warning',   triggerCount: 1, province: null,           triggers: [], createdAt: '2026-07-07T18:00:00.000Z' },
+    ];
+    vi.spyOn(alertHistoryRepository, 'getRecent').mockResolvedValue(sample);
+
+    const res = await request(app).get('/api/alerts/history');
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.count).toBe(2);
+    expect(res.body.data[0].to).toBe('emergency');
+  });
+
+  test('pasa el parámetro limit al repositorio', async () => {
+    const spy = vi.spyOn(alertHistoryRepository, 'getRecent').mockResolvedValue([]);
+
+    await request(app).get('/api/alerts/history?limit=5');
+
+    expect(spy).toHaveBeenCalledWith(5);
+  });
+
+  test('sin DB devuelve lista vacía (200, no error)', async () => {
+    vi.spyOn(alertHistoryRepository, 'getRecent').mockResolvedValue([]);
+
+    const res = await request(app).get('/api/alerts/history');
+
+    expect(res.status).toBe(200);
+    expect(res.body.count).toBe(0);
+    expect(res.body.data).toEqual([]);
   });
 });
 
