@@ -43,5 +43,19 @@ backend/jest-results.json
 preview-dashboard-*.html
 ojo/
 
+# ── Screenshots de testing / verificación (generados por Claude) ─
+*.png
+!frontend/public/*.png
+
+# ── Archivos MCP y agentes (internos de Claude Code) ─────────
+.agents/
+.playwright-mcp/
+skills-lock.json
+
+# ── Archivos temporales ───────────────────────────────────────
+*.tmp
+*.temp
+C\357\200\272*
+
 # ── Pencil (archivos de diseño binarios — opcional subirlos) ─
 # MeteoRD-Dashboard.pen
