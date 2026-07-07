@@ -143,10 +143,10 @@ export default function CardinalDashboard() {
         </h2>
 
         {/* Selector de vista: grid / mapa */}
-        <div className="flex items-center gap-1 rounded-lg border border-slate-200 dark:border-gray-700 p-0.5 bg-slate-100 dark:bg-gray-800/50">
+        <div className="flex items-center gap-1 rounded-lg border border-slate-200 dark:border-gray-700 p-0.5 bg-slate-100 dark:bg-gray-800/50 w-full sm:w-auto">
           <button
             onClick={() => setView('grid')}
-            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold transition-colors ${
+            className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-2.5 py-1.5 sm:py-1 rounded-md text-xs font-semibold transition-colors ${
               view === 'grid'
                 ? 'bg-white dark:bg-gray-700 text-slate-700 dark:text-gray-200 shadow-sm'
                 : 'text-slate-400 dark:text-gray-500 hover:text-slate-600 dark:hover:text-gray-300'
@@ -159,7 +159,7 @@ export default function CardinalDashboard() {
           </button>
           <button
             onClick={() => setView('mapa')}
-            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold transition-colors ${
+            className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-2.5 py-1.5 sm:py-1 rounded-md text-xs font-semibold transition-colors ${
               view === 'mapa'
                 ? 'bg-white dark:bg-gray-700 text-slate-700 dark:text-gray-200 shadow-sm'
                 : 'text-slate-400 dark:text-gray-500 hover:text-slate-600 dark:hover:text-gray-300'
