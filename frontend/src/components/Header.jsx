@@ -97,6 +97,7 @@ export default function Header() {
             onClick={refresh}
             disabled={isLoading}
             title="Actualizar ahora"
+            aria-label={isLoading ? 'Actualizando datos…' : 'Actualizar datos meteorológicos'}
             className={`p-2 rounded-lg transition-colors ${
               isEmergency
                 ? 'bg-red-800 hover:bg-red-700 text-red-100'
@@ -119,6 +120,12 @@ export default function Header() {
                 permission === 'denied'   ? 'Notificaciones bloqueadas (permitir en el navegador)' :
                 'Activar notificaciones de alerta'
               }
+              aria-label={
+                permission === 'granted'  ? 'Notificaciones de alerta activas' :
+                permission === 'denied'   ? 'Notificaciones bloqueadas — permitir en el navegador' :
+                'Activar notificaciones push de alerta meteorológica'
+              }
+              aria-pressed={permission === 'granted'}
               disabled={permission === 'denied'}
               className={`p-2 rounded-lg transition-colors relative
                 ${permission === 'granted'
@@ -152,6 +159,8 @@ export default function Header() {
             <button
               onClick={toggleTheme}
               title={isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+              aria-label={isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+              aria-pressed={!isDark}
               className="p-2 rounded-lg transition-colors bg-slate-100 dark:bg-gray-800
                          hover:bg-slate-200 dark:hover:bg-gray-700
                          text-slate-500 dark:text-gray-300"

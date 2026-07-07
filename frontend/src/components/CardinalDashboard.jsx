@@ -1,7 +1,7 @@
-import { useState, useMemo, lazy, Suspense } from 'react';
+import { useState, useMemo, useRef, lazy, Suspense } from 'react';
 import { useWeatherData } from '../hooks/useWeatherData';
 import { useGeolocation } from '../hooks/useGeolocation';
-import { GEO_HIERARCHY, CARDINAL_META, getCardinalForProvince } from '../data/geoData';
+import { GEO_HIERARCHY, CARDINAL_META, getCardinalForProvince, normalizeName } from '../data/geoData';
 import CardinalQuadrant from './CardinalQuadrant';
 import ProvinceModal from './ProvinceModal';
 
@@ -18,6 +18,9 @@ export default function CardinalDashboard() {
   const [modal,    setModal]    = useState(null);
   const [view,     setView]     = useState('grid');    // 'grid' | 'mapa'
   const [colorBy,  setColorBy]  = useState('temp');    // 'temp' | 'alert'
+
+  // Refs para hacer scroll automático al cuadrante del usuario
+  const quadrantRefs = useRef({});
 
   const apiByQuadrant = useMemo(() => {
     const map = { norte: [], este: [], oeste: [], sur: [] };
@@ -51,8 +54,15 @@ export default function CardinalDashboard() {
       p.name.toLowerCase().includes(name.toLowerCase().split(' ')[0]) ||
       name.toLowerCase().includes(p.name.toLowerCase().split(' ')[0])
     );
-    const t = setTimeout(() => openModal(qid, pi >= 0 ? pi : null), 600);
-    return () => clearTimeout(t);
+    // Scroll suave al cuadrante del usuario (solo en vista grid)
+    const scrollTimer = setTimeout(() => {
+      const el = quadrantRefs.current[qid];
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 300);
+
+    // Abre el modal con la provincia encontrada, tras dar tiempo al scroll
+    const modalTimer = setTimeout(() => openModal(qid, pi >= 0 ? pi : null), 800);
+    return () => { clearTimeout(scrollTimer); clearTimeout(modalTimer); };
   }, [geo.status, geo.result?.name]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const geoApiMatch = useMemo(() => {
@@ -78,6 +88,7 @@ export default function CardinalDashboard() {
             <button
               key={qid}
               onClick={() => openModal(qid)}
+              aria-label={`Abrir detalle zona ${meta.label}${avg ? ` — ${avg}°C promedio` : ''}`}
               className="text-left rounded-xl px-4 py-3 border transition-all duration-300
                          hover:scale-[1.01] bg-white dark:bg-gray-900/40 relative
                          hover:bg-slate-50 dark:hover:bg-gray-700/40"
@@ -157,6 +168,7 @@ export default function CardinalDashboard() {
           <button
             onClick={geo.status === 'found' ? geo.reset : handleLocate}
             disabled={geo.status === 'loading'}
+            aria-label={geo.status === 'found' ? `Ubicación activa: ${geo.result?.name ?? ''} — clic para limpiar` : 'Detectar mi ubicación en el mapa'}
             className={`flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full
                          border transition-all duration-200 flex-shrink-0
                          ${geo.status === 'loading'
@@ -233,15 +245,16 @@ export default function CardinalDashboard() {
       {view === 'grid' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {QUADRANTS.map(qid => (
-            <CardinalQuadrant
-              key={qid}
-              qid={qid}
-              geoProvinces={GEO_HIERARCHY[qid]}
-              apiProvinces={apiProvinces}
-              onOpenModal={openModal}
-              isUserZone={geo.status === 'found' && geo.result?.qid === qid}
-              userProvinceName={geo.status === 'found' && geo.result?.qid === qid ? geo.result.name : null}
-            />
+            <div key={qid} ref={el => { quadrantRefs.current[qid] = el; }}>
+              <CardinalQuadrant
+                qid={qid}
+                geoProvinces={GEO_HIERARCHY[qid]}
+                apiProvinces={apiProvinces}
+                onOpenModal={openModal}
+                isUserZone={geo.status === 'found' && geo.result?.qid === qid}
+                userProvinceName={geo.status === 'found' && geo.result?.qid === qid ? geo.result.name : null}
+              />
+            </div>
           ))}
         </div>
       )}
@@ -303,11 +316,23 @@ export default function CardinalDashboard() {
             <MapView
               colorBy={colorBy}
               onSelectProvince={p => {
-                const qid = apiProvinces.find(ap => ap.name === p.name)
-                  ? Object.keys(GEO_HIERARCHY).find(q =>
-                      GEO_HIERARCHY[q].some(g => g.name === p.name))
-                  : null;
-                if (qid) openModal(qid, null);
+                // Busca zona + índice exacto de la provincia usando normalizeName
+                // para tolerar diferencias de acentos/capitalización entre API y geodata
+                const pNorm = normalizeName(p.name).split(' ')[0];
+                let foundQid = null;
+                let foundIdx = null;
+
+                for (const q of QUADRANTS) {
+                  const idx = GEO_HIERARCHY[q].findIndex(g => {
+                    const gNorm = normalizeName(g.name).split(' ')[0];
+                    return gNorm === pNorm ||
+                           normalizeName(g.name).includes(pNorm) ||
+                           pNorm.includes(gNorm);
+                  });
+                  if (idx >= 0) { foundQid = q; foundIdx = idx; break; }
+                }
+
+                if (foundQid !== null) openModal(foundQid, foundIdx);
               }}
             />
           </Suspense>

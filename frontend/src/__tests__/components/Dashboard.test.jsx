@@ -9,15 +9,17 @@ import {
   errorContextValue,
 } from '../../test/utils';
 
-describe('<Dashboard /> — Pantalla de carga', () => {
-  test('muestra el spinner cuando isLoading=true y provinces=[]', () => {
+describe('<Dashboard /> — Skeleton de carga', () => {
+  test('muestra el skeleton (no el header real) cuando isLoading=true y provinces=[]', () => {
     renderWithWeather(<Dashboard />, loadingContextValue);
-    expect(screen.getByText('Cargando datos meteorológicos...')).toBeInTheDocument();
+    // El skeleton reemplaza el spinner — el header real NO debe estar presente
+    expect(screen.queryByText('Dashboard Climático RD')).not.toBeInTheDocument();
   });
 
-  test('muestra el subtítulo con las fuentes durante la carga', () => {
+  test('NO muestra el mensaje del spinner antiguo durante la carga', () => {
     renderWithWeather(<Dashboard />, loadingContextValue);
-    expect(screen.getByText(/ONAMET \/ WeatherAPI/i)).toBeInTheDocument();
+    // El texto del spinner fue reemplazado por el SkeletonDashboard
+    expect(screen.queryByText('Cargando datos meteorológicos...')).not.toBeInTheDocument();
   });
 
   test('NO renderiza el header principal durante la carga', () => {

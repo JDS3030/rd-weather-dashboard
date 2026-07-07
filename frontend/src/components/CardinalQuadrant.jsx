@@ -95,6 +95,7 @@ export default function CardinalQuadrant({
           )}
           <button
             onClick={() => onOpenModal(qid)}
+            aria-label={`Ver detalle de la zona ${meta.label}`}
             className="text-xs font-semibold px-3 py-1.5 rounded-full border transition-colors
                        hover:bg-black/5 dark:hover:bg-gray-700/50"
             style={{ color: isUserZone ? '#22d3ee' : meta.accent, borderColor: (isUserZone ? '#22d3ee' : meta.accentHex) + '55' }}
@@ -126,6 +127,7 @@ export default function CardinalQuadrant({
             <button
               key={prov.name}
               onClick={() => onOpenModal(qid, pi)}
+              aria-label={`${prov.name}${temp != null ? ` — ${temp.toFixed(1)}°C` : ''}${cond ? `, ${cond}` : ''}${prov.hasAlert ? ', alerta activa' : ''}`}
               className={`w-full text-left border-b border-slate-100 dark:border-gray-700/60 last:border-0 px-4 py-2.5
                            flex items-center justify-between transition-all duration-100
                            hover:bg-slate-50 dark:hover:bg-gray-700/40 hover:translate-x-0.5

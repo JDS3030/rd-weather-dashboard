@@ -110,12 +110,15 @@ export default function AlertPanel() {
         isEmergency ? 'border-red-900/40' : 'border-slate-200 dark:border-gray-800'
       }`}>
         {[
-          { key: 'alertas',   label: 'Activas' },
-          { key: 'historial', label: `Historial${history.length ? ` (${history.length})` : ''}` },
+          { key: 'alertas',   label: 'Activas',    ariaLabel: 'Ver alertas activas' },
+          { key: 'historial', label: `Historial${history.length ? ` (${history.length})` : ''}`, ariaLabel: `Ver historial de cambios${history.length ? `, ${history.length} registros` : ''}` },
         ].map(t => (
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
+            aria-label={t.ariaLabel}
+            aria-selected={tab === t.key}
+            role="tab"
             className={`flex-1 py-2 text-xs font-semibold transition-colors ${
               tab === t.key
                 ? isEmergency
@@ -172,6 +175,7 @@ export default function AlertPanel() {
                 {history.map(e => <HistoryRow key={e.id} entry={e} />)}
                 <button
                   onClick={clearHistory}
+                  aria-label="Borrar todo el historial de alertas"
                   className="mt-2 w-full text-xs text-slate-400 dark:text-gray-600 hover:text-red-500 dark:hover:text-red-400 transition-colors"
                 >
                   Limpiar historial

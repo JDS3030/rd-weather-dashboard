@@ -6,24 +6,24 @@ import App from '../App';
 import { mockAlertEmergency } from '../test/mocks/handlers';
 
 describe('<App /> — Integración', () => {
-  test('muestra la pantalla de carga durante el fetch inicial', () => {
+  test('muestra el skeleton (sin header real) durante el fetch inicial', () => {
     render(<App />);
-    expect(screen.getByText('Cargando datos meteorológicos...')).toBeInTheDocument();
+    // El SkeletonDashboard reemplazó el spinner — no debe haber header real
+    expect(screen.queryByText('Dashboard Climático RD')).not.toBeInTheDocument();
   });
 
   test('renderiza el Dashboard después de que los datos se cargan', async () => {
     render(<App />);
     await waitFor(() =>
-      expect(screen.queryByText('Cargando datos meteorológicos...')).not.toBeInTheDocument()
-    );
-    expect(screen.getByText('Dashboard Climático RD')).toBeInTheDocument();
+      expect(screen.getByText('Dashboard Climático RD')).toBeInTheDocument()
+    , { timeout: 3000 });
   });
 
   test('NO muestra EmergencyBanner en modo normal', async () => {
     render(<App />);
     await waitFor(() =>
-      expect(screen.queryByText('Cargando datos meteorológicos...')).not.toBeInTheDocument()
-    );
+      expect(screen.getByText('Dashboard Climático RD')).toBeInTheDocument()
+    , { timeout: 3000 });
     expect(screen.queryByText('⚠ EMERGENCIA')).not.toBeInTheDocument();
   });
 

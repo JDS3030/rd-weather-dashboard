@@ -106,6 +106,7 @@ export default function ProvinceModal({ qid, provinceIdx, munIdx, userProvinceNa
             </div>
             <button
               onClick={onClose}
+              aria-label="Cerrar panel de detalle"
               className="w-7 h-7 rounded-full border border-slate-200 dark:border-gray-600 flex items-center justify-center
                          text-slate-400 dark:text-gray-500 hover:text-slate-700 dark:hover:text-white
                          hover:bg-slate-100 dark:hover:bg-gray-700 transition-colors text-sm"
@@ -177,6 +178,7 @@ export default function ProvinceModal({ qid, provinceIdx, munIdx, userProvinceNa
               onClick={() => munIdx !== null
                 ? onNavigate({ qid, provinceIdx, munIdx: null })
                 : onNavigate({ qid, provinceIdx: null, munIdx: null })}
+              aria-label={munIdx !== null ? 'Volver a la lista de municipios' : 'Volver a la lista de provincias'}
               className="flex items-center gap-1.5 text-xs text-slate-400 dark:text-gray-500 hover:text-slate-700 dark:hover:text-white transition-colors"
             >
               ← Volver
