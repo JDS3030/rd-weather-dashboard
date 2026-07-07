@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react';
 import { WeatherContext } from '../context/WeatherContext';
+import { ThemeProvider }  from '../context/ThemeContext';
 import { mockProvinces, mockAlertNormal, mockAlertEmergency, mockReport } from './mocks/handlers';
 
 // Contexto base para modo normal
@@ -44,8 +45,10 @@ export const errorContextValue = {
  */
 export function renderWithWeather(ui, contextValue = normalContextValue) {
   return render(
-    <WeatherContext.Provider value={contextValue}>
-      {ui}
-    </WeatherContext.Provider>
+    <ThemeProvider>
+      <WeatherContext.Provider value={contextValue}>
+        {ui}
+      </WeatherContext.Provider>
+    </ThemeProvider>
   );
 }
