@@ -7,6 +7,7 @@ const { detectFromWeather, detectFromOnamet,
         computeAlertLevel }                         = require('./alertDetector');
 const { WeatherCache }                              = require('../utils/weatherCache');
 const logger                                        = require('../utils/logger');
+const emailService                                  = require('./emailService');
 
 // Module-level singletons — one cache and one alert state per process
 const weatherCache = new WeatherCache();
@@ -41,8 +42,17 @@ async function checkAndUpdateAlertStatus() {
   const allTriggers      = [...weatherTriggers, ...onaMetTriggers];
 
   const level        = computeAlertLevel(allTriggers);
+  const prevLevel    = currentAlertState.level;
   const wasEmergency = currentAlertState.isEmergency;
   const isEmergency  = level === ALERT_LEVELS.EMERGENCY;
+
+  const levelEscalated =
+    (level === ALERT_LEVELS.WARNING || level === ALERT_LEVELS.EMERGENCY) &&
+    level !== prevLevel;
+
+  if (levelEscalated) {
+    await emailService.sendAlertEmail(level, allTriggers, prevLevel);
+  }
 
   currentAlertState = {
     level,

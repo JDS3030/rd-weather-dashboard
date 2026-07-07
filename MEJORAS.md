@@ -76,15 +76,15 @@ Cambios más grandes que requieren planificación adicional.
 
 ---
 
-## v1.4.1 — Patch (deuda técnica) — PARCIAL ⚠️
+## v1.4.1 — Patch (deuda técnica) — completado ✅
 
-Features pequeñas que quedaron pendientes de v1.4.0. Tres de cuatro implementadas.
+Features pequeñas que quedaron pendientes de v1.4.0.
 
 - [x] **Integración real con ONAMET**: `onaMetService.js` reescrito con axios+cheerio, consulta 3 URLs de `onamet.gob.do`, múltiples selectores CSS, extrae severidad y regiones. Fallback simulado preservado vía `ONAMET_SIMULATE_*` o si el scraping falla. *(07/07/2026)*
 - [x] **Coordenadas precisas provinciales**: El Seibo corregido a Santa Cruz del Seibo (18.7654, -69.0318); Santo Domingo Provincia ajustado a Santo Domingo Este (18.5058, -69.8690) en `constants.js`. *(07/07/2026)*
 - [x] **Pulso visual en mapa con alerta activa**: `MapView.jsx` inyecta animación CSS `nuvigia-pulse-ring` (escala 0.7→2.4, fade 2s) en `document.head` una sola vez; los marcadores con alerta activa muestran el anillo pulsante. *(07/07/2026)*
 - [x] **Fix z-index ProvinceModal**: z-50 → z-1000 para cubrir las capas internas de Leaflet (marker-pane z-600, popup-pane z-700) que aparecían encima del modal al hacer clic desde la vista Mapa. *(07/07/2026)*
-- [ ] **Email de emergencia**: Twilio SendGrid como alternativa/complemento a las notificaciones push. *(24/06/2026)*
+- [x] **Email de emergencia**: `emailService.js` con SendGrid — envía email a `ALERT_EMAIL_TO` cuando el nivel escala a `warning` o `emergency`. HTML con detonadores, hora RD y enlace al dashboard. Fallo de SendGrid no interrumpe el ciclo de alertas. 11 tests nuevos. *(07/07/2026)*
 
 ---
 
@@ -109,7 +109,7 @@ Features pequeñas que quedaron pendientes de v1.4.0. Tres de cuatro implementad
 | v1.3.0  | 2026-06-24 | Minor | WeatherAPI.com primario + fallback Open-Meteo                                            |
 | v1.3.1  | 2026-06-27 | Patch | Migración a Vitest, reporte HTML, 176 tests                                              |
 | v1.4.0  | 2026-07-07 | Minor | Toggle oscuro/claro, pronóstico 3 días, skeleton, historial alertas, notificaciones push, mapa Leaflet, WCAG aria-label, geolocalización mejorada |
-| v1.4.1  | 2026-07-07 | Patch | Scraper ONAMET real (cheerio), pulso visual en mapa con alertas, coordenadas precisas, fix z-index ProvinceModal vs Leaflet |
+| v1.4.1  | 2026-07-07 | Patch | Scraper ONAMET real (cheerio), pulso visual en mapa con alertas, coordenadas precisas, fix z-index ProvinceModal vs Leaflet, email emergencia SendGrid |
 
 ---
 
