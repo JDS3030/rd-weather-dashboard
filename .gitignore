@@ -41,11 +41,11 @@ backend/jest-results.json
 
 # ── Archivos de preview / debug (locales) ────────────────────
 preview-dashboard-*.html
-ojo/
 
 # ── Screenshots de testing / verificación (generados por Claude) ─
 *.png
 !frontend/public/*.png
+!docs/screenshots/**/*.png
 
 # ── Archivos MCP y agentes (internos de Claude Code) ─────────
 .agents/
