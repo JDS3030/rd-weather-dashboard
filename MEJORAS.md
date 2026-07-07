@@ -1,6 +1,6 @@
 # NubeVigía RD — Hoja de Ruta de Mejoras
 
-> Última actualización: **v1.4.1** (07/07/2026)
+> Última actualización: **v1.4.2** (07/07/2026)
 > Clasifica las mejoras por versión sugerida y prioridad.
 
 ---
@@ -64,6 +64,17 @@ https://frontend-two-gilt-77.vercel.app
 
 ---
 
+## v1.4.2 — Patch (responsive mobile) — completado ✅
+
+- [x] **`useIsMobile()` hook**: resize listener con debounce 100ms, SSR-safe, breakpoint 768px. *(07/07/2026)*
+- [x] **Header responsive**: badge de nivel muestra solo emoji en mobile, texto completo en `sm+`. *(07/07/2026)*
+- [x] **Acordeón en CardinalDashboard**: cuadrantes colapsables en mobile con chevron, `Norte` abierto por defecto. *(07/07/2026)*
+- [x] **CardinalQuadrant mobile**: cabecera como botón de acordeón, filas con min-h-[44px], barra de calor y humedad ocultas, botón "Ver detalle" dentro del panel desplegado. *(07/07/2026)*
+- [x] **Toggle Grid/Mapa ancho completo**: botones `flex-1` en mobile, centrados y sin espacio vacío. *(07/07/2026)*
+- [x] **ProvinceModal full-screen**: `inset-0`, `rounded-none`, `100dvh` en mobile. Panel izquierdo oculto, pronóstico 3 días en tarjetas horizontales compactas, botón cerrar en pie. *(07/07/2026)*
+
+---
+
 ## v1.5.0 — Minor (infraestructura) — PENDIENTE 🔲
 
 Cambios más grandes que requieren planificación adicional.
@@ -110,6 +121,7 @@ Features pequeñas que quedaron pendientes de v1.4.0.
 | v1.3.1  | 2026-06-27 | Patch | Migración a Vitest, reporte HTML, 176 tests                                              |
 | v1.4.0  | 2026-07-07 | Minor | Toggle oscuro/claro, pronóstico 3 días, skeleton, historial alertas, notificaciones push, mapa Leaflet, WCAG aria-label, geolocalización mejorada |
 | v1.4.1  | 2026-07-07 | Patch | Scraper ONAMET real (cheerio), pulso visual en mapa con alertas, coordenadas precisas, fix z-index ProvinceModal vs Leaflet, email emergencia SendGrid |
+| v1.4.2  | 2026-07-07 | Patch | Responsive mobile Galaxy A52s/S21 Ultra — useIsMobile, acordeón cuadrantes, modal full-screen, toggle ancho completo |
 
 ---
 
