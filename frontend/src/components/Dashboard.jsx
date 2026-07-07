@@ -4,17 +4,7 @@ import StatsOverview       from './StatsOverview';
 import CardinalDashboard   from './CardinalDashboard';
 import AlertPanel          from './AlertPanel';
 import ReportPanel         from './ReportPanel';
-
-// ─── Pantalla de carga inicial ────────────────────────────────────────────────
-function LoadingScreen() {
-  return (
-    <div className="min-h-screen bg-slate-50 dark:bg-gray-950 flex flex-col items-center justify-center gap-4">
-      <div className="w-16 h-16 border-4 border-blue-500 dark:border-blue-600 border-t-transparent rounded-full animate-spin" />
-      <p className="text-slate-700 dark:text-gray-300 text-lg font-semibold">Cargando datos meteorológicos...</p>
-      <p className="text-slate-400 dark:text-gray-600 text-sm">República Dominicana · ONAMET / WeatherAPI</p>
-    </div>
-  );
-}
+import SkeletonDashboard   from './SkeletonDashboard';
 
 // ─── Pantalla de error ────────────────────────────────────────────────────────
 function ErrorScreen({ message }) {
@@ -37,7 +27,7 @@ export default function Dashboard() {
   const { provinces, isLoading, error, alertState } = useWeatherData();
   const isEmergency = alertState.isEmergency;
 
-  if (isLoading && !provinces.length) return <LoadingScreen />;
+  if (isLoading && !provinces.length) return <SkeletonDashboard />;
   if (error      && !provinces.length) return <ErrorScreen message={error} />;
 
   return (
