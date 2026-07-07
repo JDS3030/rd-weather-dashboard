@@ -66,7 +66,7 @@ export default function ProvinceModal({ qid, provinceIdx, munIdx, userProvinceNa
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-[1000] flex items-center justify-center p-4"
       style={{ background: backdropBg, backdropFilter: 'blur(8px)' }}
       onClick={e => { if (e.target === e.currentTarget) onClose(); }}
     >
