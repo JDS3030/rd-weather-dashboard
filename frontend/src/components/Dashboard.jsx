@@ -8,10 +8,10 @@ import ReportPanel         from './ReportPanel';
 // ─── Pantalla de carga inicial ────────────────────────────────────────────────
 function LoadingScreen() {
   return (
-    <div className="min-h-screen bg-gray-950 flex flex-col items-center justify-center gap-4">
-      <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
-      <p className="text-gray-300 text-lg font-semibold">Cargando datos meteorológicos...</p>
-      <p className="text-gray-600 text-sm">República Dominicana · ONAMET / WeatherAPI</p>
+    <div className="min-h-screen bg-slate-50 dark:bg-gray-950 flex flex-col items-center justify-center gap-4">
+      <div className="w-16 h-16 border-4 border-blue-500 dark:border-blue-600 border-t-transparent rounded-full animate-spin" />
+      <p className="text-slate-700 dark:text-gray-300 text-lg font-semibold">Cargando datos meteorológicos...</p>
+      <p className="text-slate-400 dark:text-gray-600 text-sm">República Dominicana · ONAMET / WeatherAPI</p>
     </div>
   );
 }
@@ -19,13 +19,13 @@ function LoadingScreen() {
 // ─── Pantalla de error ────────────────────────────────────────────────────────
 function ErrorScreen({ message }) {
   return (
-    <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
-      <div className="bg-red-950/50 border border-red-800 rounded-2xl p-8 max-w-md text-center">
+    <div className="min-h-screen bg-slate-50 dark:bg-gray-950 flex items-center justify-center p-4">
+      <div className="bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800 rounded-2xl p-8 max-w-md text-center">
         <p className="text-5xl mb-4">⚠️</p>
-        <h2 className="text-red-300 font-bold text-xl mb-2">Error de Conexión</h2>
-        <p className="text-gray-400 text-sm">{message}</p>
-        <p className="text-gray-600 text-xs mt-3">
-          Asegúrese de que el backend esté corriendo en <code className="text-gray-400">localhost:3001</code>
+        <h2 className="text-red-600 dark:text-red-300 font-bold text-xl mb-2">Error de Conexión</h2>
+        <p className="text-slate-500 dark:text-gray-400 text-sm">{message}</p>
+        <p className="text-slate-400 dark:text-gray-600 text-xs mt-3">
+          Asegúrese de que el backend esté corriendo en <code className="text-slate-600 dark:text-gray-400">localhost:3001</code>
         </p>
       </div>
     </div>
@@ -52,7 +52,7 @@ export default function Dashboard() {
         {/* Layout principal: cards (3/4) + sidebar (1/4) */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
 
-          {/* Dashboard cardinal por puntos cardinales */}
+          {/* Dashboard cardinal */}
           <section className="lg:col-span-3">
             <CardinalDashboard />
           </section>
@@ -64,19 +64,29 @@ export default function Dashboard() {
 
             {/* Créditos y fuentes */}
             <div className={`rounded-xl border p-4 text-center ${
-              isEmergency ? 'border-red-900/50 bg-red-950/20' : 'border-gray-800 bg-gray-900/30'
+              isEmergency
+                ? 'border-red-900/50 bg-red-950/20'
+                : 'border-slate-200 dark:border-gray-800 bg-white dark:bg-gray-900/30'
             }`}>
-              <p className={`text-xs font-semibold mb-1 ${isEmergency ? 'text-red-500' : 'text-gray-600'}`}>
+              <p className={`text-xs font-semibold mb-1 ${
+                isEmergency ? 'text-red-500' : 'text-slate-400 dark:text-gray-600'
+              }`}>
                 Fuentes Oficiales
               </p>
-              <p className={`text-xs leading-relaxed ${isEmergency ? 'text-red-400' : 'text-gray-500'}`}>
+              <p className={`text-xs leading-relaxed ${
+                isEmergency ? 'text-red-400' : 'text-slate-500 dark:text-gray-500'
+              }`}>
                 🏛 ONAMET<br />
                 🌐 Open-Meteo · GFS/ECMWF<br />
                 🌍 Earth Nullschool<br />
                 🛡 Defensa Civil RD
               </p>
-              <div className={`mt-3 pt-3 border-t ${isEmergency ? 'border-red-900/40' : 'border-gray-800'}`}>
-                <p className={`text-xs font-mono font-bold ${isEmergency ? 'text-red-400' : 'text-gray-600'}`}>
+              <div className={`mt-3 pt-3 border-t ${
+                isEmergency ? 'border-red-900/40' : 'border-slate-200 dark:border-gray-800'
+              }`}>
+                <p className={`text-xs font-mono font-bold ${
+                  isEmergency ? 'text-red-400' : 'text-slate-400 dark:text-gray-600'
+                }`}>
                   Emergencias: 911
                 </p>
               </div>

@@ -6,21 +6,31 @@
 
 @layer base {
   body {
-    @apply bg-gray-950 text-gray-100 antialiased;
+    @apply antialiased;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: #f8fafc;
+  }
+
+  .dark body {
     background-color: #030712;
+    color: rgb(243 244 246);
   }
 }
 
 @layer utilities {
-  /* Scrollbar personalizado */
+  /* Scrollbar — modo claro */
   * {
     scrollbar-width: thin;
-    scrollbar-color: #374151 #111827;
+    scrollbar-color: #cbd5e1 #f1f5f9;
   }
   ::-webkit-scrollbar       { width: 4px; height: 4px; }
-  ::-webkit-scrollbar-track { background: #111827; }
-  ::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+  ::-webkit-scrollbar-track { background: #f1f5f9; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+
+  /* Scrollbar — modo oscuro */
+  .dark * { scrollbar-color: #374151 #111827; }
+  .dark ::-webkit-scrollbar-track { background: #111827; }
+  .dark ::-webkit-scrollbar-thumb { background: #374151; }
 
   /* Animación de barra de ticker en emergencia */
   .ticker-wrapper { overflow: hidden; white-space: nowrap; }

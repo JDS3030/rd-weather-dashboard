@@ -24,14 +24,14 @@ export default function StatsOverview() {
   const windColor = maxWind >= 119 ? 'text-red-400'
                   : maxWind >= 63  ? 'text-orange-400'
                   : isEmergency    ? 'text-red-300'
-                  : 'text-blue-400';
+                  : 'text-blue-500 dark:text-blue-400';
 
   const stats = [
     {
       icon: '🌡️', label: 'Temperatura Prom.',
       value: `${avgTemp}°C`,
       sub:   `Máx ${temps.length ? Math.max(...temps).toFixed(1) : '--'}° / Mín ${temps.length ? Math.min(...temps).toFixed(1) : '--'}°`,
-      color: isEmergency ? 'text-red-300' : 'text-orange-400',
+      color: isEmergency ? 'text-red-300' : 'text-orange-500 dark:text-orange-400',
     },
     {
       icon: '💨', label: 'Viento Máximo',
@@ -43,13 +43,13 @@ export default function StatsOverview() {
       icon: '🌧️', label: 'Con Lluvia',
       value: `${rainyCount}/${provinces.length}`,
       sub:   'provincias con precipitación',
-      color: isEmergency ? 'text-red-300' : 'text-cyan-400',
+      color: isEmergency ? 'text-red-300' : 'text-cyan-500 dark:text-cyan-400',
     },
     {
       icon: '💧', label: 'Humedad Prom.',
       value: `${avgHumidity}%`,
       sub:   'promedio nacional',
-      color: isEmergency ? 'text-red-300' : 'text-teal-400',
+      color: isEmergency ? 'text-red-300' : 'text-teal-500 dark:text-teal-400',
     },
   ];
 
@@ -59,14 +59,18 @@ export default function StatsOverview() {
         <div key={s.label} className={`rounded-xl border p-4 transition-all duration-500 ${
           isEmergency
             ? 'bg-red-950/30 border-red-800/50'
-            : 'bg-gray-800/50 border-gray-700/50'
+            : 'bg-white dark:bg-gray-800/50 border-slate-200 dark:border-gray-700/50'
         }`}>
           <div className="flex items-center gap-1.5 mb-1.5">
             <span className="text-base">{s.icon}</span>
-            <span className={`text-xs ${isEmergency ? 'text-red-500' : 'text-gray-500'}`}>{s.label}</span>
+            <span className={`text-xs ${
+              isEmergency ? 'text-red-500' : 'text-slate-400 dark:text-gray-500'
+            }`}>{s.label}</span>
           </div>
           <p className={`text-2xl font-black ${s.color}`}>{s.value}</p>
-          <p className={`text-xs mt-0.5 truncate ${isEmergency ? 'text-red-600' : 'text-gray-600'}`}>{s.sub}</p>
+          <p className={`text-xs mt-0.5 truncate ${
+            isEmergency ? 'text-red-600' : 'text-slate-400 dark:text-gray-600'
+          }`}>{s.sub}</p>
         </div>
       ))}
     </div>

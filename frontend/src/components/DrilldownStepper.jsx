@@ -1,5 +1,4 @@
 export default function DrilldownStepper({ level, accent, onStepClick }) {
-  // level: 0=zona, 1=provincia, 2=municipio, 3=distrito
   const steps = [
     { id: 0, label: 'Zona Cardinal' },
     { id: 1, label: 'Provincia' },
@@ -22,11 +21,12 @@ export default function DrilldownStepper({ level, accent, onStepClick }) {
                 ${isDone   ? 'cursor-pointer hover:opacity-80' : 'cursor-default'}
                 ${isActive ? 'opacity-100' : isDone ? 'opacity-60' : 'opacity-25'}`}
             >
-              {/* Dot */}
               <span
                 className={`w-5 h-5 rounded-full border-2 flex items-center justify-center
                              text-xs font-black transition-all
-                             ${isDone   ? 'text-gray-900' : 'text-gray-500 border-gray-700 bg-gray-900'}
+                             ${isDone
+                               ? 'text-white dark:text-gray-900'
+                               : 'text-slate-400 dark:text-gray-500 border-slate-300 dark:border-gray-700 bg-slate-100 dark:bg-gray-900'}
                              ${isActive ? 'shadow-[0_0_8px_var(--step-glow)]' : ''}`}
                 style={{
                   background:   isDone ? accent : isActive ? 'transparent' : undefined,
@@ -39,14 +39,18 @@ export default function DrilldownStepper({ level, accent, onStepClick }) {
               </span>
               <span
                 className={`text-xs font-medium hidden sm:inline
-                  ${isActive ? 'text-white' : isDone ? 'text-gray-400' : 'text-gray-600'}`}
+                  ${isActive ? 'text-slate-900 dark:text-white'
+                  : isDone   ? 'text-slate-500 dark:text-gray-400'
+                  :            'text-slate-300 dark:text-gray-600'}`}
               >
                 {step.label}
               </span>
             </button>
 
             {i < steps.length - 1 && (
-              <div className={`w-5 h-px mx-1 transition-colors ${i < level ? 'bg-gray-500' : 'bg-gray-800'}`} />
+              <div className={`w-5 h-px mx-1 transition-colors ${
+                i < level ? 'bg-slate-400 dark:bg-gray-500' : 'bg-slate-200 dark:bg-gray-800'
+              }`} />
             )}
           </div>
         );

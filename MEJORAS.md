@@ -45,7 +45,7 @@
 
 ---
 
-## v1.4.0 — Minor (próxima versión sugerida)
+## v1.4.0 — Minor (en progreso 🔄)
 
 Features que añaden valor sin romper nada existente.
 
@@ -54,7 +54,7 @@ Features que añaden valor sin romper nada existente.
 
 ### Dashboard
 - [ ] **Modo mapa interactivo**: mostrar las provincias sobre un SVG o mapa Leaflet.js con color según temperatura o nivel de alerta. *(24/06/2026)*
-- [ ] **Pronóstico extendido**: mostrar los 3 días de forecast ya disponibles en la API (`forecast[]`) de forma visual (gráfico de líneas o cards de días). *(24/06/2026)*
+- [x] **Pronóstico extendido**: tarjetas de 3 días (HOY/MAÑANA/día) en `ProvinceModal` con max°/min°, barra de lluvia %, precipitación mm y viento. Mini-dots de lluvia por día en cada fila de `CardinalQuadrant`. *(07/07/2026)*
 - [ ] **Historial de alertas**: guardar en localStorage (o backend) los últimos 10 cambios de estado de alerta para mostrar un log en la UI. *(24/06/2026)*
 - [ ] **Geolocalización mejorada**: mostrar la provincia del usuario resaltada en el mapa y hacer scroll automático a su cuadrante cardinal. *(24/06/2026)*
 
@@ -64,7 +64,7 @@ Features que añaden valor sin romper nada existente.
 - [ ] **Email de emergencia**: alternativa o complemento a WhatsApp via Twilio SendGrid. *(24/06/2026)*
 
 ### UX / Accesibilidad
-- [ ] Modo oscuro / claro toggle (actualmente solo oscuro). *(24/06/2026)*
+- [x] **Modo oscuro / claro toggle**: `ThemeContext` con `localStorage`, botón sol/luna en el header, `darkMode: 'class'` en Tailwind. Persiste entre sesiones. *(07/07/2026)*
 - [ ] Soporte `aria-label` en todos los botones interactivos del Dashboard para cumplir WCAG 2.1 AA. *(24/06/2026)*
 - [ ] Pantalla de carga (skeleton) durante el primer fetch en lugar del spinner genérico. *(24/06/2026)*
 

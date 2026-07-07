@@ -1,7 +1,9 @@
 import { useWeatherData } from '../hooks/useWeatherData';
+import { useTheme }       from '../context/ThemeContext';
 
 export default function Header() {
   const { alertState, lastUpdate, isLoading, refresh, isStale, staleFrom } = useWeatherData();
+  const { isDark, toggleTheme } = useTheme();
   const { isEmergency, level } = alertState;
 
   const staleLabel = staleFrom
@@ -21,8 +23,9 @@ export default function Header() {
     <header className={`sticky top-0 z-40 border-b backdrop-blur-md transition-all duration-500 ${
       isEmergency
         ? 'bg-red-950/90 border-red-700'
-        : 'bg-gray-900/90 border-gray-800'
+        : 'bg-white/90 dark:bg-gray-900/90 border-slate-200 dark:border-gray-800'
     }`}>
+      {/* Barra de datos desactualizados */}
       {isStale && (
         <div className="w-full bg-yellow-900/80 border-b border-yellow-700/60 px-4 py-1.5 flex items-center justify-center gap-2">
           <span className="text-yellow-400 text-xs">⚠</span>
@@ -37,22 +40,25 @@ export default function Header() {
           </button>
         </div>
       )}
+
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
 
         {/* Logo + Título */}
         <div className="flex items-center gap-3 min-w-0">
           <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-xl flex-shrink-0 ${
-            isEmergency ? 'bg-red-700 animate-pulse' : 'bg-blue-700'
+            isEmergency ? 'bg-red-700 animate-pulse' : 'bg-blue-600 dark:bg-blue-700'
           }`}>
             {isEmergency ? '🌀' : '🌤️'}
           </div>
           <div className="min-w-0">
             <h1 className={`font-bold text-base leading-none truncate ${
-              isEmergency ? 'text-red-100' : 'text-white'
+              isEmergency ? 'text-red-100' : 'text-slate-900 dark:text-white'
             }`}>
               {isEmergency ? '⚠️ ALERTA ACTIVA' : 'Dashboard Climático RD'}
             </h1>
-            <p className={`text-xs truncate ${isEmergency ? 'text-red-400' : 'text-gray-500'}`}>
+            <p className={`text-xs truncate ${
+              isEmergency ? 'text-red-400' : 'text-slate-400 dark:text-gray-500'
+            }`}>
               República Dominicana · ONAMET / WeatherAPI
             </p>
           </div>
@@ -60,6 +66,7 @@ export default function Header() {
 
         {/* Controles */}
         <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+
           {/* Badge de nivel */}
           <span className={`px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${badge.cls}`}>
             {badge.text}
@@ -67,10 +74,18 @@ export default function Header() {
 
           {/* Última actualización */}
           <div className="hidden sm:block text-right">
-            <p className={`text-xs ${isStale ? 'text-yellow-600' : isEmergency ? 'text-red-500' : 'text-gray-600'}`}>
+            <p className={`text-xs ${
+              isStale      ? 'text-yellow-600'
+              : isEmergency ? 'text-red-500'
+              : 'text-slate-400 dark:text-gray-600'
+            }`}>
               {isStale ? '⚠ Datos anteriores' : 'Actualizado'}
             </p>
-            <p className={`text-xs font-mono ${isStale ? 'text-yellow-400' : isEmergency ? 'text-red-300' : 'text-gray-300'}`}>
+            <p className={`text-xs font-mono ${
+              isStale      ? 'text-yellow-400'
+              : isEmergency ? 'text-red-300'
+              : 'text-slate-600 dark:text-gray-300'
+            }`}>
               {lastUpdate ? lastUpdate.toLocaleTimeString('es-DO') : '--:--'}
             </p>
           </div>
@@ -83,7 +98,7 @@ export default function Header() {
             className={`p-2 rounded-lg transition-colors ${
               isEmergency
                 ? 'bg-red-800 hover:bg-red-700 text-red-100'
-                : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
+                : 'bg-slate-100 dark:bg-gray-800 hover:bg-slate-200 dark:hover:bg-gray-700 text-slate-500 dark:text-gray-300'
             } disabled:opacity-40`}
           >
             <svg className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`}
@@ -93,8 +108,33 @@ export default function Header() {
             </svg>
           </button>
 
+          {/* Toggle modo oscuro / claro */}
+          {!isEmergency && (
+            <button
+              onClick={toggleTheme}
+              title={isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+              className="p-2 rounded-lg transition-colors bg-slate-100 dark:bg-gray-800
+                         hover:bg-slate-200 dark:hover:bg-gray-700
+                         text-slate-500 dark:text-gray-300"
+            >
+              {isDark ? (
+                /* Sol — click para ir a modo claro */
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              ) : (
+                /* Luna — click para ir a modo oscuro */
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                        d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              )}
+            </button>
+          )}
+
           {/* Flag RD */}
-          <span className="hidden md:flex items-center gap-1 text-xs text-gray-600">
+          <span className="hidden md:flex items-center gap-1 text-xs text-slate-300 dark:text-gray-600">
             🇩🇴 <span>RD</span>
           </span>
         </div>
