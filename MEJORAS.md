@@ -53,10 +53,14 @@ Features que añaden valor sin romper nada existente.
 - [x] **Fix tests `useTheme`**: fallback `{ isDark: true }` cuando no hay `ThemeProvider`. *(07/07/2026)*
 - [x] **Deploy Vercel corregido**: `vercel --prod --force` para limpiar caché de build. *(07/07/2026)*
 
+### Alertas e Historial ✅
+- [x] **Historial de alertas**: `useAlertHistory` persiste últimos 10 cambios de nivel en `localStorage`; `AlertPanel` con tabs "Activas / Historial" y botón limpiar. *(07/07/2026)*
+- [x] **Notificaciones push browser**: `useNotifications` + botón campana en Header — solicita permiso y dispara `Notification` cuando el nivel de alerta escala o de-escala. *(07/07/2026)*
+
+### Mapa ✅
+- [x] **Mapa interactivo Leaflet**: vista "🗺️ Mapa" en `CardinalDashboard` (toggle Grid/Mapa); marcadores coloreados por temperatura o nivel de alerta para las 31 provincias; lazy load (chunk 150KB bajo demanda); leyenda + tooltips con clima. *(07/07/2026)*
+
 ### Pendiente 🔲
-- [ ] **Historial de alertas**: guardar en `localStorage` los últimos 10 cambios de nivel de alerta y mostrar log en la UI (AlertPanel o panel dedicado). *(24/06/2026)*
-- [ ] **Notificaciones push browser**: Web Notifications API cuando el nivel de alerta cambia. *(24/06/2026)*
-- [ ] **Modo mapa interactivo**: mapa SVG/Leaflet.js con provincias coloreadas por temperatura o nivel de alerta. *(24/06/2026)*
 - [ ] **Geolocalización mejorada**: scroll automático al cuadrante del usuario al detectar ubicación. *(24/06/2026)*
 - [ ] Soporte `aria-label` en todos los botones interactivos (WCAG 2.1 AA). *(24/06/2026)*
 - [ ] **Integración real con ONAMET**: scraper de `onamet.gob.do` con cheerio/puppeteer. *(24/06/2026)*
