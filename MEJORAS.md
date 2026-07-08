@@ -127,6 +127,12 @@ Features pequeñas que quedaron pendientes de v1.4.0.
 
 ---
 
+## Deuda técnica pendiente 🔲
+
+- [ ] **Alerta manual ONAMET sobrescrita por el scrape**: `POST /api/alerts/onamet` (`alertController.setManualOnaMetAlert`) llama a `onaMetService.setManualAlert()` y acto seguido a `checkAndUpdateAlertStatus()`, que ejecuta `fetchLatestBulletin()` — el cual hace un scrape fresco y **sobrescribe** la alerta manual antes de que `detectFromOnamet` la evalúe. Resultado: el endpoint admin no logra forzar un cambio de nivel (el nivel vuelve a `normal` de inmediato). Propuesta: que `setManualAlert` fije un flag de override (o una alerta "fijada") que `fetchLatestBulletin` respete y no pise, con un TTL o limpieza vía `DELETE /api/alerts/onamet`. Descubierto el 07/07/2026 al verificar el write path de PostgreSQL (se validó con `ONAMET_SIMULATE_EMERGENCY` en su lugar). *(07/07/2026)*
+
+---
+
 ## Registro de versiones
 
 | Versión | Fecha      | Tipo  | Descripción                                                                              |
