@@ -2,7 +2,7 @@
 
 ## Proyecto
 Dashboard de monitoreo climático en tiempo real para las **31 provincias** de la República Dominicana.
-Versión actual: **v1.3.0** | Autor: JDS3030 | Plataforma escolar: Alterna Academy
+Versión actual: **v1.4.4** (v1.5.0 en progreso) | Autor: JDS3030 | Plataforma escolar: Alterna Academy
 
 ## URLs de producción
 - **Frontend**: https://frontend-two-gilt-77.vercel.app
@@ -145,3 +145,9 @@ cd backend && railway variables set KEY=valor
 | v1.0.0 | Deploy inicial Railway + Vercel |
 | v1.2.0 | Arquitectura modular, 31 provincias |
 | v1.3.0 | WeatherAPI.com primario + fallback Open-Meteo |
+| v1.4.0 | Modo oscuro/claro, skeleton loaders, pronóstico 3 días, historial de alertas, notificaciones push, mapa interactivo Leaflet, accesibilidad WCAG 2.1 AA y geolocalización mejorada |
+| v1.4.1 | Scraper ONAMET real (axios+cheerio), pulso visual de marcadores de alerta en el mapa, coordenadas corregidas, fix z-index de ProvinceModal, email de emergencia vía SendGrid |
+| v1.4.2 | Responsive mobile: hook `useIsMobile()`, acordeón de cuadrantes, ProvinceModal full-screen, header compacto (Galaxy A52s / S21 Ultra) |
+| v1.4.3 | Suite BDD con Cucumber.js (`alertDetector.feature`, 54 escenarios/174 pasos), reporteros HTML y Markdown |
+| v1.4.4 | Fix coerción de `wind_kph` (string "125" activaba alerta de huracán falsa); validación numérica estricta + tests |
+| v1.5.0 | En progreso — historial de alertas persistido en PostgreSQL (`alert_history`, ya activo en prod). Pendiente: WebSockets, Redis, E2E Playwright, rate limiting por usuario |
