@@ -36,9 +36,9 @@ Dashboard de monitoreo climático en tiempo real para las **31 provincias** de l
 |------|-----------|---------|
 | Runtime servidor | Node.js | 20+ |
 | Framework servidor | Express | 4 |
-| Framework frontend | React | 18 |
+| Framework frontend | React | 18.2 |
 | Bundler | Vite | 5 |
-| Estilos | TailwindCSS | 3 |
+| Estilos | TailwindCSS | 3.4 |
 | Datos meteorológicos (primario) | WeatherAPI.com | — |
 | Datos meteorológicos (fallback) | Open-Meteo API | — |
 | Scripts automatización | Python | 3.11+ |
@@ -46,6 +46,60 @@ Dashboard de monitoreo climático en tiempo real para las **31 provincias** de l
 | Tests backend | Vitest | 4 |
 | Tests frontend | Vitest | 4 |
 | Mocking HTTP | MSW | 2 |
+
+---
+
+## Diseño y Frontend
+
+El diseño de la interfaz se construyó con **TailwindCSS** sobre una base de **React + Vite**, sin librería de componentes ni de iconos externa (los íconos son **SVG inline** y **emojis** propios).
+
+### Diseño y estilos
+
+| Herramienta | Versión | Uso |
+|-------------|---------|-----|
+| **TailwindCSS** | ^3.4.0 | Framework de estilos principal (todo el diseño) |
+| **PostCSS** | ^8.4.32 | Procesa el CSS de Tailwind |
+| **Autoprefixer** | ^10.4.16 | Prefijos de compatibilidad entre navegadores |
+| **Inter** (Google Fonts) | — | Tipografía principal (importada en `index.css`) |
+
+**Personalizaciones en `tailwind.config.js`:**
+
+- `darkMode: 'class'` → modo oscuro manual
+- Fuente `Inter` como `font-sans`
+- Color custom `gray-975: #030712`
+- Animaciones propias: `siren` (alertas), `ticker` (cinta de noticias), `fade-down`, `slide-up`, `modal-in`, `pulse-slow`, `ping-slow`
+
+### Base de UI
+
+| Herramienta | Versión | Uso |
+|-------------|---------|-----|
+| **React** | ^18.2.0 | Biblioteca de componentes |
+| **React DOM** | ^18.2.0 | Render en el navegador |
+| **Vite** | ^5.0.8 | Build tool / dev server |
+| **@vitejs/plugin-react** | ^4.2.1 | Soporte de React en Vite |
+
+### Mapa y datos
+
+| Herramienta | Versión | Uso |
+|-------------|---------|-----|
+| **Leaflet** | ^1.9.4 | Mapa interactivo de las 31 provincias (`MapView.jsx`, lazy-load) |
+| **Axios** | ^1.6.2 | Peticiones HTTP a la API |
+
+### Testing frontend
+
+| Herramienta | Versión | Uso |
+|-------------|---------|-----|
+| **Vitest** | ^4.1.9 | Runner de tests |
+| **@vitest/ui** / **@vitest/coverage-v8** | ^4.1.9 | UI de tests y cobertura |
+| **Testing Library** (react / jest-dom / user-event) | — | Utilidades de testing de componentes |
+| **MSW** | ^2.14.6 | Mock de la API en tests |
+| **jsdom** | ^29.1.1 | Entorno DOM para tests |
+
+### Detalles de diseño notables
+
+- **Iconos**: no se usa librería de iconos (tipo lucide/heroicons). Los íconos son **SVG inline** y **emojis** (ej. el favicon 🌤️ está embebido como SVG en `index.html`).
+- **Marcadores del mapa**: SVG generados a mano en `MapView.jsx`.
+- **Diseño UI en Pencil** (`MeteoRD-Dashboard.pen`).
 
 ---
 
