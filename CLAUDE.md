@@ -64,7 +64,7 @@ backend/src/
 | GET | `/api/weather/:provinceId` | Provincia individual |
 | GET | `/api/alerts/status` | Estado de alertas |
 | GET | `/api/alerts/history` | Historial de cambios de nivel (PostgreSQL; `?limit=50`, tope 200) |
-| POST | `/api/alerts/refresh` | Forzar actualización |
+| POST | `/api/alerts/refresh` | Forzar actualización — **protegido: requiere `Authorization: Bearer <JWT>`** (401 sin token válido) |
 | GET | `/api/reports/latest` | Último reporte diario |
 
 ## Variables de entorno
@@ -75,6 +75,7 @@ PORT=3001
 FRONTEND_URL=https://frontend-two-gilt-77.vercel.app
 WEATHERAPI_KEY=<clave de weatherapi.com>         ← fuente primaria
 OPENWEATHER_API_KEY=<clave de openweathermap>    ← no activa aún
+JWT_SECRET=<secreto para firmar/verificar JWT>   ← obligatorio para POST /api/alerts/refresh
 ONAMET_SIMULATE_EMERGENCY=false
 ONAMET_SIMULATE_WATCH=false
 DATABASE_URL=<postgres de Railway>               ← opcional; sin ella no persiste historial
