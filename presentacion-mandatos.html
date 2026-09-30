@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NubeVigía RD — Plan de Mandatos de Seguridad</title>
+<style>
+  :root{
+    --bg:#0b1120; --bg2:#111a2e; --card:#16203a; --line:#22304f;
+    --txt:#e6edf7; --muted:#93a4c3; --accent:#38bdf8; --accent2:#818cf8;
+    --ok:#34d399; --warn:#fbbf24; --danger:#fb7185;
+    --p1:#38bdf8; --p2:#818cf8; --p3:#34d399; --p4:#f472b6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:radial-gradient(1200px 800px at 70% -10%,#1b2745 0%,var(--bg) 55%);
+    color:var(--txt); overflow:hidden;
+  }
+  .deck{height:100vh;width:100vw;position:relative}
+  .slide{
+    position:absolute;inset:0;display:none;flex-direction:column;
+    padding:5vh 8vw;opacity:0;transition:opacity .35s ease;
+    overflow-y:auto;
+  }
+  .slide.active{display:flex;opacity:1}
+  .kicker{color:var(--accent);font-weight:600;letter-spacing:.18em;
+    text-transform:uppercase;font-size:.8rem;margin-bottom:1rem}
+  h1{font-size:clamp(2rem,5vw,3.6rem);line-height:1.05;margin-bottom:1rem}
+  h2{font-size:clamp(1.5rem,3.5vw,2.4rem);margin-bottom:.4rem}
+  .sub{color:var(--muted);font-size:1.05rem;max-width:60ch;line-height:1.6}
+  .badges{display:flex;gap:.6rem;flex-wrap:wrap;margin:1.2rem 0}
+  .badge{background:var(--card);border:1px solid var(--line);border-radius:999px;
+    padding:.35rem .9rem;font-size:.82rem;color:var(--muted)}
+  .badge b{color:var(--txt)}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.1rem;margin-top:1.6rem}
+  .card{background:linear-gradient(180deg,var(--card),var(--bg2));
+    border:1px solid var(--line);border-radius:16px;padding:1.3rem 1.4rem;
+    position:relative;overflow:hidden}
+  .card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent)}
+  .card.p1::before{background:var(--p1)} .card.p2::before{background:var(--p2)}
+  .card.p3::before{background:var(--p3)} .card.p4::before{background:var(--p4)}
+  .card h3{font-size:1.15rem;margin-bottom:.35rem;display:flex;align-items:center;gap:.5rem}
+  .num{display:inline-grid;place-items:center;width:1.9rem;height:1.9rem;border-radius:8px;
+    font-size:.9rem;font-weight:700;color:#0b1120}
+  .p1 .num{background:var(--p1)} .p2 .num{background:var(--p2)}
+  .p3 .num{background:var(--p3)} .p4 .num{background:var(--p4)}
+  .card p{color:var(--muted);font-size:.92rem;line-height:1.5}
+  .meta{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.8rem}
+  .tag{font-size:.72rem;padding:.2rem .55rem;border-radius:6px;border:1px solid var(--line);color:var(--muted)}
+  .tag.read{color:var(--accent);border-color:#1e4a63}
+  .tag.write{color:var(--warn);border-color:#5a4a1e}
+  ul{list-style:none;margin-top:1rem}
+  li{padding:.5rem 0 .5rem 1.8rem;position:relative;color:var(--txt);line-height:1.5;border-bottom:1px dashed var(--line)}
+  li::before{content:"›";position:absolute;left:.3rem;color:var(--accent);font-weight:700}
+  li.warn::before{content:"⚠";color:var(--warn)}
+  li.ok::before{content:"✓";color:var(--ok)}
+  code{background:#0a1526;border:1px solid var(--line);border-radius:6px;padding:.1rem .4rem;
+    font-size:.85em;color:#9fd0ff}
+  .flow{display:flex;align-items:stretch;gap:.6rem;margin-top:2rem;flex-wrap:wrap}
+  .step{flex:1;min-width:180px;background:var(--card);border:1px solid var(--line);
+    border-radius:14px;padding:1rem;position:relative}
+  .step .st-num{font-size:.75rem;color:var(--muted);letter-spacing:.1em}
+  .step h4{margin:.3rem 0;font-size:1.05rem}
+  .step small{color:var(--muted)}
+  .arrow{align-self:center;color:var(--accent);font-size:1.5rem}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:1.6rem;margin-top:1.6rem}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.4rem}
+  .panel h3{margin-bottom:.6rem;color:var(--accent)}
+  .foot{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-between;
+    align-items:center;padding:1rem 2rem;background:linear-gradient(0deg,var(--bg),transparent)}
+  .dots{display:flex;gap:.5rem}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--line);cursor:pointer;transition:.2s}
+  .dot.active{background:var(--accent);transform:scale(1.3)}
+  .nav{display:flex;gap:.6rem}
+  button{background:var(--card);color:var(--txt);border:1px solid var(--line);
+    border-radius:10px;padding:.5rem 1rem;cursor:pointer;font-size:.9rem;transition:.2s}
+  button:hover{border-color:var(--accent);color:var(--accent)}
+  .pageno{color:var(--muted);font-size:.85rem}
+  .hero-tag{display:inline-block;background:rgba(56,189,248,.12);color:var(--accent);
+    border:1px solid #1e4a63;border-radius:999px;padding:.4rem 1rem;font-size:.85rem;margin-bottom:1.5rem}
+  .warnbox{background:rgba(251,113,133,.08);border:1px solid #5a2634;border-radius:12px;
+    padding:1rem 1.2rem;margin-top:1.4rem;color:#ffc9d1;font-size:.9rem}
+  .warnbox b{color:#fff}
+  .endpoint{font-family:ui-monospace,monospace;background:#0a1526;border:1px solid var(--line);
+    border-radius:8px;padding:.4rem .7rem;color:#9fd0ff;display:inline-block;margin-top:.5rem}
+  @media(max-width:720px){.grid,.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+  <!-- SLIDE 1 -->
+  <section class="slide active">
+    <span class="hero-tag">🌩️ NubeVigía RD · v1.5.0 en progreso</span>
+    <div class="kicker">Endurecimiento de seguridad · Plan de 4 mandatos</div>
+    <h1>Asegurar la ruta de comando<br><code>POST /api/alerts/refresh</code></h1>
+    <p class="sub">Hoy <b>todos los endpoints son públicos</b>. Este plan protege la única ruta de
+    escritura del backend con autenticación, la prueba con tests de integración y diseña la
+    revocación de tokens — todo <b>sin romper</b> el cron, el frontend ni los tests existentes.</p>
+    <div class="badges">
+      <span class="badge">Stack: <b>Node.js 20 + Express 4</b></span>
+      <span class="badge">Tests: <b>Jest 29</b></span>
+      <span class="badge">Autor: <b>JDS3030</b></span>
+      <span class="badge">Plataforma: <b>Alterna Academy</b></span>
+    </div>
+    <p class="sub" style="margin-top:1rem;color:var(--accent)">Usa ← → o la barra inferior para navegar.</p>
+  </section>
+
+  <!-- SLIDE 2: OVERVIEW -->
+  <section class="slide">
+    <div class="kicker">Vista general</div>
+    <h2>Los 4 procesos de un vistazo</h2>
+    <p class="sub">Cada proceso usa un agente distinto y un modo distinto. Se ejecutan diciendo
+    <code>"Ejecuta el Proceso N"</code>.</p>
+    <div class="grid">
+      <div class="card p1">
+        <h3><span class="num">1</span> Auditoría de la ruta</h3>
+        <p>Audita el endpoint y entrega un <b>plan paso a paso</b> para asegurarlo, antes de tocar código.</p>
+        <div class="meta"><span class="tag">Agente: Explore</span><span class="tag read">Solo lectura</span></div>
+      </div>
+      <div class="card p2">
+        <h3><span class="num">2</span> Autenticación / Autorización</h3>
+        <p>Implementa el <b>guard (middleware)</b> y la validación de token. Solo usuarios válidos pueden usar la ruta.</p>
+        <div class="meta"><span class="tag">Agente: general-purpose</span><span class="tag write">Escribe código</span></div>
+      </div>
+      <div class="card p3">
+        <h3><span class="num">3</span> Pruebas de integración</h3>
+        <p>Escribe tests que confirman el comportamiento de seguridad, <b>sin romper</b> las suites existentes.</p>
+        <div class="meta"><span class="tag">Agente: claude</span><span class="tag write">Escribe tests</span></div>
+      </div>
+      <div class="card p4">
+        <h3><span class="num">4</span> Reto: revocación de tokens</h3>
+        <p>Diseña "Sign out all devices": cómo <b>revocar tokens</b> en todos los dispositivos. Solo diseño.</p>
+        <div class="meta"><span class="tag">Agente: Plan</span><span class="tag read">Solo lectura</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 3: PROCESO 1 -->
+  <section class="slide">
+    <div class="kicker" style="color:var(--p1)">Proceso 1 · Agente Explore · Solo lectura</div>
+    <h2>🔍 Auditoría de la ruta</h2>
+    <p class="sub">Auditar en profundidad el endpoint y entregar un plan aprobable <b>antes de escribir una línea</b>.</p>
+    <span class="endpoint">POST /api/alerts/refresh</span>
+    <div class="two">
+      <div class="panel">
+        <h3>Qué hace</h3>
+        <ul>
+          <li>Localiza dónde se define y registra la ruta (route → controller → service)</li>
+          <li>Documenta el flujo de la petición: entrada → respuesta</li>
+          <li>Identifica qué depende de que la ruta sea pública</li>
+          <li>Enumera los riesgos de seguridad concretos</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Entregables</h3>
+        <ul>
+          <li class="ok">Mapa del flujo (archivos + líneas reales)</li>
+          <li class="ok">Lista de consumidores: cron, frontend, tests</li>
+          <li class="ok">Lista de riesgos de seguridad</li>
+          <li class="ok">Plan paso a paso para los Procesos 2 y 3</li>
+        </ul>
+      </div>
+    </div>
+    <div class="warnbox">⚠️ <b>Regla de oro:</b> no escribe, edita ni borra código. No avanza sin tu aprobación.</div>
+  </section>
+
+  <!-- SLIDE 4: PROCESO 2 -->
+  <section class="slide">
+    <div class="kicker" style="color:var(--p2)">Proceso 2 · Agente general-purpose · Implementación</div>
+    <h2>🔐 Autenticación y Autorización</h2>
+    <p class="sub">Añadir un guard y validación de token para que <b>solo usuarios válidos</b> usen el endpoint.</p>
+    <div class="two">
+      <div class="panel">
+        <h3>Pasos clave</h3>
+        <ul>
+          <li>Releer el plan aprobado del Proceso 1</li>
+          <li>Crear <code>backend/src/middleware/authGuard.js</code></li>
+          <li>Sin token / token inválido → <b>HTTP 401</b></li>
+          <li>Aplicar el guard <b>solo</b> a la ruta objetivo (no global)</li>
+          <li>Documentar <code>JWT_SECRET</code> o <code>ALERTS_API_KEY</code> en <code>.env.example</code></li>
+          <li>Ejecutar <code>npm test</code> — 0 regresiones</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Mecanismo (a confirmar contigo)</h3>
+        <ul>
+          <li><b>JWT</b> (Bearer token) vía middleware Express</li>
+          <li>Alternativa mínima: <b>API key</b> en header <code>x-api-key</code></li>
+        </ul>
+        <h3 style="margin-top:1.2rem">Definition of Done</h3>
+        <ul>
+          <li class="ok">Token válido → acceso; inválido → 401</li>
+          <li class="ok"><code>/api/weather</code> y el cron siguen operando</li>
+          <li class="ok">Suite Jest existente sigue en verde</li>
+        </ul>
+      </div>
+    </div>
+    <div class="warnbox">⚠️ No aplicar el guard globalmente sin confirmar impacto · No hardcodear secretos · Los tests de integración son el Proceso 3.</div>
+  </section>
+
+  <!-- SLIDE 5: PROCESO 3 -->
+  <section class="slide">
+    <div class="kicker" style="color:var(--p3)">Proceso 3 · Agente claude · Implementación de tests</div>
+    <h2>🧪 Pruebas de Integración</h2>
+    <p class="sub">Confirmar el comportamiento de seguridad con tests, <b>sin tocar</b> las pruebas existentes del negocio.</p>
+    <div class="two">
+      <div class="panel">
+        <h3>Casos a cubrir</h3>
+        <ul>
+          <li><b>a)</b> Sin token → <b>401</b></li>
+          <li><b>b)</b> Token/clave inválido → <b>401</b></li>
+          <li><b>c)</b> Token/clave válido → <b>200</b> + respuesta correcta</li>
+          <li>d) (Opcional) <code>/api/weather</code> sigue accesible sin token</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Cómo</h3>
+        <ul>
+          <li>Imitar el estilo de <code>backend/__tests__/</code></li>
+          <li>Nuevo archivo <code>alertsRefresh.auth.test.js</code></li>
+          <li>Usar <code>supertest</code> contra la app Express</li>
+          <li>Correr <code>npm test</code> → suite completa en verde</li>
+        </ul>
+      </div>
+    </div>
+    <div class="warnbox">⚠️ No editar ni borrar tests existentes · No cambiar código de producción para "hacer pasar" un test — si algo falla, se reporta.</div>
+  </section>
+
+  <!-- SLIDE 6: PROCESO 4 -->
+  <section class="slide">
+    <div class="kicker" style="color:var(--p4)">Proceso 4 · Agente Plan · Solo lectura (diseño)</div>
+    <h2>🚪 Reto: Revocación de tokens — "Sign out all devices"</h2>
+    <p class="sub">Diseñar (sin implementar) cómo revocar tokens activamente en todos los dispositivos.</p>
+    <div class="two">
+      <div class="panel">
+        <h3>Preguntas a responder</h3>
+        <ul>
+          <li>¿Sigue válido un JWT tras cambiar la contraseña? ¿Por qué?</li>
+          <li>¿Por qué un JWT stateless no se puede invalidar solo antes de expirar?</li>
+          <li>¿Cómo se implementa la revocación activa en todos los dispositivos?</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Estrategias a comparar</h3>
+        <ul>
+          <li><b>Denylist</b> de tokens (<code>jti</code>) en PostgreSQL / Redis</li>
+          <li><b>tokenVersion</b> / <code>passwordChangedAt</code> por usuario</li>
+          <li><b>Refresh tokens</b> cortos + rotación</li>
+        </ul>
+      </div>
+    </div>
+    <div class="warnbox">💾 Debe encajar con <code>backend/src/db/pool.js</code> (PostgreSQL opcional) y advertir el impacto del modo "sin base de datos". No implementa código.</div>
+  </section>
+
+  <!-- SLIDE 7: DEPENDENCIES / FLOW -->
+  <section class="slide">
+    <div class="kicker">Orden y dependencias</div>
+    <h2>Cómo encajan los procesos</h2>
+    <div class="flow">
+      <div class="step"><div class="st-num">PROCESO 1</div><h4>Auditar</h4><small>Plan aprobable</small></div>
+      <div class="arrow">→</div>
+      <div class="step"><div class="st-num">PROCESO 2</div><h4>Implementar auth</h4><small>Requiere el plan del P1</small></div>
+      <div class="arrow">→</div>
+      <div class="step"><div class="st-num">PROCESO 3</div><h4>Probar</h4><small>Requiere el endpoint del P2</small></div>
+      <div class="arrow">→</div>
+      <div class="step" style="border-color:var(--p4)"><div class="st-num">PROCESO 4</div><h4>Diseñar revocación</h4><small>Conceptual · independiente</small></div>
+    </div>
+    <div class="two" style="margin-top:2rem">
+      <div class="panel">
+        <h3>Invariantes que NO se rompen</h3>
+        <ul>
+          <li class="ok">El cron de alertas cada 5 min sigue funcionando</li>
+          <li class="ok">El frontend sigue leyendo datos públicos</li>
+          <li class="ok">Las suites Jest existentes siguen en verde</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Estado actual</h3>
+        <ul>
+          <li>Árbol de trabajo <b>limpio</b> — sin auth todavía</li>
+          <li>Listo para ejecutar el <b>Proceso 1</b></li>
+          <li>Cada proceso arranca con <code>"Ejecuta el Proceso N"</code></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="foot">
+  <div class="dots" id="dots"></div>
+  <div class="nav">
+    <span class="pageno" id="pageno"></span>
+    <button onclick="go(-1)">← Anterior</button>
+    <button onclick="go(1)">Siguiente →</button>
+  </div>
+</div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  const dotsWrap=document.getElementById('dots');
+  const pageno=document.getElementById('pageno');
+  let i=0;
+  slides.forEach((_,idx)=>{
+    const d=document.createElement('span');d.className='dot'+(idx===0?' active':'');
+    d.onclick=()=>set(idx);dotsWrap.appendChild(d);
+  });
+  const dots=[...document.querySelectorAll('.dot')];
+  function set(n){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach((s,idx)=>s.classList.toggle('active',idx===i));
+    dots.forEach((d,idx)=>d.classList.toggle('active',idx===i));
+    pageno.textContent=(i+1)+' / '+slides.length;
+  }
+  function go(step){set(i+step)}
+  set(0);
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key===' ')go(1);
+    if(e.key==='ArrowLeft')go(-1);
+  });
+</script>
+</body>
+</html>
