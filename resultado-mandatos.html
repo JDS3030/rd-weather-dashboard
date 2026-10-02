@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NubeVigía RD — Resultado de los 4 Mandatos de Seguridad</title>
+<style>
+  :root{
+    --bg:#0b1120; --bg2:#111a2e; --card:#16203a; --line:#22304f;
+    --txt:#e6edf7; --muted:#93a4c3; --accent:#38bdf8;
+    --ok:#34d399; --warn:#fbbf24; --danger:#fb7185;
+    --p1:#38bdf8; --p2:#818cf8; --p3:#34d399; --p4:#f472b6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:radial-gradient(1200px 800px at 70% -10%,#1b2745 0%,var(--bg) 55%);
+    color:var(--txt);overflow:hidden}
+  .deck{height:100vh;width:100vw;position:relative}
+  .slide{position:absolute;inset:0;display:none;flex-direction:column;
+    padding:4.5vh 7vw 9vh;opacity:0;transition:opacity .35s ease;overflow-y:auto}
+  .slide.active{display:flex;opacity:1}
+  .kicker{color:var(--accent);font-weight:600;letter-spacing:.16em;
+    text-transform:uppercase;font-size:.78rem;margin-bottom:.8rem}
+  h1{font-size:clamp(1.9rem,4.6vw,3.4rem);line-height:1.06;margin-bottom:1rem}
+  h2{font-size:clamp(1.4rem,3.3vw,2.3rem);margin-bottom:.5rem}
+  .sub{color:var(--muted);font-size:1.02rem;max-width:70ch;line-height:1.6}
+  .badges{display:flex;gap:.6rem;flex-wrap:wrap;margin:1.1rem 0}
+  .badge{background:var(--card);border:1px solid var(--line);border-radius:999px;
+    padding:.35rem .9rem;font-size:.82rem;color:var(--muted)}
+  .badge b{color:var(--txt)}
+  .badge.ok{border-color:#1e5540;color:var(--ok)}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-top:1.3rem}
+  .card{background:linear-gradient(180deg,var(--card),var(--bg2));
+    border:1px solid var(--line);border-radius:16px;padding:1.2rem 1.3rem;position:relative;overflow:hidden}
+  .card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent)}
+  .card.p1::before{background:var(--p1)}.card.p2::before{background:var(--p2)}
+  .card.p3::before{background:var(--p3)}.card.p4::before{background:var(--p4)}
+  .card h3{font-size:1.1rem;margin-bottom:.4rem;display:flex;align-items:center;gap:.5rem}
+  .num{display:inline-grid;place-items:center;width:1.8rem;height:1.8rem;border-radius:8px;
+    font-size:.85rem;font-weight:700;color:#0b1120}
+  .p1 .num{background:var(--p1)}.p2 .num{background:var(--p2)}
+  .p3 .num{background:var(--p3)}.p4 .num{background:var(--p4)}
+  .card p{color:var(--muted);font-size:.9rem;line-height:1.5}
+  .tag{font-size:.72rem;padding:.2rem .55rem;border-radius:6px;border:1px solid var(--line);color:var(--muted);display:inline-block;margin-top:.6rem}
+  .tag.done{color:var(--ok);border-color:#1e5540}
+  ul{list-style:none;margin-top:.8rem}
+  li{padding:.45rem 0 .45rem 1.7rem;position:relative;line-height:1.5;border-bottom:1px dashed var(--line);font-size:.95rem}
+  li::before{content:"›";position:absolute;left:.3rem;color:var(--accent);font-weight:700}
+  li.ok::before{content:"✓";color:var(--ok)}
+  li.warn::before{content:"⚠";color:var(--warn)}
+  code{background:#0a1526;border:1px solid var(--line);border-radius:6px;padding:.1rem .4rem;
+    font-size:.85em;color:#9fd0ff;font-family:ui-monospace,'Cascadia Code',monospace}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;margin-top:1.3rem}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.2rem 1.3rem}
+  .panel h3{margin-bottom:.5rem;color:var(--accent);font-size:1.05rem}
+  pre{background:#06101f;border:1px solid var(--line);border-radius:12px;padding:1rem 1.2rem;
+    overflow-x:auto;margin-top:.8rem;font-size:.86rem;line-height:1.6;font-family:ui-monospace,'Cascadia Code',monospace}
+  pre .c{color:#5f7599}
+  pre .g{color:var(--ok)}
+  pre .k{color:#9fd0ff}
+  pre .y{color:var(--warn)}
+  .metric{display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.2rem}
+  .met{flex:1;min-width:140px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.1rem}
+  .met .big{font-size:2.1rem;font-weight:800;color:var(--ok)}
+  .met small{color:var(--muted)}
+  .foot{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-between;
+    align-items:center;padding:.9rem 2rem;background:linear-gradient(0deg,var(--bg),transparent)}
+  .dots{display:flex;gap:.5rem}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--line);cursor:pointer;transition:.2s}
+  .dot.active{background:var(--accent);transform:scale(1.3)}
+  .nav{display:flex;gap:.6rem;align-items:center}
+  button{background:var(--card);color:var(--txt);border:1px solid var(--line);border-radius:10px;
+    padding:.5rem 1rem;cursor:pointer;font-size:.9rem;transition:.2s}
+  button:hover{border-color:var(--accent);color:var(--accent)}
+  .pageno{color:var(--muted);font-size:.85rem}
+  .hero-tag{display:inline-block;background:rgba(52,211,153,.12);color:var(--ok);
+    border:1px solid #1e5540;border-radius:999px;padding:.4rem 1rem;font-size:.85rem;margin-bottom:1.3rem}
+  .warnbox{background:rgba(251,191,36,.08);border:1px solid #5a4a1e;border-radius:12px;
+    padding:.9rem 1.1rem;margin-top:1.1rem;color:#ffe6a8;font-size:.88rem}
+  .warnbox b{color:#fff}
+  .step-lbl{display:inline-block;background:#0a1526;border:1px solid var(--line);border-radius:8px;
+    padding:.25rem .6rem;font-size:.8rem;color:var(--accent);margin-bottom:.5rem;font-weight:600}
+  @media(max-width:760px){.grid,.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+  <!-- 1: PORTADA -->
+  <section class="slide active">
+    <span class="hero-tag">✅ 4 procesos completados · 211/211 tests en verde</span>
+    <div class="kicker">NubeVigía RD · Endurecimiento de seguridad</div>
+    <h1><code>POST /api/alerts/refresh</code><br>ahora exige un JWT válido</h1>
+    <p class="sub">La única ruta de comando del backend pasó de <b>pública</b> a <b>protegida con JWT (Bearer token)</b>,
+    con pruebas de integración que lo demuestran y un diseño de revocación de tokens para el futuro.
+    Nada del cron, el frontend ni los tests existentes se rompió.</p>
+    <div class="badges">
+      <span class="badge ok">Proceso 1 · Auditoría ✓</span>
+      <span class="badge ok">Proceso 2 · Auth JWT ✓</span>
+      <span class="badge ok">Proceso 3 · Tests ✓</span>
+      <span class="badge ok">Proceso 4 · Diseño ✓</span>
+    </div>
+    <p class="sub" style="margin-top:.8rem;color:var(--accent)">Usa ← → o la barra inferior. La penúltima diapositiva explica cómo verificarlo tú mismo.</p>
+  </section>
+
+  <!-- 2: PROCESO 1 -->
+  <section class="slide">
+    <div class="kicker" style="color:var(--p1)">Proceso 1 · Agente Explore · Solo lectura</div>
+    <h2>🔍 Auditoría — qué encontramos</h2>
+    <div class="two">
+      <div class="panel">
+        <h3>Flujo verificado</h3>
+        <ul>
+          <li><code>alerts.js:7</code> registraba la ruta <b>sin ningún guard</b></li>
+          <li>Único control: rate limiter global 150 req/15 min (<code>index.js:9</code>)</li>
+          <li>Ruta → controller → <code>alertService.checkAndUpdateAlertStatus()</code></li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Quién depende de la ruta</h3>
+        <ul>
+          <li class="ok">Cron 5 min: llama al <b>service directo</b>, no HTTP → no se rompe</li>
+          <li class="ok">Frontend: <b>0 referencias</b> a <code>alerts/refresh</code></li>
+          <li class="ok">Tests: ninguno golpeaba <code>POST /refresh</code></li>
+        </ul>
+      </div>
+    </div>
+    <div class="warnbox">Riesgos si seguía pública: <b>DoS por refresh forzado</b>, quema de cuota de WeatherAPI (~31 llamadas por refresh), spam de emails SendGrid, contaminación del historial en PostgreSQL y race conditions sobre el estado global. → Conclusión: proteger la ruta es seguro, no rompe nada.</div>
+  </section>
+
+  <!-- 3: PROCESO 2 -->
+  <section class="slide">
+    <div class="kicker" style="color:var(--p2)">Proceso 2 · Agente general-purpose · Implementación</div>
+    <h2>🔐 Autenticación JWT — qué se construyó</h2>
+    <div class="two">
+      <div class="panel">
+        <h3>Archivos nuevos</h3>
+        <ul>
+          <li><code>src/middleware/authGuard.js</code> — valida <code>Authorization: Bearer &lt;token&gt;</code></li>
+          <li><code>scripts/generate-token.js</code> — emite tokens firmados de prueba/servicio</li>
+        </ul>
+        <h3 style="margin-top:1rem">Modificados</h3>
+        <ul>
+          <li><code>routes/alerts.js:8</code> → guard <b>solo</b> en <code>/refresh</code></li>
+          <li><code>.env.example</code> + <code>CLAUDE.md</code> → documentan <code>JWT_SECRET</code></li>
+          <li><code>package.json</code> → dependencia <code>jsonwebtoken</code></li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Comportamiento del guard</h3>
+        <ul>
+          <li class="ok">Firma válida + no expirado → <b>pasa</b> (200)</li>
+          <li class="warn">Sin header / formato malo → <b>401</b></li>
+          <li class="warn">Firma inválida / expirado → <b>401</b></li>
+          <li class="warn">Sin <code>JWT_SECRET</code> → <b>fail-closed</b> (500, nunca deja pasar)</li>
+          <li>No filtra detalles internos de jwt; logs con prefijo <code>[AUTH]</code></li>
+        </ul>
+      </div>
+    </div>
+    <div class="warnbox">Aplicado <b>solo</b> a <code>/refresh</code>: <code>/weather</code>, <code>/alerts/status</code> y <code>/history</code> siguen públicos. El cron usa el service directo, así que no necesita token.</div>
+  </section>
+
+  <!-- 4: PROCESO 3 -->
+  <section class="slide">
+    <div class="kicker" style="color:var(--p3)">Proceso 3 · Agente claude · Tests de integración</div>
+    <h2>🧪 Pruebas — lo que queda demostrado</h2>
+    <p class="sub">Nuevo archivo <code>__tests__/routes/alertsRefresh.auth.test.js</code> con supertest contra la app Express real, imitando el estilo de los tests existentes. Sin tocar ninguna suite previa.</p>
+    <div class="metric">
+      <div class="met"><div class="big">211</div><small>tests en verde<br>(13 archivos)</small></div>
+      <div class="met"><div class="big">6</div><small>tests nuevos<br>de autenticación</small></div>
+      <div class="met"><div class="big">0</div><small>fallos ·<br>0 tests rotos</small></div>
+    </div>
+    <div class="two">
+      <div class="panel">
+        <h3>Casos cubiertos (HTTP real)</h3>
+        <ul>
+          <li class="ok"><b>a)</b> Sin token → 401 (y el service ni se llama)</li>
+          <li class="ok"><b>b)</b> Token inválido / basura → 401</li>
+          <li class="ok"><b>c)</b> Token válido → 200 y <code>success:true</code></li>
+          <li class="ok"><b>d)</b> <code>GET /api/weather</code> sin token → 200 (regresión)</li>
+          <li class="ok"><b>extra)</b> Token expirado → 401</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Resultado real de <code>npm test</code></h3>
+        <pre><span class="c"># verificado por Claude, no solo por el agente</span>
+<span class="g"> Test Files  13 passed (13)</span>
+<span class="g">      Tests  211 passed (211)</span></pre>
+        <p style="margin-top:.6rem">Los <code>alertService</code> están mockeados: no se llama a APIs reales de clima.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5: PROCESO 4 -->
+  <section class="slide">
+    <div class="kicker" style="color:var(--p4)">Proceso 4 · Agente Plan · Solo diseño</div>
+    <h2>🚪 Revocación de tokens — "Sign out all devices"</h2>
+    <div class="two">
+      <div class="panel">
+        <h3>Las 3 preguntas, resueltas</h3>
+        <ul>
+          <li>Un JWT <b>sobrevive</b> al cambio de contraseña: el guard solo verifica firma + <code>exp</code>, no re-consulta al usuario</li>
+          <li>Un JWT stateless no se auto-invalida: verificar es una función pura <code>(token, secret)</code> sin estado</li>
+          <li>Revocar de verdad exige <b>añadir estado en el servidor</b> que el guard consulte</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Recomendación</h3>
+        <ul>
+          <li class="ok"><b>tokenVersion por usuario</b> en PostgreSQL (+ <code>password_changed_at</code>)</li>
+          <li>"Sign out all devices" = <b>una escritura</b>: <code>token_version + 1</code> invalida todos los tokens previos</li>
+          <li>El JWT pasa a llevar <code>{ sub, role, tv }</code>; el guard compara <code>tv</code> con el valor actual</li>
+          <li class="warn">Descarta Redis (rompería el modo "DB opcional"); sin DB la revocación se deshabilita <b>de forma consciente</b></li>
+        </ul>
+      </div>
+    </div>
+    <div class="warnbox">Es <b>solo diseño</b>: no se implementó código. Encaja con <code>db/pool.js</code> (<code>isEnabled()</code>/<code>query()</code>) reutilizando el patrón de <code>alert_history</code>. Trade-off: +1 lectura a DB por request protegida (despreciable a este volumen).</div>
+  </section>
+
+  <!-- 6: CÓMO VERIFICAR -->
+  <section class="slide">
+    <div class="kicker" style="color:var(--ok)">La prueba está en tus manos</div>
+    <h2>✅ ¿Cómo sé que funciona?</h2>
+    <p class="sub">Tres formas, de la más rápida a la más "real". Comandos para <b>PowerShell en Windows</b>.</p>
+    <div class="two">
+      <div class="panel">
+        <span class="step-lbl">Opción A · Correr los tests (30 s)</span>
+        <pre><span class="k">cd</span> backend
+<span class="k">npm</span> test</pre>
+        <p style="margin-top:.5rem">Esperas ver <code>Tests 211 passed (211)</code>. Solo los de auth:</p>
+        <pre><span class="k">npx</span> vitest run <span class="c">`</span>
+  __tests__/routes/alertsRefresh.auth.test.js</pre>
+      </div>
+      <div class="panel">
+        <span class="step-lbl">Opción B · Probarlo en vivo (real)</span>
+        <pre><span class="c"># 1) Arranca el backend</span>
+<span class="k">cd</span> backend; <span class="k">npm</span> run dev
+
+<span class="c"># 2) En OTRA terminal: genera un token</span>
+<span class="k">cd</span> backend
+$TOKEN = node scripts/generate-token.js 1h
+
+<span class="c"># 3) SIN token → 401</span>
+curl.exe -i -X POST <span class="y">`</span>
+  http://localhost:3001/api/alerts/refresh
+
+<span class="c"># 4) CON token → 200</span>
+curl.exe -i -X POST <span class="y">`</span>
+  http://localhost:3001/api/alerts/refresh <span class="y">`</span>
+  -H "Authorization: Bearer $TOKEN"</pre>
+      </div>
+    </div>
+    <div class="warnbox"><b>Qué confirma cada cosa:</b> el paso 3 debe responder <code>401 Unauthorized</code> con <code>{"success":false}</code>; el paso 4, <code>200 OK</code> con <code>{"success":true,...}</code>. Si inviertes eso, algo está mal — pero los tests ya lo verifican automáticamente.</div>
+  </section>
+
+  <!-- 7: ESTADO / PRÓXIMO -->
+  <section class="slide">
+    <div class="kicker">Estado actual y siguiente paso</div>
+    <h2>📦 Dónde queda todo</h2>
+    <div class="two">
+      <div class="panel">
+        <h3>Cambios en el repo (sin commitear)</h3>
+        <ul>
+          <li>Nuevos: <code>authGuard.js</code>, <code>generate-token.js</code>, <code>alertsRefresh.auth.test.js</code></li>
+          <li>Modificados: <code>routes/alerts.js</code>, <code>.env.example</code>, <code>CLAUDE.md</code>, <code>package.json</code></li>
+          <li><code>backend/.env</code> tiene <code>JWT_SECRET</code> de desarrollo (no se commitea)</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Para producción (pendiente)</h3>
+        <ul>
+          <li class="warn">Generar un <code>JWT_SECRET</code> robusto y ponerlo en Railway</li>
+          <li class="warn">No commitear el <code>.env</code> real</li>
+          <li>Decidir si se implementa el diseño del Proceso 4 (revocación)</li>
+        </ul>
+        <h3 style="margin-top:1rem">Generar secreto de producción</h3>
+        <pre>node -e "console.log(require('crypto')<span class="c">`</span>
+  .randomBytes(48).toString('hex'))"</pre>
+      </div>
+    </div>
+    <div class="warnbox">Nada se ha hecho <code>git commit</code> ni <code>push</code> todavía — el control es tuyo. Dime cuándo quieres que prepare el commit.</div>
+  </section>
+
+</div>
+
+<div class="foot">
+  <div class="dots" id="dots"></div>
+  <div class="nav">
+    <span class="pageno" id="pageno"></span>
+    <button onclick="go(-1)">← Anterior</button>
+    <button onclick="go(1)">Siguiente →</button>
+  </div>
+</div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  const dotsWrap=document.getElementById('dots');
+  const pageno=document.getElementById('pageno');
+  let i=0;
+  slides.forEach((_,idx)=>{
+    const d=document.createElement('span');d.className='dot'+(idx===0?' active':'');
+    d.onclick=()=>set(idx);dotsWrap.appendChild(d);
+  });
+  const dots=[...document.querySelectorAll('.dot')];
+  function set(n){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach((s,idx)=>s.classList.toggle('active',idx===i));
+    dots.forEach((d,idx)=>d.classList.toggle('active',idx===i));
+    pageno.textContent=(i+1)+' / '+slides.length;
+  }
+  function go(step){set(i+step)}
+  set(0);
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key===' ')go(1);
+    if(e.key==='ArrowLeft')go(-1);
+  });
+</script>
+</body>
+</html>
