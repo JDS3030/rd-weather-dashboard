@@ -1,4 +1,13 @@
-version: '3.8'
+# NubeVigía RD — stack autohospedado (laptop → servidor local)
+#
+# Núcleo (siempre):     backend + frontend
+#   docker compose up -d --build
+#
+# Con túnel público:    perfil "tunnel" (requiere TUNNEL_TOKEN en .env)
+#   docker compose --profile tunnel up -d --build
+#
+# Con notificadores:    perfil "notifiers" (requiere scripts/.env con Twilio)
+#   docker compose --profile notifiers up -d --build
 
 services:
 
@@ -20,12 +29,33 @@ services:
   frontend:
     build:
       context: ./frontend
+      args:
+        # Horneado en el bundle en build-time. Local por defecto; en
+        # producción define VITE_API_URL en el .env de la raíz (p.ej. la
+        # URL pública del túnel: https://api.tudominio.com/api)
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:3001/api}
     ports:
       - "5173:80"
     depends_on:
       - backend
     restart: unless-stopped
 
+  # ── Túnel público (opcional) ────────────────────────────────────
+  # Expone el stack a internet con HTTPS sin abrir puertos del router.
+  # Requiere un túnel creado en Cloudflare Zero Trust y su TUNNEL_TOKEN.
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate run
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
+    depends_on:
+      - backend
+      - frontend
+    restart: unless-stopped
+    profiles: ["tunnel"]
+
+  # ── Notificadores Python (opcionales) ───────────────────────────
+  # Requieren scripts/.env (Twilio/WhatsApp). Ver scripts/.env.example
   python-monitor:
     build:
       context: ./scripts
@@ -34,6 +64,7 @@ services:
     depends_on:
       - backend
     restart: unless-stopped
+    profiles: ["notifiers"]
 
   python-daily:
     build:
@@ -43,6 +74,7 @@ services:
     depends_on:
       - backend
     restart: unless-stopped
+    profiles: ["notifiers"]
 
 volumes:
   backend_logs:
