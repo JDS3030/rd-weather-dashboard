@@ -84,10 +84,7 @@ describe('<App /> — Error de backend', () => {
     );
 
     render(<App />);
-    await waitFor(() =>
-      expect(screen.queryByText('Cargando datos meteorológicos...')).not.toBeInTheDocument()
-    );
-    expect(screen.getByText('Error de Conexión')).toBeInTheDocument();
+    expect(await screen.findByText('Error de Conexión')).toBeInTheDocument();
   });
 
   test('muestra el mensaje de error de conexión', async () => {
@@ -96,9 +93,6 @@ describe('<App /> — Error de backend', () => {
     );
 
     render(<App />);
-    await waitFor(() =>
-      expect(screen.queryByText('Cargando datos meteorológicos...')).not.toBeInTheDocument()
-    );
-    expect(screen.getByText(/No se pudo conectar/i)).toBeInTheDocument();
+    expect(await screen.findByText(/No se pudo conectar/i)).toBeInTheDocument();
   });
 });

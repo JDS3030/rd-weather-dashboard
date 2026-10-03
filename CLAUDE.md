@@ -2,20 +2,23 @@
 
 ## Proyecto
 Dashboard de monitoreo climático en tiempo real para las **31 provincias** de la República Dominicana.
-Versión actual: **v1.4.4** (v1.5.0 en progreso) | Autor: JDS3030 | Plataforma escolar: Alterna Academy
+Versión actual: **v1.5.2** | Autor: JDS3030 | Plataforma escolar: Alterna Academy
 
-## URLs de producción
-- **Frontend**: https://frontend-two-gilt-77.vercel.app
-- **Backend API**: https://nubevigia-backend-production.up.railway.app/api
+## Despliegue / hosting
+> **Autohospedaje (actual):** el stack corre con **Docker Compose** en la laptop del autor (y migrará a un servidor local en casa), expuesto vía **Cloudflare Tunnel**. Reemplaza a Railway, cuyo trial expiró y requería plan de pago. Ver `AUTOHOSPEDAJE.md`.
 - **GitHub**: https://github.com/JDS3030/rd-weather-dashboard
+- **Arranque local**: `docker compose up -d --build` → backend `:3001`, frontend `:5173`
+- **Túnel público**: `docker compose --profile tunnel up -d` (requiere `TUNNEL_TOKEN` en `.env` raíz + dominio en Cloudflare)
+
+> **Legado (Railway/Vercel):** `nubevigia-backend-production.up.railway.app` quedó **caído** (trial expirado). El frontend en Vercel (`frontend-two-gilt-77.vercel.app`) puede seguir activo pero apuntaba al backend de Railway.
 
 ## Stack
 | Capa | Tecnología |
 |------|-----------|
 | Backend | Node.js 20 + Express 4 (`backend/`) |
 | Frontend | React 18 + Vite + TailwindCSS (`frontend/`) |
-| Deploy backend | Railway (`backend/railway.toml`) |
-| Deploy frontend | Vercel (`frontend/vercel.json`, auto-deploy desde GitHub) |
+| Deploy | Docker Compose autohospedado + Cloudflare Tunnel (`docker-compose.yml`, `AUTOHOSPEDAJE.md`) |
+| Deploy (legado) | Railway (`backend/railway.toml`, caído) · Vercel (`frontend/vercel.json`) |
 | Tests backend | Jest 29 (`backend/__tests__/`) |
 | Tests frontend | Vitest + MSW (`frontend/src/__tests__/`) |
 
@@ -151,4 +154,6 @@ cd backend && railway variables set KEY=valor
 | v1.4.2 | Responsive mobile: hook `useIsMobile()`, acordeón de cuadrantes, ProvinceModal full-screen, header compacto (Galaxy A52s / S21 Ultra) |
 | v1.4.3 | Suite BDD con Cucumber.js (`alertDetector.feature`, 54 escenarios/174 pasos), reporteros HTML y Markdown |
 | v1.4.4 | Fix coerción de `wind_kph` (string "125" activaba alerta de huracán falsa); validación numérica estricta + tests |
-| v1.5.0 | En progreso — historial de alertas persistido en PostgreSQL (`alert_history`, ya activo en prod). Pendiente: WebSockets, Redis, E2E Playwright, rate limiting por usuario |
+| v1.5.0 | Historial de alertas persistido en PostgreSQL (`alert_history`) |
+| v1.5.1 | `POST /api/alerts/refresh` protegido con JWT (401 sin token válido) |
+| v1.5.2 | Autohospedaje con Docker Compose + Cloudflare Tunnel (reemplaza Railway); Dockerfiles backend/frontend/scripts, perfiles `tunnel`/`notifiers`, `AUTOHOSPEDAJE.md`; fix de test flaky `App.test.jsx` (error de backend). Pendiente: WebSockets, Redis, E2E Playwright, rate limiting por usuario |
