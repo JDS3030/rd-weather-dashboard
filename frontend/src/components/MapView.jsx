@@ -109,10 +109,6 @@ export default function MapView({ colorBy = 'temp', onSelectProvince }) {
       // Abortar si Leaflet ya inicializó este contenedor (HMR / doble render)
       if (container._leaflet_id) return;
 
-      const tileUrl = isDark
-        ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-        : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
-
       const map = L.map(container, {
         center:           [18.7357, -70.1627],
         zoom:             8,
@@ -121,7 +117,17 @@ export default function MapView({ colorBy = 'temp', onSelectProvince }) {
         attributionControl: false,
       });
 
-      L.tileLayer(tileUrl, { maxZoom: 18 }).addTo(map);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+      }).addTo(map);
+
+      // Modo oscuro: invierte el tile pane vía CSS (sin proveedor externo)
+      if (isDark) {
+        const tilePane = map.getPanes().tilePane;
+        if (tilePane) {
+          tilePane.style.filter = 'invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.9)';
+        }
+      }
       const markers = renderMarkers(map, L, provinces, alertState, colorBy, onSelectProvince);
       mapRef.current = { map, L, markers };
     });
