@@ -20,7 +20,7 @@ Internet ──────► │  app.tudominio.com → frontend:80    api.tud
 - **backend** — Node 20 + Express (`:3001`), healthcheck `/api/health`.
 - **frontend** — build de Vite servido por nginx (`http://localhost:5173`).
 - **cloudflared** — túnel público (perfil `tunnel`, opcional).
-- **python-monitor / python-daily** — notificadores Twilio (perfil `notifiers`, opcional).
+- **python-monitor / python-daily / python-bot** — notificadores Telegram (perfil `notifiers`, opcional).
 
 ---
 
@@ -123,12 +123,34 @@ Como todo es Docker, la migración es casi copiar y pegar:
 
 ## 5. Notificadores Python (opcional)
 
-Requieren `scripts/.env` con credenciales Twilio (ver `scripts/.env.example`):
+Requieren `scripts/.env` con credenciales Telegram (ver `scripts/.env.example`):
 
 ```bash
-cp scripts/.env.example scripts/.env   # edita con tus credenciales
+cp scripts/.env.example scripts/.env   # edita con TELEGRAM_BOT_TOKEN y TELEGRAM_CHAT_IDS
 docker compose --profile notifiers up -d --build
 ```
+
+Levanta tres procesos:
+
+| Servicio | Función |
+|---|---|
+| `python-monitor` | Sondea alertas cada 5 min; envía aviso por Telegram si hay emergencia |
+| `python-daily` | Reporte meteorológico diario a las 7:00 AM por Telegram |
+| `python-bot` | Escucha mensajes; responde a `daily` o `/daily` con el reporte al instante |
+
+### Obtener las credenciales Telegram
+
+1. Habla con `@BotFather` en Telegram → `/newbot` → copia el token.
+2. Envíale un mensaje a tu bot, luego abre:
+   ```
+   https://api.telegram.org/bot<TOKEN>/getUpdates
+   ```
+   El `"id"` dentro de `"chat"` es tu `TELEGRAM_CHAT_ID`.
+3. Pega ambos en `scripts/.env`:
+   ```env
+   TELEGRAM_BOT_TOKEN=<token del BotFather>
+   TELEGRAM_CHAT_IDS=<tu chat id>
+   ```
 
 ---
 
