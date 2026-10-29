@@ -76,5 +76,15 @@ services:
     restart: unless-stopped
     profiles: ["notifiers"]
 
+  python-bot:
+    build:
+      context: ./scripts
+    command: python telegram_bot.py
+    env_file: ./scripts/.env
+    depends_on:
+      - backend
+    restart: unless-stopped
+    profiles: ["notifiers"]
+
 volumes:
   backend_logs:

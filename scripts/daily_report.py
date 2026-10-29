@@ -8,7 +8,7 @@ import schedule
 import time
 import requests
 from config import BACKEND_URL, DAILY_REPORT_HOUR
-from whatsapp_notifier import broadcast, fmt_daily
+from telegram_notifier import broadcast, fmt_daily
 
 logging.basicConfig(
     level=logging.INFO,

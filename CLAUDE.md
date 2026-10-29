@@ -1,3 +1,7 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 # NubeVigía RD — Contexto para Claude
 
 ## Proyecto
@@ -19,7 +23,7 @@ Versión actual: **v1.5.2** | Autor: JDS3030 | Plataforma escolar: Alterna Acade
 | Frontend | React 18 + Vite + TailwindCSS (`frontend/`) |
 | Deploy | Docker Compose autohospedado + Cloudflare Tunnel (`docker-compose.yml`, `AUTOHOSPEDAJE.md`) |
 | Deploy (legado) | Railway (`backend/railway.toml`, caído) · Vercel (`frontend/vercel.json`) |
-| Tests backend | Jest 29 (`backend/__tests__/`) |
+| Tests backend | Vitest 4 (`backend/__tests__/`) + BDD Cucumber.js (`backend/features/`) |
 | Tests frontend | Vitest + MSW (`frontend/src/__tests__/`) |
 
 ## Arquitectura de datos meteorológicos
@@ -59,6 +63,14 @@ backend/src/
 └── middleware/errorHandler.js
 ```
 
+## Capa Python — notificadores (`scripts/`, perfil `notifiers`)
+Procesos independientes del backend Node; consumen la API y envían avisos. Corren con `docker compose --profile notifiers up -d` (requieren `scripts/.env` con `TELEGRAM_BOT_TOKEN` y `TELEGRAM_CHAT_IDS`). Tests con `pytest` (`scripts/pytest.ini`).
+- `emergency_monitor.py` — sondea `/api/alerts/status`; al detectar emergencia dispara `telegram_notifier.py`.
+- `daily_report.py` — genera y envía el reporte diario (7 AM).
+- `telegram_bot.py` — listener long-polling; responde a `daily` o `/daily` con el reporte al instante.
+- `telegram_notifier.py` — cliente Telegram Bot API. `config.py` — carga de entorno.
+- `whatsapp_notifier.py` — cliente Twilio (legado, conservado).
+
 ## Endpoints de la API
 | Método | Ruta | Descripción |
 |--------|------|-------------|
@@ -88,30 +100,34 @@ NODE_ENV=development
 ### Frontend (`frontend/.env`)
 ```
 VITE_API_URL=http://localhost:3001/api   ← local
-# En Vercel usar: https://nubevigia-backend-production.up.railway.app/api
+# Docker: se pasa como build-arg y se hornea en build-time (ver frontend/Dockerfile)
+# Con túnel: https://api.<tu-dominio>   (legado Railway, caído: .../up.railway.app/api)
 ```
 
 ## Comandos de desarrollo
 ```bash
 # Backend
-cd backend && npm run dev        # nodemon en :3001
-cd backend && npm test           # Jest
+cd backend && npm run dev            # nodemon en :3001
+cd backend && npm test               # Vitest (unitarios/integración)
 cd backend && npm run test:coverage
+cd backend && npx vitest run __tests__/services/alertDetector.test.js   # un solo archivo
+cd backend && npx vitest run -t "nombre del caso"                       # un solo test por nombre
+cd backend && npm run test:bdd       # Cucumber.js (features/*.feature)
+cd backend && npm run test:bdd:report  # BDD + reportes HTML/Markdown
 
 # Frontend
-cd frontend && npm run dev       # Vite en :5173
+cd frontend && npm run dev           # Vite en :5173
 cd frontend && npx vitest run
+cd frontend && npx vitest run src/__tests__/App.test.jsx                # un solo archivo
+cd frontend && npx vitest run -t "muestra pantalla de error"           # un solo test por nombre
 
-# Deploy manual backend
-cd backend && railway up --detach
-
-# Ver logs de Railway
-cd backend && railway logs --tail 50
-
-# Variables de Railway
-cd backend && railway variables
-cd backend && railway variables set KEY=valor
+# Stack completo (autohospedaje)
+docker compose up -d --build         # backend + frontend
+docker compose --profile tunnel up -d    # + Cloudflare Tunnel (requiere TUNNEL_TOKEN)
+docker compose exec -T backend node scripts/generate-token.js   # genera JWT para POST /api/alerts/refresh
 ```
+
+> **CI (`.github/workflows/ci.yml`, solo tests, no despliega):** corre en push/PR a `master`. Backend usa `npm ci`; **frontend usa `npm install`** a propósito, porque `frontend/package-lock.json` está desincronizado (`npm ci` fallaría). Los Dockerfiles siguen la misma regla. No lo "arregles" volviendo a `npm ci` sin regenerar el lockfile.
 
 ## Formato de datos de provincia
 ```js

@@ -16,7 +16,7 @@ from config import (
     EMERGENCY_CHECK_INTERVAL_MINUTES,
     EMERGENCY_REPORT_INTERVAL_HOURS,
 )
-from whatsapp_notifier import broadcast, fmt_emergency, fmt_all_clear
+from telegram_notifier import broadcast, fmt_emergency, fmt_all_clear
 
 logging.basicConfig(
     level=logging.INFO,
