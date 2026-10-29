@@ -3,7 +3,7 @@ import pytest
 from unittest.mock import MagicMock
 
 
-ALLOWED_CHAT = "8779126039"
+ALLOWED_CHAT = "1234567890"
 OTHER_CHAT   = "9999999999"
 
 
