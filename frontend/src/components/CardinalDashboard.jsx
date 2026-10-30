@@ -255,19 +255,23 @@ export default function CardinalDashboard() {
 
       {/* ── Vista: Grid 2×2 ────────────────────────────────────────────── */}
       {view === 'grid' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
-          {QUADRANTS.map(qid => (
-            <div key={qid} ref={el => { quadrantRefs.current[qid] = el; }}>
-              <CardinalQuadrant
-                qid={qid}
-                geoProvinces={GEO_HIERARCHY[qid]}
-                apiProvinces={apiProvinces}
-                onOpenModal={openModal}
-                isUserZone={geo.status === 'found' && geo.result?.qid === qid}
-                userProvinceName={geo.status === 'found' && geo.result?.qid === qid ? geo.result.name : null}
-                isOpen={!isMobile || openQuadrants.has(qid)}
-                onToggle={isMobile ? () => toggleQuadrant(qid) : undefined}
-              />
+        <div className="flex flex-col md:flex-row gap-4">
+          {[['norte', 'oeste'], ['este', 'sur']].map((col, ci) => (
+            <div key={ci} className="flex-1 flex flex-col gap-4">
+              {col.map(qid => (
+                <div key={qid} ref={el => { quadrantRefs.current[qid] = el; }}>
+                  <CardinalQuadrant
+                    qid={qid}
+                    geoProvinces={GEO_HIERARCHY[qid]}
+                    apiProvinces={apiProvinces}
+                    onOpenModal={openModal}
+                    isUserZone={geo.status === 'found' && geo.result?.qid === qid}
+                    userProvinceName={geo.status === 'found' && geo.result?.qid === qid ? geo.result.name : null}
+                    isOpen={!isMobile || openQuadrants.has(qid)}
+                    onToggle={isMobile ? () => toggleQuadrant(qid) : undefined}
+                  />
+                </div>
+              ))}
             </div>
           ))}
         </div>
