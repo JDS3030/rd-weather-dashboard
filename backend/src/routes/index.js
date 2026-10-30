@@ -2,9 +2,10 @@ const express   = require('express');
 const rateLimit = require('express-rate-limit');
 const router    = express.Router();
 
-const weatherRoutes = require('./weather');
-const alertRoutes   = require('./alerts');
-const reportRoutes  = require('./reports');
+const weatherRoutes      = require('./weather');
+const alertRoutes        = require('./alerts');
+const reportRoutes       = require('./reports');
+const municipalityRoutes = require('./municipalities');
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -13,9 +14,10 @@ const limiter = rateLimit({
 });
 
 router.use(limiter);
-router.use('/weather', weatherRoutes);
-router.use('/alerts',  alertRoutes);
-router.use('/reports', reportRoutes);
+router.use('/weather',        weatherRoutes);
+router.use('/alerts',         alertRoutes);
+router.use('/reports',        reportRoutes);
+router.use('/municipalities', municipalityRoutes);
 
 router.get('/health', (req, res) =>
   res.json({ status: 'OK', service: 'RD Weather Backend', timestamp: new Date().toISOString() })
