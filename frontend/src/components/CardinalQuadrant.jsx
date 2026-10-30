@@ -130,8 +130,8 @@ export default function CardinalQuadrant({
       </div>
 
       {/* Lista de provincias — colapsable en mobile */}
-      <div className={`overflow-y-auto transition-all duration-200 ${!isOpen ? 'hidden' : ''} ${!isMobile ? 'flex-1 min-h-0' : ''}`}
-           style={isMobile ? { maxHeight: 320 } : {}}>
+      <div className={`overflow-y-scroll transition-all duration-200 ${!isOpen ? 'hidden' : ''}`}
+           style={{ maxHeight: isMobile ? 320 : 400 }}>
 
         {/* Botón Ver detalle zona — solo mobile, dentro del panel */}
         {isMobile && (

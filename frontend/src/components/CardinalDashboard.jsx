@@ -255,7 +255,7 @@ export default function CardinalDashboard() {
 
       {/* ── Vista: Grid 2×2 ────────────────────────────────────────────── */}
       {view === 'grid' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
           {QUADRANTS.map(qid => (
             <div key={qid} ref={el => { quadrantRefs.current[qid] = el; }}>
               <CardinalQuadrant
