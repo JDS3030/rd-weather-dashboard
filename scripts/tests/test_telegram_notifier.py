@@ -123,7 +123,8 @@ class TestFmtDaily:
         from telegram_notifier import fmt_daily
         report = {"generatedAt": "2026-06-22T07:00:00Z", "summary": "Resumen del día"}
         msg = fmt_daily(report)
-        assert "2026-06-22" in msg
+        # La fecha se formatea como "22 Jun 2026" (Opción D — Semáforo)
+        assert "22 Jun 2026" in msg
 
     def test_incluye_el_summary(self):
         from telegram_notifier import fmt_daily

@@ -41,6 +41,75 @@ def broadcast(message: str) -> list:
     return results
 
 
+# ─── Helpers para fmt_daily (Opción D — Semáforo) ────────────────────────────
+
+_LEVEL_EMOJI = {
+    'normal':    '🟢',
+    'watch':     '🟡',
+    'warning':   '🟠',
+    'emergency': '🔴',
+}
+
+_LEVEL_LABEL = {
+    'normal':    'Normal',
+    'watch':     'Vigilancia',
+    'warning':   'Aviso',
+    'emergency': 'Emergencia',
+}
+
+_DIAS   = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo']
+_MESES  = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic']
+
+
+def _fmt_fecha(iso: str) -> str:
+    try:
+        from datetime import datetime, timezone
+        dt = datetime.fromisoformat(iso.replace('Z', '+00:00')).astimezone(timezone.utc)
+        hora = dt.strftime('%I:%M %p').lstrip('0')
+        return f"{_DIAS[dt.weekday()]}, {dt.day} {_MESES[dt.month - 1]} {dt.year} | {hora}"
+    except Exception:
+        return iso[:10]
+
+
+def _condition_emoji(text: str, precip_mm: float) -> str:
+    t = (text or '').lower()
+    if 'tormenta' in t or 'thunder' in t:
+        return '⛈️'
+    if 'lluvia' in t or 'rain' in t or 'drizzle' in t or 'shower' in t or (precip_mm or 0) > 0:
+        return '🌧️'
+    if 'parcial' in t or 'partly' in t:
+        return '⛅'
+    if 'nublado' in t or 'cloudy' in t or 'overcast' in t:
+        return '☁️'
+    if 'despejado' in t or 'clear' in t or 'sunny' in t or 'sol' in t:
+        return '☀️'
+    return '🌤️'
+
+
+def _province_level(province: dict, triggers: list) -> str:
+    name    = province.get('name', '')
+    current = province.get('current') or {}
+    wind    = float(current.get('wind_kph') or 0)
+    precip  = float(current.get('precip_mm') or 0)
+    cond    = (current.get('condition') or {}).get('text', '').lower()
+
+    for t in (triggers or []):
+        if t.get('province') == name and 'Wind' in (t.get('source') or ''):
+            w = float(t.get('windKph') or 0)
+            if w >= 119:
+                return 'emergency'
+            if w >= 63:
+                return 'warning'
+
+    if wind >= 119:
+        return 'emergency'
+    if wind >= 63:
+        return 'warning'
+    if precip > 0 or any(k in cond for k in ('lluvia', 'rain', 'shower', 'drizzle', 'tormenta', 'thunder')):
+        return 'watch'
+    return 'normal'
+
+
 # ─── Formateadores de mensaje ─────────────────────────────────────────────────
 
 def fmt_emergency(report: dict) -> str:
@@ -62,18 +131,61 @@ def fmt_emergency(report: dict) -> str:
 
 
 def fmt_daily(report: dict) -> str:
-    date    = (report.get("generatedAt") or "")[:10]
-    summary = (report.get("summary") or "Sin detalles")[:3000]
+    """Opción D — Semáforo Climático por provincia."""
+    generated_at    = report.get('generatedAt') or ''
+    alert_level     = report.get('alertLevel') or 'normal'
+    provinces_data  = report.get('provincesData') or []
+    triggers        = report.get('triggers') or []
+    onamet_alerts   = report.get('onaMetAlerts') or []
 
-    return (
-        f"📊 *REPORTE DIARIO — TIEMPO EN RD*\n"
-        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-        f"*Fecha:* {date}\n"
-        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-        f"{summary}\n"
-        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-        f"_Fuente: WeatherAPI / ONAMET_"
+    fecha       = _fmt_fecha(generated_at)
+    lvl_emoji   = _LEVEL_EMOJI.get(alert_level, '🟢')
+    lvl_label   = _LEVEL_LABEL.get(alert_level, alert_level.upper())
+    onamet_str  = onamet_alerts[0].get('title', 'Sin alertas activas') if onamet_alerts else 'Sin alertas activas'
+
+    header = (
+        f"🚦 *NUBEVIGIA RD — SEMÁFORO CLIMÁTICO*\n"
+        f"📅 {fecha}\n\n"
+        f"{lvl_emoji} *ESTADO NACIONAL: {lvl_label.upper()}*\n\n"
+        f"━━━ SEMÁFORO POR PROVINCIA ━━━\n"
     )
+
+    footer = (
+        f"\n🏛️ ONAMET: {onamet_str}\n"
+        f"📡 _WeatherAPI.com + Open-Meteo_"
+    )
+
+    if not provinces_data:
+        summary = (report.get('summary') or 'Sin detalles')[:2000]
+        return header + summary + footer
+
+    counts  = {'normal': 0, 'watch': 0, 'warning': 0, 'emergency': 0}
+    lines   = []
+
+    for p in provinces_data:
+        current   = p.get('current') or {}
+        name      = p.get('name', '?')
+        temp      = current.get('temp_c')
+        precip    = float(current.get('precip_mm') or 0)
+        cond_text = (current.get('condition') or {}).get('text', '')
+
+        level = _province_level(p, triggers)
+        counts[level] = counts.get(level, 0) + 1
+
+        temp_str  = f"{temp:.0f}°C" if temp is not None else 'N/D'
+        icon      = _condition_emoji(cond_text, precip)
+        cond_short = cond_text[:20] if cond_text else 'N/D'
+
+        lines.append(f"{_LEVEL_EMOJI[level]} {name} — {temp_str} {icon} {cond_short}")
+
+    provinces_block = '\n'.join(lines)
+
+    resumen = (
+        f"\n\n🟢 Normal: {counts['normal']}   🟡 Vigilancia: {counts['watch']}\n"
+        f"🟠 Aviso: {counts['warning']}     🔴 Emergencia: {counts['emergency']}"
+    )
+
+    return header + provinces_block + resumen + footer
 
 
 def fmt_all_clear(timestamp: str) -> str:
