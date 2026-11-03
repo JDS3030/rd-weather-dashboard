@@ -98,4 +98,37 @@ describe('assistantService.generateWeatherAnalysis()', () => {
     const dt = new Date(result.generatedAt);
     expect(dt.getTime()).not.toBeNaN();
   });
+
+  test('el contexto enviado a Claude incluye la sección de pronóstico horario con datos tabulares', async () => {
+    await generateWeatherAnalysis('santiago', '¿Habrá lluvia esta tarde?', mockAnthropicClient);
+    const content = mockCreate.mock.calls[0][0].messages[0].content;
+    // La cabecera de la sección siempre se agrega en buildContext
+    expect(content).toContain('PRONÓSTICO HORARIO');
+    // El formato tabular siempre tiene horas HH:MM separadas por |
+    expect(content).toMatch(/\d{2}:\d{2}\s*\|/);
+  });
+
+  test('el contexto enviado a Claude incluye la sección de pronóstico 7 días con formato de fecha', async () => {
+    await generateWeatherAnalysis('santiago', '¿Cómo será la semana?', mockAnthropicClient);
+    const content = mockCreate.mock.calls[0][0].messages[0].content;
+    expect(content).toContain('PRONÓSTICO 7 DÍAS');
+    // fmtDate produce "DD Mes" — ej. "03 Nov"
+    expect(content).toMatch(/\d{2}\s+[A-Z][a-z]{2}/);
+  });
+
+  test('el pronóstico 7 días incluye columnas de temperatura máxima y mínima', async () => {
+    await generateWeatherAnalysis('santiago', '¿Cuánto frío hará?', mockAnthropicClient);
+    const content = mockCreate.mock.calls[0][0].messages[0].content;
+    // La cabecera de la tabla siempre incluye T.Max°C y T.Min°C
+    expect(content).toContain('T.Max°C');
+    expect(content).toContain('T.Min°C');
+  });
+
+  test('el contexto incluye tanto la sección horaria como la semanal en una sola llamada', async () => {
+    await generateWeatherAnalysis('santiago', '¿Cómo está el tiempo?', mockAnthropicClient);
+    const content = mockCreate.mock.calls[0][0].messages[0].content;
+    expect(content).toContain('PRONÓSTICO HORARIO');
+    expect(content).toContain('PRONÓSTICO 7 DÍAS');
+    // Ambas secciones en la misma llamada confirma que Promise.all las busca juntas
+  });
 });
