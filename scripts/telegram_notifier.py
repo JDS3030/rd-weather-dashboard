@@ -138,29 +138,25 @@ def fmt_daily(report: dict) -> str:
     triggers        = report.get('triggers') or []
     onamet_alerts   = report.get('onaMetAlerts') or []
 
-    fecha       = _fmt_fecha(generated_at)
-    lvl_emoji   = _LEVEL_EMOJI.get(alert_level, '🟢')
-    lvl_label   = _LEVEL_LABEL.get(alert_level, alert_level.upper())
-    onamet_str  = onamet_alerts[0].get('title', 'Sin alertas activas') if onamet_alerts else 'Sin alertas activas'
+    fecha     = _fmt_fecha(generated_at)
+    lvl_emoji = _LEVEL_EMOJI.get(alert_level, '🟢')
+    lvl_label = _LEVEL_LABEL.get(alert_level, alert_level.upper())
 
     header = (
         f"🚦 *NUBEVIGIA RD — SEMÁFORO CLIMÁTICO*\n"
         f"📅 {fecha}\n\n"
-        f"{lvl_emoji} *ESTADO NACIONAL: {lvl_label.upper()}*\n\n"
-        f"━━━ SEMÁFORO POR PROVINCIA ━━━\n"
-    )
-
-    footer = (
-        f"\n🏛️ ONAMET: {onamet_str}\n"
-        f"📡 _WeatherAPI.com + Open-Meteo_"
+        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"{lvl_emoji} *ESTADO NACIONAL: {lvl_label.upper()}*\n"
+        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        f"*SEMÁFORO POR PROVINCIA*\n"
     )
 
     if not provinces_data:
         summary = (report.get('summary') or 'Sin detalles')[:2000]
-        return header + summary + footer
+        return header + summary
 
-    counts  = {'normal': 0, 'watch': 0, 'warning': 0, 'emergency': 0}
-    lines   = []
+    counts = {'normal': 0, 'watch': 0, 'warning': 0, 'emergency': 0}
+    lines  = []
 
     for p in provinces_data:
         current   = p.get('current') or {}
@@ -172,20 +168,23 @@ def fmt_daily(report: dict) -> str:
         level = _province_level(p, triggers)
         counts[level] = counts.get(level, 0) + 1
 
-        temp_str  = f"{temp:.0f}°C" if temp is not None else 'N/D'
-        icon      = _condition_emoji(cond_text, precip)
+        temp_str   = f"{temp:.0f}°C" if temp is not None else 'N/D'
+        icon       = _condition_emoji(cond_text, precip)
         cond_short = cond_text[:20] if cond_text else 'N/D'
 
-        lines.append(f"{_LEVEL_EMOJI[level]} {name} — {temp_str} {icon} {cond_short}")
+        lines.append(f"{_LEVEL_EMOJI[level]} *{name}* — {temp_str} {icon}\n   _{cond_short}_")
 
-    provinces_block = '\n'.join(lines)
+    provinces_block = '\n\n'.join(lines)
 
     resumen = (
-        f"\n\n🟢 Normal: {counts['normal']}   🟡 Vigilancia: {counts['watch']}\n"
-        f"🟠 Aviso: {counts['warning']}     🔴 Emergencia: {counts['emergency']}"
+        f"\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"🟢 Normal: *{counts['normal']}*   "
+        f"🟡 Vigilancia: *{counts['watch']}*\n"
+        f"🟠 Aviso: *{counts['warning']}*     "
+        f"🔴 Emergencia: *{counts['emergency']}*"
     )
 
-    return header + provinces_block + resumen + footer
+    return header + provinces_block + resumen
 
 
 def fmt_all_clear(timestamp: str) -> str:
