@@ -60,9 +60,9 @@ describe('openMeteoService.getHourlyForecast()', () => {
     axiosMock.onGet(BASE_URL).reply(200, HOURLY_RESPONSE);
   });
 
-  test('devuelve exactamente 8 slots (cada 3h de 24h)', async () => {
+  test('devuelve exactamente 24 slots (una hora cada uno)', async () => {
     const result = await getHourlyForecast(18.47, -69.95);
-    expect(result).toHaveLength(8);
+    expect(result).toHaveLength(24);
   });
 
   test('cada slot contiene los campos requeridos', async () => {
@@ -80,10 +80,10 @@ describe('openMeteoService.getHourlyForecast()', () => {
     });
   });
 
-  test('los slots son cada 3h (horas 0,3,6,9,12,15,18,21)', async () => {
+  test('los slots son cada hora (horas 0,1,2,...,23)', async () => {
     const result = await getHourlyForecast(18.47, -69.95);
     const hours = result.map(s => s.time.split('T')[1].slice(0, 2)).map(Number);
-    expect(hours).toEqual([0, 3, 6, 9, 12, 15, 18, 21]);
+    expect(hours).toEqual([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]);
   });
 
   test('los valores del primer slot coinciden con los datos del fixture', async () => {
@@ -100,10 +100,9 @@ describe('openMeteoService.getHourlyForecast()', () => {
     expect(slot.time).toBe('2026-11-03T00:00');
   });
 
-  test('no incluye más de 24 registros internamente (límite del endpoint)', async () => {
+  test('no incluye más de 24 slots (límite del endpoint)', async () => {
     const result = await getHourlyForecast(18.47, -69.95);
-    // 24h / 3h = 8 slots exactos
-    expect(result.length).toBeLessThanOrEqual(8);
+    expect(result.length).toBeLessThanOrEqual(24);
   });
 });
 

@@ -1,8 +1,9 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { CARDINAL_META, GEO_HIERARCHY, normalizeName } from '../data/geoData';
-import { useWeatherData } from '../hooks/useWeatherData';
-import { useTheme }       from '../context/ThemeContext';
+import { useWeatherData }         from '../hooks/useWeatherData';
+import { useExtendedForecast }    from '../hooks/useExtendedForecast';
+import { useTheme }               from '../context/ThemeContext';
 import DrilldownStepper from './DrilldownStepper';
 
 // ── Utilidades ────────────────────────────────────────────────────────────────
@@ -315,6 +316,7 @@ function RightPanel({ meta, geoProvinces, provinceIdx, munIdx, isMobile, onSelec
   const municipality = (munIdx !== null && province) ? province.municipalities[munIdx] : null;
 
   const { provinces: apiProvinces } = useWeatherData();
+  const [forecastTab, setForecastTab] = useState('24h');
 
   const apiMatch = province
     ? (apiProvinces || []).find(ap => {
@@ -326,6 +328,10 @@ function RightPanel({ meta, geoProvinces, provinceIdx, munIdx, isMobile, onSelec
 
   const provinceWeather  = apiMatch?.current  ?? null;
   const provinceForecast = apiMatch?.forecast ?? [];
+
+  const { hourly, daily7d, loading: extLoading } = useExtendedForecast(
+    province ? (apiMatch?.id ?? null) : null
+  );
 
   // Vista: Distritos municipales
   if (municipality) {
@@ -387,10 +393,13 @@ function RightPanel({ meta, geoProvinces, provinceIdx, munIdx, isMobile, onSelec
           </div>
         </div>
 
-        {/* Pronóstico extendido 3 días */}
-        {provinceForecast.length > 0 && (
-          <ForecastSection forecast={provinceForecast} meta={meta} isMobile={isMobile} />
-        )}
+        {/* Tabs de pronóstico */}
+        <ForecastTabs
+          tab={forecastTab} onTab={setForecastTab}
+          hourly={hourly} daily7d={daily7d}
+          loading={extLoading}
+          meta={meta} isMobile={isMobile}
+        />
 
         {/* Municipios */}
         <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-gray-500 mb-3">
@@ -625,6 +634,340 @@ function ForecastCard({ day, index, meta, isMobile }) {
         <div className="flex items-center gap-1">
           <span style={{ fontSize: 10 }}>💨</span>
           <span className="text-slate-500 dark:text-gray-500 font-medium" style={{ fontSize: 10 }}>
+            {maxWind.toFixed(0)} km/h
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Tabs de pronóstico (24h / semana) ────────────────────────────────────────
+
+const TABS = [
+  { key: '24h', label: '24 Horas',    icon: '🕐' },
+  { key: '7d',  label: 'Esta Semana', icon: '📆' },
+];
+
+function ForecastTabs({ tab, onTab, hourly, daily7d, loading, meta, isMobile }) {
+  if (!hourly && !daily7d && !loading) return null;
+
+  return (
+    <div className="mb-5">
+      {/* Tab bar */}
+      <div className="flex gap-1 mb-3">
+        {TABS.map(t => (
+          <button
+            key={t.key}
+            onClick={() => onTab(t.key)}
+            className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors
+              ${tab === t.key
+                ? 'text-white'
+                : 'text-slate-400 dark:text-gray-500 hover:text-slate-600 dark:hover:text-gray-300 bg-slate-100 dark:bg-gray-800/50'
+              }`}
+            style={tab === t.key ? { background: meta.accentHex } : {}}
+          >
+            <span>{t.icon}</span> {t.label}
+          </button>
+        ))}
+        {loading && (
+          <span className="ml-auto text-xs text-slate-400 dark:text-gray-600 self-center animate-pulse">
+            Cargando…
+          </span>
+        )}
+      </div>
+
+      {/* Contenido según tab */}
+      {tab === '24h' && (
+        hourly
+          ? <HourlySection slots={hourly} meta={meta} isMobile={isMobile} />
+          : !loading && <ExtLoadingPlaceholder text="Cargando datos horarios…" />
+      )}
+      {tab === '7d' && (
+        daily7d
+          ? <Weekly7dSection days={daily7d} meta={meta} isMobile={isMobile} onTodayClick={() => onTab('24h')} />
+          : !loading && <ExtLoadingPlaceholder text="Cargando pronóstico semanal…" />
+      )}
+    </div>
+  );
+}
+
+function ExtLoadingPlaceholder({ text }) {
+  return (
+    <div className="flex items-center justify-center py-8 text-xs text-slate-400 dark:text-gray-600 gap-2">
+      <span className="animate-spin">⟳</span> {text}
+    </div>
+  );
+}
+
+// ── Sección horaria 24h ───────────────────────────────────────────────────────
+
+function slotEmoji(slot) {
+  if ((slot.precip_prob ?? 0) >= 60) return '🌧️';
+  if ((slot.precip_prob ?? 0) >= 30) return '🌦️';
+  if ((slot.cloud ?? 0) >= 80)       return '☁️';
+  if ((slot.cloud ?? 0) >= 40)       return '⛅';
+  return '☀️';
+}
+
+function rainBar(pct, color) {
+  const fill = Math.min(100, pct ?? 0);
+  return (
+    <div className="flex items-center gap-1 w-full">
+      <div className="flex-1 h-1 bg-slate-200 dark:bg-gray-700 rounded-full overflow-hidden">
+        <div className="h-full rounded-full" style={{ width: `${fill}%`, background: color }} />
+      </div>
+      <span className="font-bold flex-shrink-0" style={{ fontSize: 9, color }}>{fill}%</span>
+    </div>
+  );
+}
+
+function HourlySection({ slots, meta, isMobile }) {
+  const rainColor = '#3b82f6';
+
+  if (isMobile) {
+    return (
+      <div className="space-y-2">
+        {slots.map((s, i) => {
+          const hour = (s.time || '').split('T')[1]?.slice(0, 5) ?? '—';
+          return (
+            <div
+              key={i}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-900/40"
+              style={i === 0 ? { borderLeftColor: meta.accentHex, borderLeftWidth: 2 } : {}}
+            >
+              <span className="text-xs font-bold text-slate-500 dark:text-gray-400 w-10 flex-shrink-0 font-mono">{hour}</span>
+              <span className="text-lg leading-none flex-shrink-0">{slotEmoji(s)}</span>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-sm font-black text-slate-800 dark:text-white">{s.temp_c?.toFixed(1) ?? '—'}°C</span>
+                  <span className="text-xs text-slate-400 dark:text-gray-500">💨 {s.wind_kph?.toFixed(0) ?? '—'} km/h</span>
+                </div>
+                {rainBar(s.precip_prob, rainColor)}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full text-xs border-collapse">
+        <thead>
+          <tr className="border-b border-slate-200 dark:border-gray-700">
+            {['Hora','','Temp','Lluvia %','Viento','Ráf.','Hum.','UV'].map(h => (
+              <th key={h} className="px-2 py-1.5 text-left font-bold text-slate-400 dark:text-gray-500 uppercase tracking-wider whitespace-nowrap" style={{ fontSize: 10 }}>
+                {h}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {slots.map((s, i) => {
+            const hour = (s.time || '').split('T')[1]?.slice(0, 5) ?? '—';
+            const isFirst = i === 0;
+            return (
+              <tr
+                key={i}
+                className={`border-b border-slate-100 dark:border-gray-700/50 transition-colors hover:bg-slate-50 dark:hover:bg-gray-800/30
+                  ${isFirst ? 'bg-slate-50 dark:bg-gray-800/20' : ''}`}
+              >
+                <td className="px-2 py-2 font-mono font-bold text-slate-600 dark:text-gray-300 whitespace-nowrap">{hour}</td>
+                <td className="px-1 py-2 text-base leading-none">{slotEmoji(s)}</td>
+                <td className="px-2 py-2 font-black text-slate-800 dark:text-white whitespace-nowrap">{s.temp_c?.toFixed(1) ?? '—'}°C</td>
+                <td className="px-2 py-2 w-28">
+                  {rainBar(s.precip_prob, rainColor)}
+                </td>
+                <td className="px-2 py-2 text-slate-500 dark:text-gray-400 whitespace-nowrap">{s.wind_kph?.toFixed(0) ?? '—'} km/h</td>
+                <td className="px-2 py-2 text-slate-400 dark:text-gray-600 whitespace-nowrap">{s.gusts_kph?.toFixed(0) ?? '—'} km/h</td>
+                <td className="px-2 py-2 text-slate-400 dark:text-gray-600 whitespace-nowrap">{s.humidity ?? '—'}%</td>
+                <td className="px-2 py-2 text-slate-400 dark:text-gray-600">{s.uv ?? '—'}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// ── Sección semanal — semana actual (Lun–Dom), estilo ForecastCard ────────────
+
+const DAYS_ES   = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+const MONTHS_ES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+
+function getWeekRange() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const dow = today.getDay(); // 0=Dom
+  const toMonday = dow === 0 ? -6 : 1 - dow;
+  const mon = new Date(today);
+  mon.setDate(today.getDate() + toMonday);
+  const sun = new Date(mon);
+  sun.setDate(mon.getDate() + 6);
+  sun.setHours(23, 59, 59, 999);
+  return { mon, sun };
+}
+
+function Weekly7dSection({ days, meta, isMobile, onTodayClick }) {
+  const todayISO = new Date().toISOString().slice(0, 10);
+  const { mon, sun } = getWeekRange();
+
+  const weekDays = (days || []).filter(d => {
+    const dt = new Date(d.date + 'T12:00:00');
+    return dt >= mon && dt <= sun;
+  });
+
+  if (!weekDays.length) return (
+    <p className="text-xs text-slate-400 dark:text-gray-600 italic py-4 text-center">
+      Sin datos para la semana actual.
+    </p>
+  );
+
+  return (
+    <div className={`grid gap-3 ${isMobile ? 'grid-cols-1' : 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4'}`}>
+      {weekDays.map((d) => {
+        const isToday = d.date === todayISO;
+        const dt = new Date(d.date + 'T12:00:00');
+        const dayName = isToday ? 'Hoy' : DAYS_ES[dt.getDay()];
+        const dateLabel = `${dt.getDate()} ${MONTHS_ES[dt.getMonth()]}`;
+        return (
+          <Weekly7dCard
+            key={d.date}
+            day={d}
+            dayName={dayName}
+            dateLabel={dateLabel}
+            isToday={isToday}
+            meta={meta}
+            isMobile={isMobile}
+            onTodayClick={isToday ? onTodayClick : null}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+function Weekly7dCard({ day: d, dayName, dateLabel, isToday, meta, isMobile, onTodayClick }) {
+  const rain    = d.precip_prob ?? 0;
+  const precip  = d.precip_mm   ?? 0;
+  const maxWind = d.maxwind_kph ?? 0;
+  const emoji   = forecastEmoji(d.condition?.text);
+
+  const rainBarColor = rain >= 70 ? '#3b82f6'
+                     : rain >= 40 ? '#06b6d4'
+                     : '#22c55e';
+
+  const maxTempColor = (d.maxtemp_c ?? 0) >= 33 ? 'text-red-500'
+                     : (d.maxtemp_c ?? 0) >= 28 ? 'text-orange-500'
+                     : 'text-slate-700 dark:text-gray-200';
+
+  if (isMobile) {
+    return (
+      <div
+        onClick={onTodayClick ?? undefined}
+        className={`flex items-center gap-4 px-4 py-3.5 rounded-xl border transition-colors
+          ${isToday
+            ? 'border-slate-300 dark:border-gray-600 bg-slate-50 dark:bg-gray-700/40 cursor-pointer active:scale-[0.98]'
+            : 'border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-900/40'}`}
+        style={isToday ? { boxShadow: `0 0 10px ${meta.accentHex}22`, borderLeftColor: meta.accentHex, borderLeftWidth: 3 } : {}}
+      >
+        <div className="w-16 flex-shrink-0 text-center">
+          <p className={`text-sm font-bold ${isToday ? 'text-slate-800 dark:text-white' : 'text-slate-500 dark:text-gray-400'}`}>{dayName}</p>
+          <p className="text-xs text-slate-400 dark:text-gray-600 mt-0.5">{dateLabel}</p>
+          {isToday && (
+            <span className="text-xs px-1.5 py-0.5 rounded-full font-semibold mt-1 inline-block"
+                  style={{ background: meta.accentHex + '22', color: meta.accentHex, fontSize: 10 }}>LIVE</span>
+          )}
+        </div>
+        <span className="text-3xl leading-none flex-shrink-0">{emoji}</span>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm text-slate-500 dark:text-gray-400 truncate">{d.condition?.text ?? '—'}</p>
+          <div className="flex items-baseline gap-2 mt-1">
+            <span className={`text-base font-black ${maxTempColor}`}>{d.maxtemp_c?.toFixed(0) ?? '—'}°</span>
+            <span className="text-sm text-blue-400">{d.mintemp_c?.toFixed(0) ?? '—'}°</span>
+            <span className="text-sm font-bold ml-auto" style={{ color: rainBarColor }}>💧 {rain}%</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      onClick={onTodayClick ?? undefined}
+      className={`rounded-2xl border overflow-hidden transition-all duration-200
+        ${isToday
+          ? 'border-slate-300 dark:border-gray-600 bg-slate-50 dark:bg-gray-700/40 cursor-pointer hover:shadow-lg hover:scale-[1.02]'
+          : 'border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-900/40'}`}
+      style={isToday ? { boxShadow: `0 0 16px ${meta.accentHex}28` } : {}}
+      title={isToday ? 'Ver pronóstico hora a hora' : undefined}
+    >
+      {/* Encabezado del día */}
+      <div className="px-4 pt-4 pb-1.5 flex items-center justify-between">
+        <span className={`text-sm font-bold uppercase tracking-wider
+          ${isToday ? 'text-slate-700 dark:text-gray-200' : 'text-slate-400 dark:text-gray-500'}`}>
+          {dayName}
+        </span>
+        <div className="flex items-center gap-1.5">
+          {isToday && (
+            <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
+                  style={{ background: meta.accentHex + '22', color: meta.accentHex }}>
+              LIVE
+            </span>
+          )}
+          {isToday && (
+            <span className="text-xs text-slate-400 dark:text-gray-600">🕐 →</span>
+          )}
+        </div>
+      </div>
+
+      {/* Fecha */}
+      <p className="px-4 pb-2 text-xs text-slate-400 dark:text-gray-600">{dateLabel}</p>
+
+      {/* Emoji + condición */}
+      <div className="px-4 pb-3 flex items-center gap-2">
+        <span className="text-4xl leading-none">{emoji}</span>
+        <p className="text-sm text-slate-400 dark:text-gray-500 leading-snug line-clamp-2 flex-1">
+          {d.condition?.text ?? '—'}
+        </p>
+      </div>
+
+      {/* Temp máx / mín */}
+      <div className="px-4 pb-2 flex items-baseline gap-1.5">
+        <span className={`text-2xl font-black leading-none ${maxTempColor}`}>
+          {d.maxtemp_c?.toFixed(0) ?? '—'}°
+        </span>
+        <span className="text-slate-300 dark:text-gray-700">/</span>
+        <span className="text-base font-semibold text-blue-500 dark:text-blue-400">
+          {d.mintemp_c?.toFixed(0) ?? '—'}°
+        </span>
+      </div>
+
+      {/* Barra de lluvia */}
+      <div className="px-4 pb-2">
+        <div className="flex items-center justify-between mb-1.5">
+          <span className="text-xs text-slate-400 dark:text-gray-600">💧 Lluvia</span>
+          <span className="text-xs font-bold" style={{ color: rainBarColor }}>{rain}%</span>
+        </div>
+        <div className="h-1.5 bg-slate-200 dark:bg-gray-800 rounded-full overflow-hidden">
+          <div className="h-full rounded-full" style={{ width: `${rain}%`, background: rainBarColor }} />
+        </div>
+      </div>
+
+      {/* Stats inferiores */}
+      <div className="px-4 py-3 border-t border-slate-100 dark:border-gray-700/60 grid grid-cols-2 gap-x-2 gap-y-1">
+        <div className="flex items-center gap-1.5">
+          <span className="text-sm">🌧️</span>
+          <span className="text-xs text-slate-500 dark:text-gray-500 font-medium">
+            {precip.toFixed(1)} mm
+          </span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="text-sm">💨</span>
+          <span className="text-xs text-slate-500 dark:text-gray-500 font-medium">
             {maxWind.toFixed(0)} km/h
           </span>
         </div>

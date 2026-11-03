@@ -143,7 +143,7 @@ async function getHourlyForecast(lat, lon) {
 
   const h = response.data.hourly;
   const slots = [];
-  for (let i = 0; i < Math.min(24, h.time.length); i += 3) {
+  for (let i = 0; i < Math.min(24, h.time.length); i += 1) {
     slots.push({
       time:        h.time[i],
       temp_c:      h.temperature_2m[i],
