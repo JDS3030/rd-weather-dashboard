@@ -4,6 +4,7 @@ import StatsOverview       from './StatsOverview';
 import CardinalDashboard   from './CardinalDashboard';
 import AlertPanel          from './AlertPanel';
 import ReportPanel         from './ReportPanel';
+import AssistantPanel      from './AssistantPanel';
 import SkeletonDashboard   from './SkeletonDashboard';
 
 // ─── Pantalla de error ────────────────────────────────────────────────────────
@@ -51,6 +52,7 @@ export default function Dashboard() {
           <aside className="space-y-4">
             <AlertPanel />
             <ReportPanel />
+            <AssistantPanel />
 
             {/* Créditos y fuentes */}
             <div className={`rounded-xl border p-4 text-center ${

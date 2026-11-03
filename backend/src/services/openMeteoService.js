@@ -117,4 +117,80 @@ async function getSingleProvinceWeather(provinceId) {
   return getProvinceWeather(province);
 }
 
-module.exports = { getAllProvincesWeather, getSingleProvinceWeather };
+// ─── Hourly forecast for the assistant (next 24h) ────────────────────────────
+
+async function getHourlyForecast(lat, lon) {
+  const response = await axios.get(BASE_URL, {
+    params: {
+      latitude:        lat,
+      longitude:       lon,
+      hourly:          [
+        'temperature_2m',
+        'precipitation_probability',
+        'precipitation',
+        'wind_speed_10m',
+        'wind_gusts_10m',
+        'relative_humidity_2m',
+        'cloud_cover',
+        'uv_index',
+      ].join(','),
+      wind_speed_unit: 'kmh',
+      timezone:        'America/Santo_Domingo',
+      forecast_hours:  24,
+    },
+    timeout: REQUEST_TIMEOUT,
+  });
+
+  const h = response.data.hourly;
+  const slots = [];
+  for (let i = 0; i < Math.min(24, h.time.length); i += 3) {
+    slots.push({
+      time:        h.time[i],
+      temp_c:      h.temperature_2m[i],
+      precip_prob: h.precipitation_probability[i],
+      precip_mm:   h.precipitation[i],
+      wind_kph:    h.wind_speed_10m[i],
+      gusts_kph:   h.wind_gusts_10m[i],
+      humidity:    h.relative_humidity_2m[i],
+      cloud:       h.cloud_cover[i],
+      uv:          h.uv_index[i],
+    });
+  }
+  return slots;
+}
+
+// ─── 7-day daily forecast for the assistant ───────────────────────────────────
+
+async function getDailyForecast7d(lat, lon) {
+  const response = await axios.get(BASE_URL, {
+    params: {
+      latitude:      lat,
+      longitude:     lon,
+      daily:         [
+        'weather_code',
+        'temperature_2m_max',
+        'temperature_2m_min',
+        'precipitation_probability_max',
+        'precipitation_sum',
+        'wind_speed_10m_max',
+      ].join(','),
+      wind_speed_unit: 'kmh',
+      timezone:        'America/Santo_Domingo',
+      forecast_days:   7,
+    },
+    timeout: REQUEST_TIMEOUT,
+  });
+
+  const d = response.data.daily;
+  return (d.time || []).map((date, i) => ({
+    date,
+    condition:    getCondition(d.weather_code[i]),
+    maxtemp_c:    d.temperature_2m_max[i],
+    mintemp_c:    d.temperature_2m_min[i],
+    precip_prob:  d.precipitation_probability_max[i],
+    precip_mm:    d.precipitation_sum[i],
+    maxwind_kph:  d.wind_speed_10m_max[i],
+  }));
+}
+
+module.exports = { getAllProvincesWeather, getSingleProvinceWeather, getHourlyForecast, getDailyForecast7d };

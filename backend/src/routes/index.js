@@ -6,6 +6,7 @@ const weatherRoutes      = require('./weather');
 const alertRoutes        = require('./alerts');
 const reportRoutes       = require('./reports');
 const municipalityRoutes = require('./municipalities');
+const assistantRoutes    = require('./assistant');
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -18,6 +19,7 @@ router.use('/weather',        weatherRoutes);
 router.use('/alerts',         alertRoutes);
 router.use('/reports',        reportRoutes);
 router.use('/municipalities', municipalityRoutes);
+router.use('/assistant',      assistantRoutes);
 
 router.get('/health', (req, res) =>
   res.json({ status: 'OK', service: 'RD Weather Backend', timestamp: new Date().toISOString() })
